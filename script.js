@@ -1,4 +1,3 @@
-
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
       e.preventDefault();
@@ -7,7 +6,6 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
       });
     });
 });
-
 
 const terminalOutputAbout = document.getElementById('terminal-output');
 const commands = [
@@ -62,21 +60,17 @@ function typeCommand() {
   }
 }
 
-
 createLine('$ ');
 setTimeout(typeCommand, 1000);
-
 
 document.addEventListener('DOMContentLoaded', () => {
   const terminalInput = document.getElementById('terminal-input');
   const terminalOutput = document.getElementById('terminal-interactive-output');
 
-
   if (!terminalInput || !terminalOutput) {
     console.error("Erreur : Les éléments du terminal interactif n'ont pas été trouvés.");
     return;
   }
-
 
   const sections = [
     { name: 'A propos', id: 'about' },
@@ -104,6 +98,12 @@ document.addEventListener('DOMContentLoaded', () => {
       createTerminalLine(sections.map(s => s.name).join(' '));
     } else if (command === 'clear') {
       terminalOutput.innerHTML = '';
+    } else if (command === 'whoami') {
+      createTerminalLine('Luka Salvo');
+    }else if (command === 'sudo') {
+        createTerminalLine('Vous n\'avez pas encore les droits d\'administration pour cette commande, contactez moi pour les obtenir !');
+    } else if (command === 'help') {
+      createTerminalLine('Commandes disponibles : ls, cd <section>, clear, whoami, sudo, help');
     } else if (command.startsWith('cd ')) {
       const sectionName = command.slice(3).trim();
       const section = sections.find(s => s.name.toLowerCase() === sectionName.toLowerCase());
@@ -132,5 +132,5 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   createTerminalLine('Bienvenue dans le terminal interactif !');
-  createTerminalLine('Commandes disponibles : ls, cd , clear');
+  createTerminalLine('Commandes disponibles : ls, cd , clear, whoami, sudo, help');
 });
