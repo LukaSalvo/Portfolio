@@ -1,0 +1,215 @@
+html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    margin: 0;
+    padding: 0;
+  }
+  
+  nav {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+  }
+  
+  nav a {
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s;
+  }
+  
+  nav a:hover {
+    color: #007bff;
+  }
+  
+  .hero {
+    height: 100vh;
+    text-align: center;
+    padding: 0 1rem;
+  }
+  
+  .hero h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+  
+  .hero p {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .about, .journey {
+    padding: 4rem 1rem;
+    background-color: #fff;
+  }
+  
+  .skills, .experiences, .work, .contact {
+    padding: 4rem 1rem;
+    background-color: #f8f9fa;
+  }
+  
+  h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  
+  .project-card {
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+  
+  .project-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  }
+  
+  .mac-screen {
+    position: relative;
+    width: 100%;
+    padding-top: 60%; 
+    background: #f0f0f0;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .mac-screen::before {
+    content: '';
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 10px;
+    background: #ccc;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .mac-screen-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .project-card h3 {
+    margin: 1rem 0 0.5rem;
+  }
+  
+  .project-card p {
+    margin-bottom: 1rem;
+  }
+  
+  .contact-link {
+    display: inline-flex;
+    align-items: center;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+  
+  footer {
+    background-color: #343a40;
+    text-align: center;
+    padding: 1rem;
+    margin-top: 2rem;
+  }
+  
+  .terminal {
+    background-color: #1e1e1e;
+    padding: 1rem;
+    border-radius: 5px;
+    margin-bottom: 2rem;
+    max-width: 600px;
+  }
+  
+  .terminal-header {
+    display: flex;
+    margin-bottom: 1rem;
+  }
+  
+  .terminal-header div {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 5px;
+  }
+  
+  .terminal-header div:nth-child(1) { background-color: #ff5f56; }
+  .terminal-header div:nth-child(2) { background-color: #ffbd2e; }
+  .terminal-header div:nth-child(3) { background-color: #27c93f; }
+  
+  .terminal-line {
+    margin-bottom: 0.5rem;
+  }
+  
+  .terminal-line:last-child::after {
+    content: '_';
+    animation: blink 1s infinite;
+  }
+  
+  @keyframes blink {
+    50% { opacity: 0; }
+  }
+  
+  .icon {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .list-disc {
+    list-style-type: disc;
+  }
+  
+  .progress-bar {
+    height: 10px;
+    background-color: #e9ecef;
+    border-radius: 5px;
+    overflow: hidden;
+  }
+  
+  .progress-fill {
+    height: 100%;
+    border-radius: 5px;
+    transition: width 0.3s ease;
+  }
+  
+  hr {
+    border: 0;
+    height: 1px;
+    background: #ddd;
+    margin: 2rem 0;
+  }
+  
+
+
+.terminal input {
+    background: transparent;
+    color: #98fb98;
+    caret-color: #98fb98;
+  }
+  
+  .terminal input:focus {
+    outline: none;
+  }
+  
+  .terminal-line {
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+  
+
+  
+  @media (min-width: 768px) {
+    .flex-col.md:flex-row { flex-direction: row; }
+  }
