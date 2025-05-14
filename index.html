@@ -12,39 +12,40 @@
   <link rel="icon" type="image/png" href="favicon.png">
 </head>
 <body class="bg-gray-100 font-sans text-gray-800">
-
-  <nav class="fixed top-0 w-full bg-white shadow-md z-10 dark:bg-gray-900 dark:text-white" aria-label="Navigation principale">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between h-16">
-        <div class="flex items-center">
-          <a href="#" class="text-xl font-bold">Portfolio de Luka Salvo</a>
+    <nav class="fixed top-0 w-full bg-white shadow-md z-10 dark:bg-gray-900 dark:text-white" aria-label="Navigation principale">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="flex justify-between h-16">
+            <div class="flex items-center">
+              <a href="#" class="text-xl font-bold">Portfolio de Luka Salvo</a>
+            </div>
+            <div class="flex items-center">
+              <div class="hamburger md:hidden" id="hamburger">
+                <i class="fas fa-bars"></i>
+              </div>
+              <div class="nav-links flex items-center space-x-4 md:flex" id="nav-links">
+                <a href="#about" class="hover:text-gray-600 dark:hover:text-gray-300">À propos</a>
+                <a href="#skills" class="hover:text-gray-600 dark:hover:text-gray-300">Compétences</a>
+                <a href="#journey" class="hover:text-gray-600 dark:hover:text-gray-300">Parcours</a>
+                <a href="#experiences" class="hover:text-gray-600 dark:hover:text-gray-300">Expériences</a>
+                <a href="#work" class="hover:text-gray-600 dark:hover:text-gray-300">Projets</a>
+                <a href="#contact" class="hover:text-gray-600 dark:hover:text-gray-300">Contact</a>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="flex items-center space-x-4">
-          <a href="#about" class="hover:text-gray-600 dark:hover:text-gray-300">À propos</a>
-          <a href="#skills" class="hover:text-gray-600 dark:hover:text-gray-300">Compétences</a>
-          <a href="#journey" class="hover:text-gray-600 dark:hover:text-gray-300">Parcours</a>
-          <a href="#experiences" class="hover:text-gray-600 dark:hover:text-gray-300">Expériences</a>
-          <a href="#work" class="hover:text-gray-600 dark:hover:text-gray-300">Projets</a>
-          <a href="#contact" class="hover:text-gray-600 dark:hover:text-gray-300">Contact</a>
-        </div>
-      </div>
-    </div>
-  </nav>
+      </nav>
 
-
-<!-- Hero Section -->
-<section class="min-h-screen flex items-center justify-center bg-gray-200 dark:bg-gray-800" aria-label="Introduction">
+  <section class="min-h-screen flex items-center justify-center bg-gray-200 dark:bg-gray-800" aria-label="Introduction">
     <div class="text-center px-4">
       <h1 class="text-5xl md:text-7xl font-bold mb-4 dark:text-white animate-fade-in">Bonjour, je suis Luka Salvo</h1>
       <p class="text-xl md:text-2xl dark:text-gray-300 mb-6">Étudiant en informatique | Administration système | Réseau | Cloud</p>
       <p class="text-lg md:text-xl text-gray-600 dark:text-gray-400 mb-8 max-w-2xl mx-auto">
-        Passionné par l'informatique, j'appprends à construire des solutions robustes pour les systèmes, réseaux et je me forme sur la gestion du cloud et je suis à la recherche d'une alternance à partir de septembre 2025.
+        Passionné par l'informatique, j'apprends à construire des solutions robustes pour les systèmes, réseaux et je me forme sur la gestion du cloud et je suis à la recherche d'une alternance à partir de septembre 2025.
       </p>
       <div class="flex justify-center space-x-4">
         <a href="#contact" class="inline-flex items-center bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition dark:bg-blue-500 dark:hover:bg-blue-600">
           <i class="fas fa-envelope mr-2"></i> Me contacter
         </a>
-    
       </div>
       <div class="mt-8">
         <i class="fas fa-chevron-down text-3xl text-gray-600 dark:text-gray-400 animate-bounce"></i>
@@ -52,7 +53,7 @@
     </div>
   </section>
 
-<section id="about" class="py-20 bg-white dark:bg-gray-900" aria-label="À propos de moi">
+  <section id="about" class="py-20 bg-white dark:bg-gray-900" aria-label="À propos de moi">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <h2 class="text-4xl font-bold mb-8 text-center dark:text-white">À propos de moi</h2>
       <div class="flex flex-col md:flex-row items-center">
@@ -73,56 +74,52 @@
           <p class="text-lg mb-4 dark:text-gray-300">
             Titulaire d’un baccalauréat mention Bien avec spécialités NSI, Mathématiques et section européenne allemand, je combine compétences techniques et rigueur.
             Sportif et passionné par les nouvelles technologies, je suis toujours à la recherche de nouveaux défis que ce soit dans le domaine de l'informatique ou dans ma vie personnelle.
-            </p>
+          </p>
         </div>
       </div>
       <hr class="my-8 border-t-2 border-gray-300 dark:border-gray-700">
       <div class="flex flex-col md:flex-row justify-around items-center mt-12">
-
-        <div class="flex flex-col md:flex-row justify-around items-center mt-12">
-            <div class="w-full md:w-1/4 text-center p-4">
-              <div class="icon mb-4"><i class="fas fa-user fa-3x text-blue-500"></i></div>
-              <h3 class="text-xl font-semibold mb-2 dark:text-gray-200">Profil</h3>
-              <ul class="list-none mt-4 mx-auto max-w-xs">
-                <li class="text-gray-600 dark:text-gray-400">Rigoureux et enthousiaste</li>
-                <li class="text-gray-600 dark:text-gray-400">Passionné par les nouvelles technologies</li>
-                <li class="text-gray-600 dark:text-gray-400">Gestion du stress</li>
-                <li class="text-gray-600 dark:text-gray-400">Travail de groupe</li>
-              </ul>
-            </div>
-            <div class="w-full md:w-1/4 text-center p-4">
-              <div class="icon mb-4"><i class="fas fa-address-card fa-3x text-blue-500"></i></div>
-              <h3 class="text-xl font-semibold mb-2 dark:text-gray-200">Coordonnées</h3>
-              <ul class="list-none mt-4 mx-auto max-w-xs">
-                <li class="text-gray-600 dark:text-gray-400"><i class="fas fa-envelope mr-2"></i> luka.salvo23@gmail.com</li>
-                <li class="text-gray-600 dark:text-gray-400"><i class="fas fa-map-marker-alt mr-2"></i> Sarreguemines/Nancy, France</li>
-                <li class="text-gray-600 dark:text-gray-400"><i class="fas fa-car mr-2"></i> Permis B</li>
-                <li class="text-gray-600 dark:text-gray-400"><i class="fas fa-car mr-2"></i> Mobilité : Sarreguemines, Nancy, Forbach, Metz, Saint-Avold</li>
-              </ul>
-            </div>
-            <div class="w-full md:w-1/4 text-center p-4">
-              <div class="icon mb-4"><i class="fas fa-language fa-3x text-blue-500"></i></div>
-              <h3 class="text-xl font-semibold mb-2 dark:text-gray-200">Langues</h3>
-              <ul class="list-none mt-4 mx-auto max-w-xs">
-                <li class="text-gray-600 dark:text-gray-400">Français : Natif</li>
-                <li class="text-gray-600 dark:text-gray-400">Allemand : B2 (section européenne)</li>
-                <li class="text-gray-600 dark:text-gray-400">Anglais : B1</li>
-              </ul>
-            </div>
-            <div class="w-full md:w-1/4 text-center p-4">
-              <div class="icon mb-4"><i class="fas fa-star fa-3x text-blue-500"></i></div>
-              <h3 class="text-xl font-semibold mb-2 dark:text-gray-200">Centres d’intérêt</h3>
-              <ul class="list-none mt-4 mx-auto max-w-xs">
-                <li class="text-gray-600 dark:text-gray-400">Veille technologique</li>
-                <li class="text-gray-600 dark:text-gray-400">Sports de combat</li>
-                <li class="text-gray-600 dark:text-gray-400">Course à pied</li>
-              </ul>
-            </div>
-          </div>
+        <div class="w-full md:w-1/4 text-center p-4">
+          <div class="icon mb-4"><i class="fas fa-user fa-3x text-blue-500"></i></div>
+          <h3 class="text-xl font-semibold mb-2 dark:text-gray-200">Profil</h3>
+          <ul class="list-none mt-4 mx-auto max-w-xs">
+            <li class="text-gray-600 dark:text-gray-400">Rigoureux et enthousiaste</li>
+            <li class="text-gray-600 dark:text-gray-400">Passionné par les nouvelles technologies</li>
+            <li class="text-gray-600 dark:text-gray-400">Gestion du stress</li>
+            <li class="text-gray-600 dark:text-gray-400">Travail de groupe</li>
+          </ul>
+        </div>
+        <div class="w-full md:w-1/4 text-center p-4">
+          <div class="icon mb-4"><i class="fas fa-address-card fa-3x text-blue-500"></i></div>
+          <h3 class="text-xl font-semibold mb-2 dark:text-gray-200">Coordonnées</h3>
+          <ul class="list-none mt-4 mx-auto max-w-xs">
+            <li class="text-gray-600 dark:text-gray-400"><i class="fas fa-envelope mr-2"></i> luka.salvo23@gmail.com</li>
+            <li class="text-gray-600 dark:text-gray-400"><i class="fas fa-map-marker-alt mr-2"></i> Sarreguemines/Nancy, France</li>
+            <li class="text-gray-600 dark:text-gray-400"><i class="fas fa-car-audio mr-2"></i> Permis B</li>
+            <li class="text-gray-600 dark:text-gray-400"><i class="fas fa-car-audio mr-2"></i> Mobilité : Sarreguemines, Nancy, Forbach, Metz, Saint-Avold</li>
+          </ul>
+        </div>
+        <div class="w-full md:w-1/4 text-center p-4">
+          <div class="icon mb-4"><i class="fas fa-language fa-3x text-blue-500"></i></div>
+          <h3 class="text-xl font-semibold mb-2 dark:text-gray-200">Langues</h3>
+          <ul class="list-none mt-4 mx-auto max-w-xs">
+            <li class="text-gray-600 dark:text-gray-400">Français : Natif</li>
+            <li class="text-gray-600 dark:text-gray-400">Allemand : B2 (section européenne)</li>
+            <li class="text-gray-600 dark:text-gray-400">Anglais : B1</li>
+          </ul>
+        </div>
+        <div class="w-full md:w-1/4 text-center p-4">
+          <div class="icon mb-4"><i class="fas fa-star fa-3x text-blue-500"></i></div>
+          <h3 class="text-xl font-semibold mb-2 dark:text-gray-200">Centres d’intérêt</h3>
+          <ul class="list-none mt-4 mx-auto max-w-xs">
+            <li class="text-gray-600 dark:text-gray-400">Veille technologique</li>
+            <li class="text-gray-600 dark:text-gray-400">Sports de combat</li>
+            <li class="text-gray-600 dark:text-gray-400">Course à pied</li>
+          </ul>
+        </div>
       </div>
     </div>
   </section>
-
 
   <section id="skills" class="py-20 bg-gray-100 dark:bg-gray-800" aria-label="Compétences">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -133,56 +130,55 @@
           <h3 class="text-2xl font-semibold mb-4 text-gray-700 dark:text-gray-300">Administration Système</h3>
           <div class="space-y-4">
             <div class="flex items-center justify-between"><span><i class="fab fa-linux mr-2"></i>Linux (Debian, Ubuntu)</span><span>80%</span></div>
-            <div class="progress-bar"><div class="progress-fill bg-blue-600" style="--progress-width: 80%;"></div></div>
+            <div class="progress-bar"><div class="progress-fill bg-blue-600" style="width: 80%;"></div></div>
             <div class="flex items-center justify-between"><span><i class="fas fa-server mr-2"></i>Configuration Serveur</span><span>75%</span></div>
-            <div class="progress-bar"><div class="progress-fill bg-green-600" style="--progress-width: 75%;"></div></div>
+            <div class="progress-bar"><div class="progress-fill bg-green-600" style="width: 75%;"></div></div>
             <div class="flex items-center justify-between"><span><i class="fas fa-terminal mr-2"></i>Bash Scripting</span><span>80%</span></div>
-            <div class="progress-bar"><div class="progress-fill bg-teal-600" style="--progress-width: 80%;"></div></div>
+            <div class="progress-bar"><div class="progress-fill bg-teal-600" style="width: 80%;"></div></div>
             <div class="flex items-center justify-between"><span><i class="fas fa-laptop-code mr-2"></i>MacOS</span><span>95%</span></div>
-            <div class="progress-bar"><div class="progress-fill bg-gray-600" style="--progress-width: 95%;"></div></div>
+            <div class="progress-bar"><div class="progress-fill bg-gray-600" style="width: 95%;"></div></div>
           </div>
         </div>
         <div>
           <h3 class="text-2xl font-semibold mb-4 text-gray-700 dark:text-gray-300">Réseaux</h3>
           <div class="space-y-4">
             <div class="flex items-center justify-between"><span><i class="fas fa-network-wired mr-2"></i>Configuration Réseau</span><span>70%</span></div>
-            <div class="progress-bar"><div class="progress-fill bg-indigo-600" style="--progress-width: 70%;"></div></div>
+            <div class="progress-bar"><div class="progress-fill bg-indigo-600" style="width: 70%;"></div></div>
             <div class="flex items-center justify-between"><span><i class="fas fa-shield-alt mr-2"></i>Sécurisation</span><span>65%</span></div>
-            <div class="progress-bar"><div class="progress-fill bg-red-600" style="--progress-width: 65%;"></div></div>
+            <div class="progress-bar"><div class="progress-fill bg-red-600" style="width: 65%;"></div></div>
           </div>
         </div>
         <div>
           <h3 class="text-2xl font-semibold mb-4 text-gray-700 dark:text-gray-300">Virtualisation</h3>
           <div class="space-y-4">
             <div class="flex items-center justify-between"><span><i class="fas fa-cube mr-2"></i>Vagrant</span><span>70%</span></div>
-            <div class="progress-bar"><div class="progress-fill bg-purple-600" style="--progress-width: 70%;"></div></div>
+            <div class="progress-bar"><div class="progress-fill bg-purple-600" style="width: 70%;"></div></div>
             <div class="flex items-center justify-between"><span><i class="fab fa-docker mr-2"></i>Docker</span><span>75%</span></div>
-            <div class="progress-bar"><div class="progress-fill bg-blue-600" style="--progress-width: 75%;"></div></div>
+            <div class="progress-bar"><div class="progress-fill bg-blue-600" style="width: 75%;"></div></div>
             <div class="flex items-center justify-between"><span><i class="fas fa-server mr-2"></i>VirtualBox</span><span>65%</span></div>
-            <div class="progress-bar"><div class="progress-fill bg-green-600" style="--progress-width: 65%;"></div></div>
+            <div class="progress-bar"><div class="progress-fill bg-green-600" style="width: 65%;"></div></div>
           </div>
         </div>
         <div>
           <h3 class="text-2xl font-semibold mb-4 text-gray-700 dark:text-gray-300">Développement</h3>
           <div class="space-y-4">
             <div class="flex items-center justify-between"><span><i class="fab fa-java mr-2"></i>Java</span><span>85%</span></div>
-            <div class="progress-bar"><div class="progress-fill bg-yellow-500" style="--progress-width: 85%;"></div></div>
+            <div class="progress-bar"><div class="progress-fill bg-yellow-500" style="width: 85%;"></div></div>
             <div class="flex items-center justify-between"><span><i class="fab fa-php mr-2"></i>PHP</span><span>75%</span></div>
-            <div class="progress-bar"><div class="progress-fill bg-purple-500" style="--progress-width: 75%;"></div></div>
+            <div class="progress-bar"><div class="progress-fill bg-purple-500" style="width: 75%;"></div></div>
             <div class="flex items-center justify-between"><span><i class="fab fa-html5 mr-2"></i>HTML/CSS</span><span>90%</span></div>
-            <div class="progress-bar"><div class="progress-fill bg-red-500" style="--progress-width: 90%;"></div></div>
+            <div class="progress-bar"><div class="progress-fill bg-red-500" style="width: 90%;"></div></div>
             <div class="flex items-center justify-between"><span><i class="fab fa-python mr-2"></i>Python</span><span>70%</span></div>
-            <div class="progress-bar"><div class="progress-fill bg-blue-500" style="--progress-width: 70%;"></div></div>
+            <div class="progress-bar"><div class="progress-fill bg-blue-500" style="width: 70%;"></div></div>
             <div class="flex items-center justify-between"><span><i class="fas fa-file-pdf mr-2"></i>LaTeX</span><span>85%</span></div>
-            <div class="progress-bar"><div class="progress-fill bg-red-500" style="--progress-width: 85%;"></div></div>
+            <div class="progress-bar"><div class="progress-fill bg-red-500" style="width: 85%;"></div></div>
             <div class="flex items-center justify-between"><span><i class="fas fa-code mr-2"></i>C</span><span>50%</span></div>
-            <div class="progress-bar"><div class="progress-fill bg-gray-500" style="--progress-width: 50%;"></div></div>
+            <div class="progress-bar"><div class="progress-fill bg-gray-500" style="width: 50%;"></div></div>
           </div>
         </div>
       </div>
     </div>
   </section>
-
 
   <section id="journey" class="py-20 bg-white dark:bg-gray-900" aria-label="Parcours">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -212,7 +208,6 @@
       </div>
     </div>
   </section>
-
 
   <section id="experiences" class="py-20 bg-gray-100 dark:bg-gray-800" aria-label="Expériences professionnelles">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -257,12 +252,10 @@
     </div>
   </section>
 
-
   <section id="work" class="py-20 bg-gray-100 dark:bg-gray-800" aria-label="Projets">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <h2 class="text-4xl font-bold mb-8 text-center dark:text-white">Mes Projets</h2>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-
         <div class="project-card bg-white rounded-lg shadow-lg overflow-hidden dark:bg-gray-700 transition-all duration-300 hover:shadow-xl">
           <div class="mac-screen">
             <img src="img/tableaudeBord1.png" alt="Tableau de bord GLPI" class="mac-screen-content">
@@ -276,7 +269,6 @@
             <a href="pdf/main.pdf" class="text-blue-600 hover:underline dark:text-blue-400">Rapport de stage</a>
           </div>
         </div>
-
         <div class="project-card bg-white rounded-lg shadow-lg overflow-hidden dark:bg-gray-700 transition-all duration-300 hover:shadow-xl">
           <div class="mac-screen">
             <video controls class="mac-screen-content">
@@ -293,7 +285,6 @@
             <a href="https://github.com/LukaSalvo/SAE2024" class="text-blue-600 hover:underline dark:text-blue-400">Voir sur GitHub</a>
           </div>
         </div>
-
         <div class="project-card bg-white rounded-lg shadow-lg overflow-hidden dark:bg-gray-700 transition-all duration-300 hover:shadow-xl">
           <div class="mac-screen">
             <img src="img/NRVProject.png" alt="Site Web Sécurisé" class="mac-screen-content">
@@ -307,7 +298,6 @@
             <a href="https://github.com/LukaSalvo/NRVProjet" class="text-blue-600 hover:underline dark:text-blue-400">Voir sur GitHub</a>
           </div>
         </div>
-   
         <div class="project-card bg-white rounded-lg shadow-lg overflow-hidden dark:bg-gray-700 transition-all duration-300 hover:shadow-xl">
           <div class="mac-screen">
             <img src="img/DiagrammeClasse.png" alt="Générateur de diagramme de classe" class="mac-screen-content">
@@ -321,7 +311,6 @@
             <a href="https://github.com/NathanEyer/SAE_3.01_DiagrammesClasse" class="text-blue-600 hover:underline dark:text-blue-400">Voir sur GitHub</a>
           </div>
         </div>
-  
         <div class="project-card bg-white rounded-lg shadow-lg overflow-hidden dark:bg-gray-700 transition-all duration-300 hover:shadow-xl">
           <div class="mac-screen">
             <img src="img/mbash.png" alt="Shell mbash" class="mac-screen-content">
@@ -338,7 +327,6 @@
       </div>
     </div>
   </section>
-
 
   <section id="contact" class="py-20 bg-white dark:bg-gray-900" aria-label="Contact">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -361,12 +349,10 @@
     </div>
   </section>
 
-
-
-<section id="terminal" class="py-20 bg-gray-100 dark:bg-gray-800" aria-label="Terminal interactif">
+  <section id="terminal" class="py-20 bg-gray-100 dark:bg-gray-800" aria-label="Terminal interactif">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <h2 class="text-4xl font-bold mb-8 text-center dark:text-white">Terminal Interactif</h2>
-      <p class="text-center mb-12 text-gray-600 dark:text-gray-400">Amusez vous avec des commandes comme <code>ls</code> pour lister les sections ou <code>cd A propos</code> pour naviguer sur le site web, ces commandes sont présentent dans le terminal de commande linux.</p>
+      <p class="text-center mb-12 text-gray-600 dark:text-gray-400">Amusez-vous avec des commandes comme <code>ls</code> pour lister les sections ou <code>cd A propos</code> pour naviguer sur le site web, ces commandes sont présentes dans le terminal de commande Linux.</p>
       <div class="terminal bg-gray-900 text-green-400 rounded-lg shadow-md p-4 max-w-2xl mx-auto">
         <div class="terminal-header flex items-center mb-2">
           <div class="w-3 h-3 rounded-full bg-red-500 mr-2"></div>
@@ -381,7 +367,6 @@
       </div>
     </div>
   </section>
-
 
   <footer class="bg-gray-800 text-white py-6 dark:bg-gray-950" aria-label="Pied de page">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
