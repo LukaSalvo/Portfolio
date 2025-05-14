@@ -168,7 +168,8 @@ html {
   }
   
   .list-disc {
-    list-style-type: disc;
+    list-style-position: inside;
+    text-align: center; 
   }
   
   .progress-bar {
@@ -207,7 +208,26 @@ html {
     white-space: pre-wrap;
     word-break: break-all;
   }
+ 
+
+.animate-fade-in {
+    animation: fadeIn 1.5s ease-in-out;
+  }
   
+  @keyframes fadeIn {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  
+  .animate-bounce {
+    animation: bounce 2s infinite;
+  }
+  
+  @keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-10px); }
+    60% { transform: translateY(-5px); }
+  }
 
   
   @media (min-width: 768px) {
