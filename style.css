@@ -517,3 +517,24 @@ hr {
 @media (min-width: 768px) {
     .flex-col.md:flex-row { flex-direction: row; }
 }
+
+
+.easter-egg-hint {
+    font-weight: 500;
+    opacity: 0.9;
+    transition: opacity 0.3s ease;
+  }
+  
+  .easter-egg-hint:hover {
+    opacity: 1;
+  }
+  
+  /* Ajustements pour les écrans mobiles */
+  @media (max-width: 640px) {
+    .easter-egg-hint {
+      bottom: 2rem;
+      left: 1rem;
+      font-size: 0.9rem;
+      padding: 0.5rem 1rem;
+    }
+  }
