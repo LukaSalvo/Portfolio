@@ -8,6 +8,7 @@ body {
     color: #333;
     margin: 0;
     padding: 0;
+    background-color: #f3f4f6; /* Fond clair par défaut */
 }
 
 nav {
@@ -363,9 +364,23 @@ hr {
     background-color: #6b7280;
 }
 
+/* Dark mode for terminals */
+.dark .terminal {
+    background-color: #2d2d2d; /* Fond légèrement plus clair en mode sombre */
+}
+
+.dark .terminal-about {
+    background-color: #2a3b5b !important; /* Fond bleu foncé ajusté pour le mode sombre */
+    border: 2px solid #6b7280 !important; /* Bordure plus claire */
+}
+
+.dark .terminal-about .text-green-400 {
+    color: #bbf7d0 !important; /* Garder le vert clair */
+}
+
 /* System-level dark mode preference */
 @media (prefers-color-scheme: dark) {
-    body {
+    body:not(.dark) {
         background-color: #1f2937;
         color: #ffffff;
     }
@@ -465,6 +480,10 @@ hr {
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
 
+    .dark .nav-links {
+        background: #1f2937; /* Fond sombre pour le menu mobile en mode sombre */
+    }
+
     .nav-links.active {
         display: flex;
     }
@@ -518,23 +537,33 @@ hr {
     .flex-col.md:flex-row { flex-direction: row; }
 }
 
-
 .easter-egg-hint {
     font-weight: 500;
     opacity: 0.9;
     transition: opacity 0.3s ease;
-  }
-  
-  .easter-egg-hint:hover {
+}
+
+.easter-egg-hint:hover {
     opacity: 1;
-  }
-  
-  /* Ajustements pour les écrans mobiles */
-  @media (max-width: 640px) {
+}
+
+@media (max-width: 640px) {
     .easter-egg-hint {
       bottom: 2rem;
       left: 1rem;
       font-size: 0.9rem;
       padding: 0.5rem 1rem;
     }
-  }
+}
+
+/* Styles pour le bouton de bascule */
+#theme-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#theme-toggle i {
+    font-size: 1.25rem;
+}
