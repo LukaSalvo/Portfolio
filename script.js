@@ -325,3 +325,50 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error("Erreur : Le bouton de basculement du thème n'a pas été trouvé.");
     }
 });
+
+
+// Interactivité pour les cartes de compétences et d'auto-évaluation
+document.addEventListener('DOMContentLoaded', () => {
+    const skillCards = document.querySelectorAll('.skill-card');
+    const competenceCards = document.querySelectorAll('.competence-card');
+  
+    // Interactivité pour les cartes de compétences
+    skillCards.forEach(card => {
+      card.addEventListener('mouseover', () => {
+        card.style.background = document.body.classList.contains('dark')
+          ? 'linear-gradient(145deg, #3b3b3b, #4b4b4b)'
+          : 'linear-gradient(145deg, #e6e6e6, #f5f5f5)';
+      });
+  
+      card.addEventListener('mouseout', () => {
+        card.style.background = document.body.classList.contains('dark')
+          ? 'linear-gradient(145deg, #2d2d2d, #3b3b3b)'
+          : 'linear-gradient(145deg, #ffffff, #e6e6e6)';
+      });
+  
+      card.addEventListener('click', () => {
+        skillCards.forEach(c => c.classList.remove('flipped'));
+        card.classList.add('flipped');
+      });
+    });
+  
+    // Interactivité pour les cartes d'auto-évaluation
+    competenceCards.forEach(card => {
+      card.addEventListener('mouseover', () => {
+        card.style.background = document.body.classList.contains('dark')
+          ? 'linear-gradient(145deg, #3b3b3b, #4b4b4b)'
+          : 'linear-gradient(145deg, #e6e6e6, #f5f5f5)';
+      });
+  
+      card.addEventListener('mouseout', () => {
+        card.style.background = document.body.classList.contains('dark')
+          ? 'linear-gradient(145deg, #2d2d2d, #3b3b3b)'
+          : 'linear-gradient(145deg, #ffffff, #e6e6e6)';
+      });
+  
+      card.addEventListener('click', () => {
+        competenceCards.forEach(c => c.classList.remove('flipped'));
+        card.classList.add('flipped');
+      });
+    });
+  });

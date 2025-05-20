@@ -567,3 +567,278 @@ hr {
 #theme-toggle i {
     font-size: 1.25rem;
 }
+/* Styles pour la section Auto-évaluation avec cartes */
+.competence-container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .competence-card {
+    background: linear-gradient(145deg, #ffffff, #e6e6e6);
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .competence-card:hover {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  }
+  
+  .competence-card h4 {
+    font-size: clamp(1.2rem, 3vw, 1.5rem);
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 0.5rem;
+  }
+  
+  .competence-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .competence-table th,
+  .competence-table td {
+    padding: 0.75rem;
+    text-align: left;
+    font-size: clamp(0.9rem, 2.5vw, 1rem);
+  }
+  
+  .competence-table th.label {
+    background-color: #f1f5f9;
+    color: #374151;
+    font-weight: 500;
+    width: 30%;
+    border-right: 1px solid #e5e7eb;
+  }
+  
+  .competence-table td {
+    color: #4b5563;
+  }
+  
+  .competence-table td.stars {
+    color: #f1c40f;
+    font-size: 1.2rem;
+  }
+  
+  .competence-table tr:not(:last-child) th,
+  .competence-table tr:not(:last-child) td {
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  /* Mode sombre pour les cartes */
+  .dark .competence-card {
+    background: linear-gradient(145deg, #2d2d2d, #3b3b3b);
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+  }
+  
+  .dark .competence-card:hover {
+    box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);
+  }
+  
+  .dark .competence-card h4 {
+    border-bottom-color: #60a5fa;
+  }
+  
+  .dark .competence-table th.label {
+    background-color: #4b5563;
+    color: #d1d5db;
+    border-right-color: #6b7280;
+  }
+  
+  .dark .competence-table td {
+    color: #d1d5db;
+  }
+  
+  .dark .competence-table tr:not(:last-child) th,
+  .dark .competence-table tr:not(:last-child) td {
+    border-bottom-color: #6b7280;
+  }
+  
+  /* Animation de révélation des cartes */
+  .competence-card {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: slideIn 0.5s ease forwards;
+  }
+  
+  .competence-card:nth-child(1) { animation-delay: 0.1s; }
+  .competence-card:nth-child(2) { animation-delay: 0.2s; }
+  .competence-card:nth-child(3) { animation-delay: 0.3s; }
+  .competence-card:nth-child(4) { animation-delay: 0.4s; }
+  
+  @keyframes slideIn {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Responsive pour mobile */
+  @media (max-width: 640px) {
+    .competence-table th,
+    .competence-table td {
+      font-size: 0.85rem;
+      padding: 0.5rem;
+    }
+  
+    .competence-table th.label {
+      width: 40%;
+    }
+  
+    .competence-card {
+      padding: 1rem;
+    }
+  }
+
+/* Styles pour les cartes de compétences */
+.skill-grid,
+.competence-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  align-items: stretch;
+}
+
+.skill-card,
+.competence-card {
+  background: linear-gradient(145deg, #ffffff, #e6e6e6);
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  min-height: 200px; /* Hauteur minimale pour éviter les chevauchements */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.skill-card:hover,
+.competence-card:hover {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.skill-card h4,
+.competence-card h4 {
+  font-size: clamp(1rem, 2.5vw, 1.2rem);
+  margin-bottom: 0.5rem;
+}
+
+.progress-bar {
+  height: 8px;
+  background-color: #e9ecef;
+  border-radius: 5px;
+  overflow: hidden;
+  margin: 0.5rem 0;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 5px;
+  transition: width 0.3s ease;
+}
+
+/* Mode sombre pour les cartes */
+.dark .skill-card,
+.dark .competence-card {
+  background: linear-gradient(145deg, #2d2d2d, #3b3b3b);
+  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+}
+
+.dark .skill-card:hover,
+.dark .competence-card:hover {
+  box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);
+}
+
+.dark .progress-bar {
+  background-color: #4b5563;
+}
+
+/* Animation de révélation */
+.skill-card,
+.competence-card {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: slideIn 0.5s ease forwards;
+}
+
+.skill-card:nth-child(1),
+.competence-card:nth-child(1) { animation-delay: 0.1s; }
+.skill-card:nth-child(2),
+.competence-card:nth-child(2) { animation-delay: 0.2s; }
+.skill-card:nth-child(3),
+.competence-card:nth-child(3) { animation-delay: 0.3s; }
+.skill-card:nth-child(4),
+.competence-card:nth-child(4) { animation-delay: 0.4s; }
+.skill-card:nth-child(5),
+.competence-card:nth-child(5) { animation-delay: 0.5s; }
+.skill-card:nth-child(6),
+.competence-card:nth-child(6) { animation-delay: 0.6s; }
+.skill-card:nth-child(7),
+.competence-card:nth-child(7) { animation-delay: 0.7s; }
+.skill-card:nth-child(8),
+.competence-card:nth-child(8) { animation-delay: 0.8s; }
+
+@keyframes slideIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Styles spécifiques pour les cartes d'auto-évaluation */
+.competence-card .label {
+  display: inline-block;
+  width: 32%;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.competence-card p {
+  font-size: clamp(0.9rem, 2vw, 1rem);
+  line-height: 1.5;
+  margin: 0;
+  overflow-wrap: break-word;
+  max-width: 100%;
+}
+
+.competence-card .flex-col {
+  flex-grow: 1;
+}
+
+/* Mode sombre pour les cartes d'auto-évaluation */
+.dark .competence-card .label {
+  color: #d1d5db;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .skill-grid,
+  .competence-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .skill-card,
+  .competence-card {
+    padding: 1rem;
+    min-height: 180px;
+  }
+
+  .competence-card h4 {
+    font-size: 1rem;
+  }
+
+  .competence-card .label {
+    width: 40%;
+    font-size: 0.9rem;
+  }
+
+  .competence-card p {
+    font-size: 0.85rem;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+  .skill-grid,
+  .competence-grid {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+}
