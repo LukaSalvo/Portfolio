@@ -14,7 +14,7 @@ const commandSets = [
         { input: 'ls', output: 'Alternance' },
         { input: 'cd Alternance', output: '' },
         { input: 'ls', output: 'recherche_alternance.txt' },
-        { input: 'cat recherche_alternance.txt', output: 'Etudiant en BUT Informatique,\nRecherche une alternance en Administration Système Réseau pour Septembre 2025' }
+        { input: 'cat recherche_alternance.txt', output: 'Etudiant en BUT Informatique,\nRecherche un stage en Administration Système Réseau pour Avril 2026' }
     ],
     [
         { input: 'cd Documents', output: '' },
