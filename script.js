@@ -266,17 +266,27 @@ document.addEventListener('DOMContentLoaded', () => {
     createTerminalLine('Bienvenue dans le terminal interactif !');
     createTerminalLine('Commandes disponibles : ls, cd, clear, whoami, sudo, help, pwd');
 
-    // Hamburger menu toggle
-    const hamburger = document.querySelector('.hamburger');
-    const navLinks = document.querySelector('.nav-links');
+    // Hamburger menu toggle & Auto-close
+const hamburger = document.querySelector('.hamburger');
+const navLinks = document.querySelector('.nav-links');
+const navItems = document.querySelectorAll('.nav-links a');
 
-    if (hamburger && navLinks) {
-        hamburger.addEventListener('click', () => {
-            navLinks.classList.toggle('active');
+if (hamburger && navLinks) {
+    hamburger.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+        // Optionnel : Changer l'icône de bars à times (X)
+        const icon = hamburger.querySelector('i');
+        icon.classList.toggle('fa-bars');
+        icon.classList.toggle('fa-times');
+    });
+
+    // Ferme le menu quand on clique sur un lien (important pour mobile)
+    navItems.forEach(item => {
+        item.addEventListener('click', () => {
+            navLinks.classList.remove('active');
         });
-    } else {
-        console.error("Erreur : Les éléments du menu hamburger n'ont pas été trouvés.");
-    }
+    });
+}
 
     // Gestion du mode clair/sombre
     const themeToggle = document.getElementById('theme-toggle');

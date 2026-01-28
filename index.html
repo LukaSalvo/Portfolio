@@ -12,28 +12,34 @@
   <link rel="icon" type="image/png" href="favicon.png">
 </head>
 <body class="bg-gray-100 font-sans text-gray-800">
-    <nav class="fixed top-0 w-full bg-white shadow-md z-10 dark:bg-gray-900 dark:text-white" aria-label="Navigation principale">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="flex justify-between h-16">
-            <div class="flex items-center">
-              <a href="#" class="text-xl font-bold">Portfolio de Luka Salvo</a>
-            </div>
-            <div class="flex items-center">
-              <div class="hamburger md:hidden" id="hamburger">
-                <i class="fas fa-bars"></i>
-              </div>
-              <div class="nav-links flex items-center space-x-4 md:flex" id="nav-links">
-                <a href="#about" class="hover:text-gray-600 dark:hover:text-gray-300">À propos</a>
-                <a href="#skills" class="hover:text-gray-600 dark:hover:text-gray-300">Compétences</a>
-                <a href="#journey" class="hover:text-gray-600 dark:hover:text-gray-300">Parcours</a>
-                <a href="#experiences" class="hover:text-gray-600 dark:hover:text-gray-300">Expériences</a>
-                <a href="#work" class="hover:text-gray-600 dark:hover:text-gray-300">Projets</a>
-                <a href="#contact" class="hover:text-gray-600 dark:hover:text-gray-300">Contact</a>
-              </div>
-            </div>
+    <nav class="fixed top-0 w-full bg-white shadow-md z-[1000] dark:bg-gray-900 dark:text-white" aria-label="Navigation principale">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16 items-center">
+        <div class="flex items-center">
+          <a href="#" class="text-xl font-bold">Luka Salvo</a>
+        </div>
+
+        <div class="flex items-center gap-4">
+          <button id="theme-toggle" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+            <i class="fas fa-moon"></i>
+          </button>
+
+          <div class="nav-links hidden md:flex items-center space-x-4" id="nav-links">
+            <a href="#about" class="hover:text-blue-600 transition">À propos</a>
+            <a href="#skills" class="hover:text-blue-600 transition">Compétences</a>
+            <a href="#journey" class="hover:text-blue-600 transition">Parcours</a>
+            <a href="#experiences" class="hover:text-blue-600 transition">Expériences</a>
+            <a href="#work" class="hover:text-blue-600 transition">Projets</a>
+            <a href="#contact" class="hover:text-blue-600 transition">Contact</a>
+          </div>
+
+          <div class="hamburger md:hidden text-2xl cursor-pointer p-2" id="hamburger">
+            <i class="fas fa-bars"></i>
           </div>
         </div>
-      </nav>
+      </div>
+    </div>
+</nav>
 
       <section class="min-h-screen flex items-center justify-center bg-gray-200 dark:bg-gray-800 relative" aria-label="Introduction">
         <div class="text-center px-4">
