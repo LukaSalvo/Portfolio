@@ -146,6 +146,26 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.stat-number[data-target]').forEach(el => statObserver.observe(el));
 
   /* ----------------------------------------------------------
+     SCROLL SPY — highlight active nav link
+     ---------------------------------------------------------- */
+  const navAnchorEls = document.querySelectorAll('.nav-links a[href^="#"]');
+  const spySections  = [...navAnchorEls]
+    .map(a => document.querySelector(a.getAttribute('href')))
+    .filter(Boolean);
+
+  const spyObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        navAnchorEls.forEach(a => a.classList.remove('nav-active'));
+        const link = document.querySelector(`.nav-links a[href="#${entry.target.id}"]`);
+        if (link) link.classList.add('nav-active');
+      }
+    });
+  }, { rootMargin: '-40% 0px -50% 0px' });
+
+  spySections.forEach(el => spyObserver.observe(el));
+
+  /* ----------------------------------------------------------
      ABOUT TERMINAL — typing animation
      ---------------------------------------------------------- */
   const terminalAbout = document.getElementById('terminal-output');

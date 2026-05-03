@@ -40,7 +40,10 @@
    ============================================================ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 72px; /* Fixed nav height + buffer */
+}
 
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', Helvetica, sans-serif;
@@ -126,8 +129,10 @@ button { font-family: inherit; }
   transition: width var(--t);
 }
 
-.nav-links a:hover { color: var(--text); }
-.nav-links a:hover::after { width: 100%; }
+.nav-links a:hover,
+.nav-links a.nav-active { color: var(--text); }
+.nav-links a:hover::after,
+.nav-links a.nav-active::after { width: 100%; }
 
 .nav-actions { display: flex; align-items: center; gap: 12px; }
 
@@ -1245,4 +1250,29 @@ footer p {
   .easter-hint { display: none; }
 
   .skills-grid { grid-template-columns: 1fr; }
+}
+
+/* ============================================================
+   ACCESSIBILITY — prefers-reduced-motion
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  /* Show all hero elements immediately */
+  .hero-eyebrow, .hero-title, .hero-subtitle, .hero-desc,
+  .hero-tags, .hero-cta, .hero-scroll, .hero-stats {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+
+  /* Show all reveal elements immediately */
+  .reveal { opacity: 1; transform: none; transition: none; }
+
+  /* Disable blobs */
+  .blob { display: none; }
 }
