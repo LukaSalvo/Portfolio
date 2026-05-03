@@ -1,384 +1,384 @@
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        document.querySelector(this.getAttribute('href')).scrollIntoView({
-            behavior: 'smooth'
-        });
-    });
-});
+/* ============================================================
+   THEME — dark default, persisted in localStorage
+   ============================================================ */
+(function () {
+  const saved = localStorage.getItem('theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  if (saved === 'light') {
+    document.documentElement.classList.remove('dark');
+  } else if (!saved && !prefersDark) {
+    document.documentElement.classList.remove('dark');
+  }
+  // Otherwise keep the class="dark" already set in <html>
+})();
 
-const terminalOutputAbout = document.getElementById('terminal-output');
-const commandSets = [
-    [
-        { input: 'cd Documents', output: '' },
-        { input: 'ls', output: 'Alternance' },
-        { input: 'cd Alternance', output: '' },
-        { input: 'ls', output: 'recherche_alternance.txt' },
-        { input: 'cat recherche_alternance.txt', output: 'Etudiant en BUT Informatique,\nRecherche un stage en Administration Système Réseau pour Avril 2026' }
-    ],
-    [
-        { input: 'cd Documents', output: '' },
-        { input: 'ls', output: 'Mes_Passions' },
-        { input: 'cd Mes_Passions', output: '' },
-        { input: 'ls', output: 'presentationPassions.txt' },
-        { input: 'cat presentationPassions.txt', output: 'Cinema, Musique, Sport de combat, Course a pied, Randonnée, Informatique, Nouvelles technologies, Linux' }
-    ],
-    [
-        { input: 'cd Documents', output: '' },
-        { input: 'ls', output: 'EasterEgg' },
-        { input: 'cd EasterEgg', output: '' },
-        { input: 'ls', output: 'surprise.txt' },
-        { input: 'cat surprise.txt', output: 'Tapez cette commande dans le terminal interactif : sudo apt install easteregg' }
-    ]
-];
-
-let commands = [];
-let currentCommandIndex = 0;
-let currentCharIndex = 0;
-let isTyping = true;
-
-function selectCommandSet() {
-    if (Math.random() < 1/5) {
-        return commandSets[2]; 
-    } else {
-        return commandSets[Math.floor(Math.random() * 2)];
-    }
-}
-
-function createLine(content) {
-    const line = document.createElement('div');
-    line.className = 'terminal-line';
-    line.textContent = content;
-    terminalOutputAbout.appendChild(line);
-}
-
-function typeCommand() {
-    if (currentCommandIndex >= commands.length) {
-        setTimeout(restartTerminal, 5000);
-        return;
-    }
-
-    const currentCommand = commands[currentCommandIndex];
-    const prompt = '$ ';
-
-    if (isTyping) {
-        if (currentCharIndex === 0) {
-            createLine(prompt + currentCommand.input);
-        }
-        const lastLine = terminalOutputAbout.lastChild;
-        if (currentCharIndex < currentCommand.input.length) {
-            lastLine.textContent = prompt + currentCommand.input.slice(0, currentCharIndex + 1);
-            currentCharIndex++;
-            setTimeout(typeCommand, 100);
-        } else {
-            if (currentCommand.output) {
-                createLine(currentCommand.output.split('\n').map(line => line.trim()).join('\n'));
-            }
-            createLine('');
-            isTyping = false;
-            currentCharIndex = 0;
-            setTimeout(typeCommand, 500);
-        }
-    } else {
-        isTyping = true;
-        currentCommandIndex++;
-        setTimeout(typeCommand, 500);
-    }
-}
-
-function restartTerminal() {
-    terminalOutputAbout.innerHTML = ''; 
-    currentCommandIndex = 0;
-    currentCharIndex = 0;
-    isTyping = true;
-    commands = [...selectCommandSet()];
-    createLine('$ ');
-    setTimeout(typeCommand, 1000); 
-}
-
-commands = [...selectCommandSet()];
-createLine('$ ');
-setTimeout(typeCommand, 1000);
-
+/* ============================================================
+   DOM READY
+   ============================================================ */
 document.addEventListener('DOMContentLoaded', () => {
-    // Terminal interactif
-    const terminalInput = document.getElementById('terminal-input');
-    const terminalOutput = document.getElementById('terminal-interactive-output');
 
-    if (!terminalInput || !terminalOutput) {
-        console.error("Erreur : Les éléments du terminal interactif n'ont pas été trouvés.");
-        return;
+  /* ----------------------------------------------------------
+     THEME TOGGLE
+     ---------------------------------------------------------- */
+  const themeToggle = document.getElementById('theme-toggle');
+  const themeIcon   = document.getElementById('theme-icon');
+  const html        = document.documentElement;
+
+  function syncThemeIcon() {
+    if (!themeIcon) return;
+    const isDark = html.classList.contains('dark');
+    themeIcon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+  }
+
+  syncThemeIcon();
+
+  themeToggle?.addEventListener('click', () => {
+    html.classList.toggle('dark');
+    const isDark = html.classList.contains('dark');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    syncThemeIcon();
+  });
+
+  /* ----------------------------------------------------------
+     HAMBURGER MENU
+     ---------------------------------------------------------- */
+  const hamburger     = document.getElementById('hamburger');
+  const hamburgerIcon = document.getElementById('hamburger-icon');
+  const navLinks      = document.getElementById('nav-links');
+
+  hamburger?.addEventListener('click', () => {
+    navLinks.classList.toggle('active');
+    if (hamburgerIcon) {
+      hamburgerIcon.className = navLinks.classList.contains('active')
+        ? 'fas fa-times'
+        : 'fas fa-bars';
     }
+  });
 
-    const sections = [
-        { name: 'A propos', id: 'about' },
-        { name: 'Competences', id: 'skills' },
-        { name: 'Parcours', id: 'journey' },
-        { name: 'Experiences', id: 'experiences' },
-        { name: 'Projets', id: 'work' },
-        { name: 'Contact', id: 'contact' },
-        { name: 'Terminal', id: 'terminal' }
-    ];
-
-    function createTerminalLine(content) {
-        const line = document.createElement('div');
-        line.className = 'terminal-line';
-        const pre = document.createElement('pre');
-        pre.textContent = content;
-        pre.style.margin = '0';
-        pre.style.whiteSpace = 'pre';
-        line.appendChild(pre);
-        terminalOutput.appendChild(line);
-        terminalOutput.scrollTop = terminalOutput.scrollHeight;
-    }
-
-    function createTerminalElement(content) {
-        const line = document.createElement('div');
-        line.className = 'terminal-line';
-        line.appendChild(content);
-        terminalOutput.appendChild(line);
-        terminalOutput.scrollTop = terminalOutput.scrollHeight;
-    }
-
-    function showEasterEggAnimation(callback) {
-        let progress = 0;
-        const progressInterval = setInterval(() => {
-            progress += 10;
-            const progressBar = `[${'='.repeat(progress / 10)}${' '.repeat(10 - progress / 10)}] ${progress}%`;
-            terminalOutput.lastChild.querySelector('pre').textContent = `Téléchargement de l'easter egg... ${progressBar}`;
-            if (progress >= 100) {
-                clearInterval(progressInterval);
-                callback();
-            }
-        }, 200);
-    }
-
-    function showEggHatchingAnimation() {
-        const eggFrames = [
-            `
-   ___
-  /   \\
- /     \\
-/_______\\
-  [Egg]
-      `,
-            `
-   ___
-  / * * \\
- /  *  * \\
-/_______\\
-[Hatching]
-      `,
-            `
-   ***
-  *   * 
- *  :) * 
-  *   *  
-   ***
-[Cracked!]
-      `
-        ];
-
-        let frameIndex = 0;
-        const eggInterval = setInterval(() => {
-            if (frameIndex === 0) {
-                terminalOutput.lastChild.querySelector('pre').textContent = '';
-            } else {
-                terminalOutput.removeChild(terminalOutput.lastChild);
-            }
-            createTerminalLine(eggFrames[frameIndex]);
-            frameIndex++;
-            if (frameIndex >= eggFrames.length) {
-                clearInterval(eggInterval);
-                createTerminalLine('Félicitations ! Tu as trouvé l\'easter egg secret ! ');
-                const replayButton = document.createElement('button');
-                replayButton.textContent = 'Rejouer l\'animation';
-                replayButton.style.marginTop = '10px';
-                replayButton.style.padding = '5px 10px';
-                replayButton.style.backgroundColor = '#4CAF50';
-                replayButton.style.color = 'white';
-                replayButton.style.border = 'none';
-                replayButton.style.borderRadius = '5px';
-                replayButton.style.cursor = 'pointer';
-                replayButton.addEventListener('click', () => {
-                    const lastLines = terminalOutput.querySelectorAll('.terminal-line');
-                    for (let i = lastLines.length - 1; i >= 0 && lastLines[i].textContent !== '$ sudo apt install easteregg'; i--) {
-                        terminalOutput.removeChild(lastLines[i]);
-                    }
-                    createTerminalLine('Téléchargement de l\'easter egg...');
-                    showEasterEggAnimation(showEggHatchingAnimation);
-                });
-                createTerminalElement(replayButton);
-            }
-        }, 1000);
-    }
-
-    function processCommand(command) {
-        command = command.trim().toLowerCase();
-        createTerminalLine(`$ ${command}`);
-
-        if (command === 'ls') {
-            createTerminalLine(sections.map(s => s.name).join(' '));
-        } else if (command === 'clear') {
-            terminalOutput.innerHTML = '';
-        } else if (command === 'whoami') {
-            createTerminalLine('Luka Salvo');
-        } else if (command === 'pwd') {
-            createTerminalLine('User/lukaSalvo/Portfolio');
-        } else if (command === 'sudo') {
-            createTerminalLine('Vous n\'avez pas encore les droits d\'administration pour cette commande, \ncontactez moi pour les obtenir !');
-        } else if (command === 'help') {
-            createTerminalLine('Commandes disponibles : ls, cd <section>, clear, whoami, sudo, help, pwd');
-        } else if (command.startsWith('sudo apt install')) {
-            if (command === 'sudo apt install easteregg') {
-                createTerminalLine('Téléchargement de l\'easter egg...');
-                showEasterEggAnimation(showEggHatchingAnimation);
-            } else {
-                createTerminalLine('Erreur : Paquet non reconnu.');
-            }
-        } else if (command.startsWith('cd ')) {
-            const sectionName = command.slice(3).trim();
-            const section = sections.find(s => s.name.toLowerCase() === sectionName.toLowerCase());
-            if (section) {
-                const element = document.getElementById(section.id);
-                if (element) {
-                    element.scrollIntoView({ behavior: 'smooth' });
-                    createTerminalLine(`Navigué vers ${section.name}`);
-                } else {
-                    createTerminalLine(`Erreur : Section ${sectionName} non trouvée`);
-                }
-            } else {
-                createTerminalLine(`Erreur : Répertoire ${sectionName} non trouvé`);
-            }
-        } else {
-            createTerminalLine(`Commande non reconnue : ${command}`);
-        }
-    }
-
-    terminalInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-            const command = terminalInput.value;
-            processCommand(command);
-            terminalInput.value = '';
-        }
-    });
-
-    createTerminalLine('Bienvenue dans le terminal interactif !');
-    createTerminalLine('Commandes disponibles : ls, cd, clear, whoami, sudo, help, pwd');
-
-    // Hamburger menu toggle & Auto-close
-const hamburger = document.querySelector('.hamburger');
-const navLinks = document.querySelector('.nav-links');
-const navItems = document.querySelectorAll('.nav-links a');
-
-if (hamburger && navLinks) {
-    hamburger.addEventListener('click', () => {
-        navLinks.classList.toggle('active');
-        // Optionnel : Changer l'icône de bars à times (X)
-        const icon = hamburger.querySelector('i');
-        icon.classList.toggle('fa-bars');
-        icon.classList.toggle('fa-times');
-    });
-
-    // Ferme le menu quand on clique sur un lien (important pour mobile)
-    navItems.forEach(item => {
-        item.addEventListener('click', () => {
-            navLinks.classList.remove('active');
-        });
-    });
-}
-
-    // Gestion du mode clair/sombre
-    const themeToggle = document.getElementById('theme-toggle');
-    if (themeToggle) {
-        const themeIcon = themeToggle.querySelector('i');
-        const body = document.body;
-
-        // Vérifier l'accès à localStorage avec une gestion d'erreur
-        let savedTheme = 'light'; // Valeur par défaut si localStorage échoue
-        try {
-            savedTheme = localStorage.getItem('theme') || 'light';
-        } catch (e) {
-            console.warn('Erreur d\'accès à localStorage, utilisation du mode clair par défaut :', e);
-            localStorage.clear(); // Tente de vider localStorage en cas de corruption
-        }
-
-        const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-        // Appliquer le thème
-        body.classList.toggle('dark', savedTheme === 'dark' || (!savedTheme && prefersDarkScheme));
-
-        // Mettre à jour l'icône
-        if (themeIcon) {
-            themeIcon.classList.toggle('fa-moon', !body.classList.contains('dark'));
-            themeIcon.classList.toggle('fa-sun', body.classList.contains('dark'));
-        }
-
-        // Gestion du basculement
-        themeToggle.addEventListener('click', () => {
-            body.classList.toggle('dark');
-            const isDark = body.classList.contains('dark');
-            try {
-                localStorage.setItem('theme', isDark ? 'dark' : 'light');
-            } catch (e) {
-                console.warn('Impossible de sauvegarder dans localStorage :', e);
-            }
-            if (themeIcon) {
-                themeIcon.classList.toggle('fa-moon', !isDark);
-                themeIcon.classList.toggle('fa-sun', isDark);
-            }
-            console.log(`Mode basculé : ${isDark ? 'sombre' : 'clair'}`);
-        });
-
-        console.log("Écouteur d'événements pour le basculement du thème attaché avec succès.");
-    } else {
-        console.error("Erreur : Le bouton de basculement du thème n'a pas été trouvé.");
-    }
-});
-
-
-// Interactivité pour les cartes de compétences et d'auto-évaluation
-document.addEventListener('DOMContentLoaded', () => {
-    const skillCards = document.querySelectorAll('.skill-card');
-    const competenceCards = document.querySelectorAll('.competence-card');
-  
-    // Interactivité pour les cartes de compétences
-    skillCards.forEach(card => {
-      card.addEventListener('mouseover', () => {
-        card.style.background = document.body.classList.contains('dark')
-          ? 'linear-gradient(145deg, #3b3b3b, #4b4b4b)'
-          : 'linear-gradient(145deg, #e6e6e6, #f5f5f5)';
-      });
-  
-      card.addEventListener('mouseout', () => {
-        card.style.background = document.body.classList.contains('dark')
-          ? 'linear-gradient(145deg, #2d2d2d, #3b3b3b)'
-          : 'linear-gradient(145deg, #ffffff, #e6e6e6)';
-      });
-  
-      card.addEventListener('click', () => {
-        skillCards.forEach(c => c.classList.remove('flipped'));
-        card.classList.add('flipped');
-      });
-    });
-  
-    // Interactivité pour les cartes d'auto-évaluation
-    competenceCards.forEach(card => {
-      card.addEventListener('mouseover', () => {
-        card.style.background = document.body.classList.contains('dark')
-          ? 'linear-gradient(145deg, #3b3b3b, #4b4b4b)'
-          : 'linear-gradient(145deg, #e6e6e6, #f5f5f5)';
-      });
-  
-      card.addEventListener('mouseout', () => {
-        card.style.background = document.body.classList.contains('dark')
-          ? 'linear-gradient(145deg, #2d2d2d, #3b3b3b)'
-          : 'linear-gradient(145deg, #ffffff, #e6e6e6)';
-      });
-  
-      card.addEventListener('click', () => {
-        competenceCards.forEach(c => c.classList.remove('flipped'));
-        card.classList.add('flipped');
-      });
+  // Close on nav link click (mobile)
+  navLinks?.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      navLinks.classList.remove('active');
+      if (hamburgerIcon) hamburgerIcon.className = 'fas fa-bars';
     });
   });
+
+  /* ----------------------------------------------------------
+     SMOOTH SCROLL for anchor links
+     ---------------------------------------------------------- */
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', e => {
+      const target = document.querySelector(anchor.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+  });
+
+  /* ----------------------------------------------------------
+     SCROLL PROGRESS BAR
+     ---------------------------------------------------------- */
+  const scrollBar = document.getElementById('scroll-progress');
+  window.addEventListener('scroll', () => {
+    if (!scrollBar) return;
+    const scrolled  = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    scrollBar.style.width = (scrolled / docHeight * 100) + '%';
+  }, { passive: true });
+
+  /* ----------------------------------------------------------
+     INTERSECTION OBSERVER — scroll reveal
+     ---------------------------------------------------------- */
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+  /* ----------------------------------------------------------
+     PROGRESS BARS — animate width on scroll
+     ---------------------------------------------------------- */
+  const progressObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const fill  = entry.target;
+        const width = fill.getAttribute('data-width') || '0';
+        // Small delay so reveal animation runs first
+        setTimeout(() => { fill.style.width = width + '%'; }, 200);
+        progressObserver.unobserve(fill);
+      }
+    });
+  }, { threshold: 0.3 });
+
+  document.querySelectorAll('.progress-fill').forEach(el => progressObserver.observe(el));
+
+  /* ----------------------------------------------------------
+     STAT COUNTERS — animate numbers in hero
+     ---------------------------------------------------------- */
+  const statObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const el     = entry.target;
+      const target = parseInt(el.getAttribute('data-target'), 10);
+      const start  = parseInt(el.textContent, 10) || 0;
+      const duration = 1200;
+      const startTime = performance.now();
+
+      function tick(now) {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+        el.textContent = Math.round(start + (target - start) * eased);
+        if (progress < 1) requestAnimationFrame(tick);
+      }
+
+      requestAnimationFrame(tick);
+      statObserver.unobserve(el);
+    });
+  }, { threshold: 0.5 });
+
+  document.querySelectorAll('.stat-number[data-target]').forEach(el => statObserver.observe(el));
+
+  /* ----------------------------------------------------------
+     ABOUT TERMINAL — typing animation
+     ---------------------------------------------------------- */
+  const terminalAbout = document.getElementById('terminal-output');
+
+  const commandSets = [
+    [
+      { cmd: 'cd Documents/Alternance', out: '' },
+      { cmd: 'cat recherche.txt', out: 'Étudiant en BUT Informatique (DACS),\nAdmis IMT Nord Europe — recherche alternance 2026-2029\nSpécialité : Admin Système · Cybersécurité · DevOps' }
+    ],
+    [
+      { cmd: 'cd Mes_Passions', out: '' },
+      { cmd: 'cat passions.txt', out: 'Cybersécurité, CTF TryHackMe, Linux,\nSports de combat, Course à pied,\nNouveaux outils et veille technologique' }
+    ],
+    [
+      { cmd: 'cd EasterEgg', out: '' },
+      { cmd: 'cat indice.txt', out: '> Tape cette commande dans le terminal interactif :\n  sudo apt install easteregg' }
+    ]
+  ];
+
+  let cmds = [], cmdIdx = 0, charIdx = 0, typing = true;
+
+  function pickSet() {
+    return Math.random() < 0.15 ? commandSets[2] : commandSets[Math.floor(Math.random() * 2)];
+  }
+
+  function addLine(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    terminalAbout.appendChild(div);
+    terminalAbout.scrollTop = terminalAbout.scrollHeight;
+  }
+
+  function typeNext() {
+    if (!terminalAbout) return;
+    if (cmdIdx >= cmds.length) { setTimeout(restart, 4500); return; }
+
+    const current = cmds[cmdIdx];
+    if (typing) {
+      if (charIdx === 0) addLine('$ ' + current.cmd);
+      const last = terminalAbout.lastChild;
+      if (charIdx < current.cmd.length) {
+        last.textContent = '$ ' + current.cmd.slice(0, charIdx + 1);
+        charIdx++;
+        setTimeout(typeNext, 70 + Math.random() * 50);
+      } else {
+        if (current.out) addLine(current.out);
+        addLine('');
+        typing = false; charIdx = 0;
+        setTimeout(typeNext, 400);
+      }
+    } else {
+      typing = true; cmdIdx++;
+      setTimeout(typeNext, 400);
+    }
+  }
+
+  function restart() {
+    if (!terminalAbout) return;
+    terminalAbout.innerHTML = '';
+    cmdIdx = 0; charIdx = 0; typing = true;
+    cmds = [...pickSet()];
+    setTimeout(typeNext, 800);
+  }
+
+  if (terminalAbout) {
+    cmds = [...pickSet()];
+    setTimeout(typeNext, 1200);
+  }
+
+  /* ----------------------------------------------------------
+     INTERACTIVE TERMINAL
+     ---------------------------------------------------------- */
+  const termInput  = document.getElementById('terminal-input');
+  const termOutput = document.getElementById('terminal-interactive-output');
+
+  const sections = [
+    { name: 'A propos',    id: 'about'       },
+    { name: 'Competences', id: 'skills'      },
+    { name: 'Parcours',    id: 'journey'     },
+    { name: 'Experiences', id: 'experiences' },
+    { name: 'Projets',     id: 'work'        },
+    { name: 'Contact',     id: 'contact'     },
+    { name: 'Terminal',    id: 'terminal'    }
+  ];
+
+  function writeLine(text) {
+    if (!termOutput) return;
+    const div = document.createElement('div');
+    div.textContent = text;
+    termOutput.appendChild(div);
+    termOutput.scrollTop = termOutput.scrollHeight;
+  }
+
+  function writeEl(el) {
+    if (!termOutput) return;
+    termOutput.appendChild(el);
+    termOutput.scrollTop = termOutput.scrollHeight;
+  }
+
+  // Progress bar animation for easter egg
+  function runProgressBar(cb) {
+    let pct = 0;
+    writeLine('');
+    const div = document.createElement('div');
+    termOutput.appendChild(div);
+
+    const iv = setInterval(() => {
+      pct += 10;
+      const filled = Math.floor(pct / 10);
+      div.textContent = `Téléchargement... [${'█'.repeat(filled)}${'░'.repeat(10 - filled)}] ${pct}%`;
+      termOutput.scrollTop = termOutput.scrollHeight;
+      if (pct >= 100) { clearInterval(iv); setTimeout(cb, 300); }
+    }, 180);
+  }
+
+  const eggFrames = [
+`   ___
+  /   \\
+ /     \\
+(_______)
+  [Egg]`,
+`   ___
+  /* *\\
+ /* * *\\
+(______*)
+[Hatching]`,
+`  *****
+ *     *
+* ( ^v^)*
+ *     *
+  *****
+[Cracked!]`
+  ];
+
+  function runHatchAnimation() {
+    let fi = 0;
+    const div = document.createElement('div');
+    div.style.fontFamily = 'monospace';
+    div.style.whiteSpace = 'pre';
+    termOutput.appendChild(div);
+
+    const iv = setInterval(() => {
+      div.textContent = eggFrames[fi];
+      termOutput.scrollTop = termOutput.scrollHeight;
+      fi++;
+      if (fi >= eggFrames.length) {
+        clearInterval(iv);
+        writeLine('');
+        writeLine('🎉 Félicitations ! Tu as trouvé l\'easter egg secret !');
+
+        const btn = document.createElement('button');
+        btn.textContent = '🔄 Rejouer l\'animation';
+        btn.style.cssText = 'margin-top:10px;padding:6px 14px;background:var(--accent);color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:0.8rem;font-weight:600;';
+        btn.addEventListener('click', () => {
+          writeLine('');
+          writeLine('$ sudo apt install easteregg');
+          runProgressBar(runHatchAnimation);
+        });
+        writeEl(btn);
+      }
+    }, 900);
+  }
+
+  function handleCommand(raw) {
+    const cmd = raw.trim().toLowerCase();
+    writeLine('$ ' + raw.trim());
+
+    if (cmd === 'ls') {
+      writeLine(sections.map(s => s.name).join('   '));
+    } else if (cmd === 'clear') {
+      termOutput.innerHTML = '';
+    } else if (cmd === 'whoami') {
+      writeLine('luka.salvo');
+    } else if (cmd === 'pwd') {
+      writeLine('/home/luka/portfolio');
+    } else if (cmd === 'help') {
+      writeLine('Commandes : ls · cd <section> · whoami · pwd · clear · help · sudo apt install easteregg');
+    } else if (cmd === 'sudo' || cmd === 'sudo ') {
+      writeLine('Pas de droits suffisants — contactez-moi pour en obtenir 😄');
+    } else if (cmd === 'sudo apt install easteregg') {
+      runProgressBar(runHatchAnimation);
+    } else if (cmd.startsWith('sudo apt install')) {
+      writeLine('Erreur : paquet introuvable.');
+    } else if (cmd.startsWith('cd ')) {
+      const name = cmd.slice(3).trim();
+      const found = sections.find(s => s.name.toLowerCase() === name.toLowerCase());
+      if (found) {
+        document.getElementById(found.id)?.scrollIntoView({ behavior: 'smooth' });
+        writeLine(`→ Navigation vers "${found.name}"`);
+      } else {
+        writeLine(`Erreur : section "${name}" non trouvée. Tapez ls pour voir les sections.`);
+      }
+    } else if (cmd === '') {
+      // do nothing
+    } else {
+      writeLine(`Commande non reconnue : "${raw.trim()}". Tapez help pour l'aide.`);
+    }
+    writeLine('');
+  }
+
+  if (termInput && termOutput) {
+    writeLine('Bienvenue dans le terminal interactif !');
+    writeLine('Commandes : ls · cd <section> · whoami · pwd · clear · help');
+    writeLine('');
+
+    // Command history
+    const history = [];
+    let histIdx = -1;
+
+    termInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        const val = termInput.value;
+        if (val.trim()) history.unshift(val);
+        histIdx = -1;
+        handleCommand(val);
+        termInput.value = '';
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (histIdx < history.length - 1) {
+          histIdx++;
+          termInput.value = history[histIdx];
+        }
+      } else if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (histIdx > 0) {
+          histIdx--;
+          termInput.value = history[histIdx];
+        } else {
+          histIdx = -1;
+          termInput.value = '';
+        }
+      }
+    });
+  }
+
+});
