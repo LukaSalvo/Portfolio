@@ -401,4 +401,175 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  /* ----------------------------------------------------------
+     CUSTOM CURSOR
+     ---------------------------------------------------------- */
+  (function initCursor() {
+    if (!window.matchMedia('(pointer: fine)').matches) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const dot  = document.getElementById('cursor-dot');
+    const ring = document.getElementById('cursor-ring');
+    if (!dot || !ring) return;
+
+    let mx = -200, my = -200, rx = -200, ry = -200;
+
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      dot.style.left = mx + 'px';
+      dot.style.top  = my + 'px';
+    }, { passive: true });
+
+    (function animateRing() {
+      rx += (mx - rx) * 0.11;
+      ry += (my - ry) * 0.11;
+      ring.style.left = rx + 'px';
+      ring.style.top  = ry + 'px';
+      requestAnimationFrame(animateRing);
+    })();
+
+    const hoverEls = document.querySelectorAll('a, button, .project-card, .info-card, .tag, .skill-card, .competence-card, .contact-link');
+    hoverEls.forEach(el => {
+      el.addEventListener('mouseenter', () => ring.classList.add('is-hovering'));
+      el.addEventListener('mouseleave', () => ring.classList.remove('is-hovering'));
+    });
+
+    document.addEventListener('mousedown', () => ring.classList.add('is-clicking'));
+    document.addEventListener('mouseup',   () => ring.classList.remove('is-clicking'));
+  })();
+
+  /* ----------------------------------------------------------
+     HERO PARTICLES (canvas)
+     ---------------------------------------------------------- */
+  (function initParticles() {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const canvas = document.getElementById('hero-particles');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+
+    function resize() {
+      canvas.width  = canvas.parentElement.offsetWidth;
+      canvas.height = canvas.parentElement.offsetHeight;
+    }
+    resize();
+    new ResizeObserver(resize).observe(canvas.parentElement);
+
+    const COUNT = window.innerWidth < 768 ? 28 : 55;
+    const pts = Array.from({ length: COUNT }, () => ({
+      x:  Math.random() * canvas.width,
+      y:  Math.random() * canvas.height,
+      vx: (Math.random() - 0.5) * 0.38,
+      vy: (Math.random() - 0.5) * 0.38,
+      r:  Math.random() * 1.2 + 0.4
+    }));
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const isDark = document.documentElement.classList.contains('dark');
+      const rgb = isDark ? '41,151,255' : '0,113,227';
+
+      for (let i = 0; i < pts.length; i++) {
+        for (let j = i + 1; j < pts.length; j++) {
+          const dx = pts[i].x - pts[j].x, dy = pts[i].y - pts[j].y;
+          const d  = Math.hypot(dx, dy);
+          if (d < 115) {
+            ctx.beginPath();
+            ctx.strokeStyle = `rgba(${rgb},${0.07 * (1 - d / 115)})`;
+            ctx.lineWidth   = 1;
+            ctx.moveTo(pts[i].x, pts[i].y);
+            ctx.lineTo(pts[j].x, pts[j].y);
+            ctx.stroke();
+          }
+        }
+      }
+
+      pts.forEach(p => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${rgb},0.32)`;
+        ctx.fill();
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 0) p.x = canvas.width;
+        if (p.x > canvas.width) p.x = 0;
+        if (p.y < 0) p.y = canvas.height;
+        if (p.y > canvas.height) p.y = 0;
+      });
+
+      requestAnimationFrame(draw);
+    }
+    draw();
+  })();
+
+  /* ----------------------------------------------------------
+     3D CARD TILT
+     ---------------------------------------------------------- */
+  (function initTilt() {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (!window.matchMedia('(pointer: fine)').matches) return;
+
+    const MAX = 7;
+    document.querySelectorAll('.project-card, .info-card').forEach(card => {
+      card.addEventListener('mousemove', e => {
+        const r = card.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width  - 0.5;
+        const y = (e.clientY - r.top)  / r.height - 0.5;
+        card.style.transform  = `perspective(700px) rotateX(${-y * MAX}deg) rotateY(${x * MAX}deg) translateY(-5px)`;
+        card.style.transition = 'box-shadow var(--t), border-color var(--t)';
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.transform  = '';
+        card.style.transition = 'all var(--t)';
+      });
+    });
+  })();
+
+  /* ----------------------------------------------------------
+     MAGNETIC BUTTONS
+     ---------------------------------------------------------- */
+  (function initMagnet() {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (!window.matchMedia('(pointer: fine)').matches) return;
+
+    document.querySelectorAll('.btn-primary, .btn-secondary, .contact-link').forEach(btn => {
+      btn.addEventListener('mousemove', e => {
+        const r = btn.getBoundingClientRect();
+        const x = (e.clientX - r.left - r.width  / 2) * 0.28;
+        const y = (e.clientY - r.top  - r.height / 2) * 0.28;
+        btn.style.transform  = `translate(${x}px, ${y}px) translateY(-2px)`;
+        btn.style.transition = 'box-shadow 0.2s, filter 0.2s';
+      });
+      btn.addEventListener('mouseleave', () => {
+        btn.style.transform  = '';
+        btn.style.transition = 'all var(--t)';
+      });
+    });
+  })();
+
+  /* ----------------------------------------------------------
+     HERO TITLE TEXT SCRAMBLE
+     ---------------------------------------------------------- */
+  (function initScramble() {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const el = document.querySelector('.hero-title');
+    if (!el) return;
+    const FINAL = el.textContent;
+    const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ#@$%&';
+    let frame = 0;
+    const TOTAL = 20;
+
+    setTimeout(() => {
+      const iv = setInterval(() => {
+        const progress = frame / TOTAL;
+        el.textContent = FINAL.split('').map((ch, i) => {
+          if (ch === ' ') return ' ';
+          if (i / FINAL.length < progress) return ch;
+          return CHARS[Math.floor(Math.random() * CHARS.length)];
+        }).join('');
+        if (++frame > TOTAL) { clearInterval(iv); el.textContent = FINAL; }
+      }, 42);
+    }, 450);
+  })();
+
 });

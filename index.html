@@ -34,6 +34,10 @@
 
 <body>
 
+  <!-- Custom cursor -->
+  <div class="cursor-dot" id="cursor-dot"></div>
+  <div class="cursor-ring" id="cursor-ring"></div>
+
   <!-- Scroll progress indicator -->
   <div class="scroll-progress" id="scroll-progress"></div>
 
@@ -66,6 +70,7 @@
   <section class="hero" aria-label="Introduction">
     <!-- Ambient light blobs -->
     <div class="hero-blobs" aria-hidden="true">
+      <canvas id="hero-particles" class="hero-particles"></canvas>
       <div class="blob blob-1"></div>
       <div class="blob blob-2"></div>
       <div class="blob blob-3"></div>
