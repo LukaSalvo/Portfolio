@@ -267,7 +267,7 @@ button { font-family: inherit; }
 }
 
 html:not(.dark) .hero-title {
-  background: linear-gradient(140deg, #0a0a14 0%, #1a2050 60%, #3b5bdb 100%);
+  background: linear-gradient(140deg, #0d1b4b 0%, #1a3a9f 50%, #3b9eff 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -351,6 +351,7 @@ html:not(.dark) .hero-title {
   box-shadow: 0 4px 20px rgba(59,158,255,0.28);
 }
 .btn-primary:hover {
+  transform: translateY(-2px) scale(1.02);
   filter: brightness(1.12);
   box-shadow: 0 8px 32px rgba(59,158,255,0.45);
 }
@@ -372,6 +373,7 @@ html:not(.dark) .hero-title {
   backdrop-filter: blur(8px);
 }
 .btn-secondary:hover {
+  transform: translateY(-2px);
   background: rgba(59,158,255,0.06);
   border-color: var(--accent);
   box-shadow: 0 0 0 1px rgba(59,158,255,0.2);
@@ -393,7 +395,7 @@ html:not(.dark) .hero-title {
 
 .scroll-line {
   width: 1.5px;
-  height: 50px;
+  height: 36px;
   background: linear-gradient(to bottom, var(--accent), transparent);
   animation: scrollPulse 2s ease-in-out infinite;
 }
@@ -593,8 +595,12 @@ section { padding: 100px 24px; }
 
 .info-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 20px 48px rgba(0,0,0,0.35), 0 0 0 1px rgba(59,158,255,0.18);
+  box-shadow: 0 20px 48px rgba(0,0,0,0.1), 0 0 0 1px rgba(59,158,255,0.18);
   border-color: rgba(59,158,255,0.35);
+}
+
+.dark .info-card:hover {
+  box-shadow: 0 20px 48px rgba(0,0,0,0.5), 0 0 0 1px rgba(59,158,255,0.18);
 }
 
 .dark .info-card {
@@ -673,7 +679,7 @@ section { padding: 100px 24px; }
 .thm-icon {
   font-size: 1.8rem;
   width: 48px; height: 48px;
-  background: #1a1a2e;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
   border-radius: 10px;
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
@@ -728,8 +734,12 @@ section { padding: 100px 24px; }
 
 .skill-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 12px 36px rgba(0,0,0,0.25), 0 0 0 1px rgba(59,158,255,0.18);
+  box-shadow: 0 12px 36px rgba(0,0,0,0.08), 0 0 0 1px rgba(59,158,255,0.18);
   border-color: rgba(59,158,255,0.3);
+}
+
+.dark .skill-card:hover {
+  box-shadow: 0 12px 36px rgba(0,0,0,0.4), 0 0 0 1px rgba(59,158,255,0.18);
 }
 
 .dark .skill-card {
@@ -811,8 +821,12 @@ section { padding: 100px 24px; }
 
 .competence-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 20px 48px rgba(0,0,0,0.3), 0 0 0 1px rgba(59,158,255,0.18);
+  box-shadow: 0 20px 48px rgba(0,0,0,0.1), 0 0 0 1px rgba(59,158,255,0.18);
   border-color: rgba(59,158,255,0.32);
+}
+
+.dark .competence-card:hover {
+  box-shadow: 0 20px 48px rgba(0,0,0,0.45), 0 0 0 1px rgba(59,158,255,0.18);
 }
 
 .dark .competence-card {
@@ -970,8 +984,12 @@ section { padding: 100px 24px; }
 
 .project-card:hover {
   transform: translateY(-6px);
-  box-shadow: 0 24px 64px rgba(0,0,0,0.4), 0 0 0 1px rgba(59,158,255,0.22);
+  box-shadow: 0 24px 64px rgba(0,0,0,0.12), 0 0 0 1px rgba(59,158,255,0.22);
   border-color: rgba(59,158,255,0.35);
+}
+
+.dark .project-card:hover {
+  box-shadow: 0 24px 64px rgba(0,0,0,0.55), 0 0 0 1px rgba(59,158,255,0.22);
 }
 
 .dark .project-card {
@@ -1009,7 +1027,7 @@ section { padding: 100px 24px; }
   align-items: center;
   justify-content: center;
   gap: 10px;
-  background: linear-gradient(135deg, var(--bg-alt), var(--bg-card));
+  background: linear-gradient(135deg, var(--bg-alt), rgba(59,158,255,0.06));
   border-bottom: 1px solid var(--border);
   flex-shrink: 0;
 }
@@ -1115,7 +1133,7 @@ section { padding: 100px 24px; }
   font-size: clamp(2.2rem, 5vw, 3.5rem);
   font-weight: 900;
   letter-spacing: -0.05em;
-  background: linear-gradient(140deg, var(--text) 30%, var(--accent) 100%);
+  background: linear-gradient(140deg, var(--text) 0%, var(--accent-2) 60%, var(--accent) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -1487,6 +1505,14 @@ footer p {
   border-radius: 100px;
   margin-top: 16px;
   box-shadow: 0 0 12px rgba(41,151,255,0.45);
+}
+
+/* Center underline when section header is centered */
+.section-header[style*="center"] .section-title::after,
+.contact-center .section-title::after,
+.contact-center .contact-big::after {
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* ============================================================
