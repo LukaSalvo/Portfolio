@@ -358,14 +358,8 @@ html:not(.dark) .hero-title {
   box-shadow: 0 0 24px rgba(0,255,65,0.25);
 }
 .btn-primary:hover {
-<<<<<<< Updated upstream
-  transform: translateY(-2px) scale(1.02);
-  filter: brightness(1.12);
-  box-shadow: 0 8px 32px rgba(59,158,255,0.45);
-=======
   box-shadow: 0 0 48px rgba(0,255,65,0.5), 0 0 80px rgba(0,255,65,0.15);
   filter: brightness(1.06);
->>>>>>> Stashed changes
 }
 
 .btn-secondary {
@@ -384,12 +378,7 @@ html:not(.dark) .hero-title {
   cursor: pointer;
 }
 .btn-secondary:hover {
-<<<<<<< Updated upstream
-  transform: translateY(-2px);
-  background: rgba(59,158,255,0.06);
-=======
   background: rgba(0,255,65,0.04);
->>>>>>> Stashed changes
   border-color: var(--accent);
   color: var(--accent);
 }
@@ -610,13 +599,8 @@ section { padding: 100px 24px; }
 
 .info-card:hover {
   transform: translateY(-4px);
-<<<<<<< Updated upstream
-  box-shadow: 0 20px 48px rgba(0,0,0,0.1), 0 0 0 1px rgba(59,158,255,0.18);
-  border-color: rgba(59,158,255,0.35);
-=======
   box-shadow: 0 20px 48px rgba(0,0,0,0.35), 0 0 0 1px rgba(0,255,65,0.18);
   border-color: rgba(0,255,65,0.35);
->>>>>>> Stashed changes
 }
 
 .dark .info-card:hover {
@@ -754,13 +738,8 @@ section { padding: 100px 24px; }
 
 .skill-card:hover {
   transform: translateY(-3px);
-<<<<<<< Updated upstream
-  box-shadow: 0 12px 36px rgba(0,0,0,0.08), 0 0 0 1px rgba(59,158,255,0.18);
-  border-color: rgba(59,158,255,0.3);
-=======
   box-shadow: 0 12px 36px rgba(0,0,0,0.25), 0 0 0 1px rgba(0,255,65,0.18);
   border-color: rgba(0,255,65,0.3);
->>>>>>> Stashed changes
 }
 
 .dark .skill-card:hover {
@@ -846,13 +825,8 @@ section { padding: 100px 24px; }
 
 .competence-card:hover {
   transform: translateY(-4px);
-<<<<<<< Updated upstream
-  box-shadow: 0 20px 48px rgba(0,0,0,0.1), 0 0 0 1px rgba(59,158,255,0.18);
-  border-color: rgba(59,158,255,0.32);
-=======
   box-shadow: 0 20px 48px rgba(0,0,0,0.3), 0 0 0 1px rgba(0,255,65,0.18);
   border-color: rgba(0,255,65,0.32);
->>>>>>> Stashed changes
 }
 
 .dark .competence-card:hover {
@@ -1014,13 +988,8 @@ section { padding: 100px 24px; }
 
 .project-card:hover {
   transform: translateY(-6px);
-<<<<<<< Updated upstream
-  box-shadow: 0 24px 64px rgba(0,0,0,0.12), 0 0 0 1px rgba(59,158,255,0.22);
-  border-color: rgba(59,158,255,0.35);
-=======
   box-shadow: 0 24px 64px rgba(0,0,0,0.4), 0 0 0 1px rgba(0,255,65,0.22);
   border-color: rgba(0,255,65,0.35);
->>>>>>> Stashed changes
 }
 
 .dark .project-card:hover {
@@ -1777,4 +1746,114 @@ html.dark .circuit-draw {
 
 html.dark .circuit-orb {
   fill: #00ff41;
+}
+
+/* ============================================================
+   CERTIFICATION CARDS (IA / Auto-formation)
+   ============================================================ */
+.skills-subgroup-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  margin-bottom: 14px;
+  display: block;
+}
+
+.cert-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 12px;
+}
+
+.cert-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 16px 18px;
+  transition: all var(--t);
+  position: relative;
+  overflow: hidden;
+}
+
+.cert-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(0,255,65,0.04) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity var(--t);
+}
+
+.cert-card:hover { transform: translateY(-3px); border-color: rgba(0,255,65,0.28); }
+.cert-card:hover::before { opacity: 1; }
+
+.cert-card.cert-wip {
+  border-style: dashed;
+  opacity: 0.78;
+}
+.cert-card.cert-wip:hover { opacity: 1; }
+
+.cert-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-family: 'JetBrains Mono', monospace;
+  margin-bottom: 10px;
+  padding: 3px 10px;
+  border-radius: 100px;
+}
+
+.cert-done {
+  color: var(--accent);
+  background: rgba(0,255,65,0.08);
+  border: 1px solid rgba(0,255,65,0.25);
+}
+
+html:not(.dark) .cert-done {
+  color: #00a832;
+  background: rgba(0,168,50,0.08);
+  border-color: rgba(0,168,50,0.25);
+}
+
+.cert-progress {
+  color: var(--text-2);
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+}
+
+html:not(.dark) .cert-progress {
+  background: rgba(0,0,0,0.04);
+}
+
+.cert-progress .fa-spinner {
+  animation: spin 1.4s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.cert-name {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.3;
+  margin-bottom: 6px;
+  letter-spacing: -0.01em;
+}
+
+.cert-org {
+  font-size: 0.72rem;
+  color: var(--text-3);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+@media (max-width: 600px) {
+  .cert-grid { grid-template-columns: 1fr; }
 }
