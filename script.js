@@ -19,6 +19,96 @@ document.addEventListener('DOMContentLoaded', () => {
   gsap.registerPlugin(ScrollTrigger);
 
   /* ----------------------------------------------------------
+     INTRO SCREEN — fullscreen landing, personnages + slide-up
+     ---------------------------------------------------------- */
+  (function initIntro() {
+    const intro = document.getElementById('intro-screen');
+    if (!intro) return;
+
+    // Block native scroll while intro is active
+    document.documentElement.style.overflow = 'hidden';
+
+    // Initial GSAP state (CSS already sets opacity:0 on chars)
+    gsap.set('.intro-c1, .intro-c2, .intro-c3', { y: 90 });
+    gsap.set('.intro-name',    { y: 28 });
+    gsap.set('.intro-eyebrow', { y: 12 });
+
+    const tl = gsap.timeline({ delay: 0.15 });
+
+    // 1 — Characters rise from below, staggered
+    tl.to('.intro-c2', { opacity: 1, y: 0, duration: 0.85, ease: 'expo.out' }, 0.1)
+      .to('.intro-c1', { opacity: 1, y: 0, duration: 0.95, ease: 'expo.out' }, 0.28)
+      .to('.intro-c3', { opacity: 1, y: 0, duration: 0.85, ease: 'expo.out' }, 0.44)
+
+    // 2 — Text reveals
+      .to('.intro-eyebrow', { opacity: 1, y: 0, duration: 0.55, ease: 'power3.out' }, 0.55)
+      .to('.intro-name',    { opacity: 1, y: 0, duration: 0.80, ease: 'expo.out'   }, 0.66)
+      .to('.intro-role',    { opacity: 1,        duration: 0.50, ease: 'power2.out' }, 0.98)
+
+    // 3 — Scroll hint
+      .to('.intro-hint',    { opacity: 1,        duration: 0.45, ease: 'power2.out' }, 1.45);
+
+    // 4 — Floating loop after reveal
+    tl.call(() => {
+      gsap.to('.intro-c1', { y: -14, duration: 2.5, ease: 'sine.inOut', repeat: -1, yoyo: true });
+      gsap.to('.intro-c2', { y: -9,  duration: 3.1, ease: 'sine.inOut', repeat: -1, yoyo: true, delay: 0.5 });
+      gsap.to('.intro-c3', { y: -11, duration: 2.8, ease: 'sine.inOut', repeat: -1, yoyo: true, delay: 1.0 });
+    }, null, 1.6);
+
+    // ── Dismiss function ──
+    let dismissed = false;
+    function dismiss() {
+      if (dismissed) return;
+      dismissed = true;
+
+      // Kill floating loops
+      gsap.killTweensOf('.intro-c1, .intro-c2, .intro-c3');
+
+      // Characters scatter in different directions
+      gsap.to('.intro-c2', { x: -160, y: 380, rotate: -22, opacity: 0,
+        duration: 0.55, ease: 'power3.in' });
+      gsap.to('.intro-c1', { y: 280, scale: 0.88, opacity: 0,
+        duration: 0.48, ease: 'power3.in', delay: 0.07 });
+      gsap.to('.intro-c3', { x: 160, y: 340, rotate: 20, opacity: 0,
+        duration: 0.55, ease: 'power3.in', delay: 0.12 });
+
+      // Text fades up
+      gsap.to('.intro-text, .intro-hint', {
+        opacity: 0, y: -18, duration: 0.32, ease: 'power2.in'
+      });
+
+      // Whole screen slides up like a curtain
+      gsap.to('#intro-screen', {
+        y: '-100%',
+        duration: 0.88,
+        ease: 'power3.inOut',
+        delay: 0.30,
+        onStart: () => {
+          // Re-enable scroll just as the curtain starts pulling up
+          document.documentElement.style.overflow = '';
+        },
+        onComplete: () => {
+          intro.remove();
+        }
+      });
+    }
+
+    // Triggers
+    intro.addEventListener('click',      dismiss, { once: true });
+    intro.addEventListener('touchstart', dismiss, { once: true, passive: true });
+    window.addEventListener('wheel',     () => { if (!dismissed) dismiss(); }, { once: true, passive: true });
+    document.addEventListener('keydown', e => {
+      if (['ArrowDown', ' ', 'Enter', 'PageDown'].includes(e.key)) {
+        e.preventDefault();
+        dismiss();
+      }
+    }, { once: true });
+
+    // Safety net: auto-dismiss after 10s
+    setTimeout(dismiss, 10000);
+  })();
+
+  /* ----------------------------------------------------------
      ScrollTrigger — sync with native scroll
      ---------------------------------------------------------- */
 
