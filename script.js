@@ -245,14 +245,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
       ScrollTrigger.create({
         trigger: el,
-        start: 'top 87%',
+        start: 'top 90%',
         once: true,
         onEnter: () => {
           gsap.to(wordSpans, {
             y: 0, rotate: 0,
-            duration: 0.85,
+            duration: 0.55,
             ease: 'expo.out',
-            stagger: 0.08,
+            stagger: 0.05,
             onComplete: () => el.classList.add('words-revealed')
           });
         }
@@ -283,45 +283,37 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.section-label').forEach(el => {
     ScrollTrigger.create({
       trigger: el,
-      start: 'top 90%',
+      start: 'top 92%',
       once: true,
       onEnter: () => setTimeout(() => scrambleEl(el), 80)
     });
   });
 
   /* ----------------------------------------------------------
-     PROJECT CARDS — GSAP wave stagger
-     Must run before generic .reveal handler.
+     BENTO GRID — scroll reveal stagger
      ---------------------------------------------------------- */
-  (function initProjectWave() {
-    const grid = document.querySelector('.projects-grid');
+  (function initBento() {
+    const grid  = document.querySelector('.bento-grid');
     if (!grid) return;
-    const cards = [...grid.querySelectorAll('.project-card')];
+    const cards = grid.querySelectorAll('.bento-card');
 
-    cards.forEach(card => {
-      card.classList.remove('reveal', 'reveal-d1', 'reveal-d2', 'reveal-d3', 'reveal-d4');
-      gsap.set(card, { opacity: 0, y: 36, scale: 0.94 });
-    });
+    gsap.set(cards, { opacity: 0, y: 28 });
 
     ScrollTrigger.create({
       trigger: grid,
-      start: 'top 85%',
+      start: 'top 88%',
       once: true,
       onEnter: () => {
-        const cols = Math.round(grid.offsetWidth / (cards[0]?.offsetWidth || 260)) || 1;
-        cards.forEach((card, i) => {
-          const col = i % cols;
-          const row = Math.floor(i / cols);
-          gsap.to(card, {
-            opacity: 1, y: 0, scale: 1,
-            duration: 0.72,
-            ease: 'expo.out',
-            delay: col * 0.07 + row * 0.04
-          });
+        gsap.to(cards, {
+          opacity: 1, y: 0,
+          duration: 0.52,
+          stagger: { amount: 0.38, from: 'start' },
+          ease: 'power2.out',
         });
-      }
+      },
     });
   })();
+
 
   /* ----------------------------------------------------------
      GENERIC REVEAL — all remaining .reveal elements
@@ -329,15 +321,15 @@ document.addEventListener('DOMContentLoaded', () => {
      ---------------------------------------------------------- */
   document.querySelectorAll('.reveal').forEach(el => {
     gsap.set(el, { opacity: 0, y: 28 });
-    const delay = el.classList.contains('reveal-d1') ? 0.1
-                : el.classList.contains('reveal-d2') ? 0.2
-                : el.classList.contains('reveal-d3') ? 0.3
-                : el.classList.contains('reveal-d4') ? 0.4 : 0;
+    const delay = el.classList.contains('reveal-d1') ? 0.06
+                : el.classList.contains('reveal-d2') ? 0.12
+                : el.classList.contains('reveal-d3') ? 0.18
+                : el.classList.contains('reveal-d4') ? 0.24 : 0;
     ScrollTrigger.create({
       trigger: el,
-      start: 'top 88%',
+      start: 'top 90%',
       once: true,
-      onEnter: () => gsap.to(el, { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out', delay })
+      onEnter: () => gsap.to(el, { opacity: 1, y: 0, duration: 0.42, ease: 'power3.out', delay })
     });
   });
 
@@ -348,13 +340,13 @@ document.addEventListener('DOMContentLoaded', () => {
     gsap.set(el, { width: '0%' });
     ScrollTrigger.create({
       trigger: el,
-      start: 'top 85%',
+      start: 'top 90%',
       once: true,
       onEnter: () => gsap.to(el, {
         width: (el.getAttribute('data-width') || '0') + '%',
-        duration: 1.2,
+        duration: 0.8,
         ease: 'power2.out',
-        delay: 0.2
+        delay: 0.1
       })
     });
   });
@@ -365,7 +357,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.stat-number[data-target]').forEach(el => {
     ScrollTrigger.create({
       trigger: el,
-      start: 'top 85%',
+      start: 'top 90%',
       once: true,
       onEnter: () => {
         const target = parseInt(el.getAttribute('data-target'), 10);
@@ -405,9 +397,9 @@ document.addEventListener('DOMContentLoaded', () => {
     gsap.set(div, { opacity: 0, x: 40 });
     ScrollTrigger.create({
       trigger: section,
-      start: 'top 80%',
+      start: 'top 85%',
       once: true,
-      onEnter: () => gsap.to(div, { opacity: 1, x: 0, duration: 1.1, ease: 'power3.out' })
+      onEnter: () => gsap.to(div, { opacity: 1, x: 0, duration: 0.8, ease: 'power3.out' })
     });
   });
 
@@ -785,7 +777,7 @@ document.addEventListener('DOMContentLoaded', () => {
       requestAnimationFrame(animateRing);
     })();
 
-    const hoverEls = document.querySelectorAll('a, button, .project-card, .info-card, .tag, .skill-card, .competence-card, .contact-link');
+    const hoverEls = document.querySelectorAll('a, button, .info-card, .tag, .skill-card, .competence-card, .contact-link');
     hoverEls.forEach(el => {
       el.addEventListener('mouseenter', () => ring.classList.add('is-hovering'));
       el.addEventListener('mouseleave', () => ring.classList.remove('is-hovering'));
@@ -1128,7 +1120,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (reduced) return;
     if (!window.matchMedia('(pointer: fine)').matches) return;
     const MAX = 7;
-    document.querySelectorAll('.project-card, .info-card').forEach(card => {
+    document.querySelectorAll('.info-card').forEach(card => {
       card.addEventListener('mousemove', e => {
         const r = card.getBoundingClientRect();
         const x = (e.clientX - r.left) / r.width  - 0.5;
