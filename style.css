@@ -1857,3 +1857,354 @@ html:not(.dark) .cert-progress {
 @media (max-width: 600px) {
   .cert-grid { grid-template-columns: 1fr; }
 }
+
+/* ============================================================
+   PAGE SPOTLIGHT — radial glow that follows the cursor
+   ============================================================ */
+.page-spotlight {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  background: radial-gradient(
+    520px circle at var(--sx, -300%) var(--sy, -300%),
+    rgba(0, 255, 65, 0.038),
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.7s ease;
+}
+html.dark .page-spotlight { opacity: 1; }
+
+/* ============================================================
+   HERO AURORA BEAMS — animated vertical light columns
+   ============================================================ */
+.hero-aurora {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.aurora-beam {
+  position: absolute;
+  top: -5%;
+  width: 1px;
+  border-radius: 1px;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(0, 255, 65, 0.22) 25%,
+    rgba(0, 255, 65, 0.10) 65%,
+    transparent 100%
+  );
+  will-change: transform, opacity;
+}
+html:not(.dark) .aurora-beam {
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(0, 168, 50, 0.09) 25%,
+    rgba(0, 168, 50, 0.03) 65%,
+    transparent 100%
+  );
+}
+
+.aurora-beam:nth-child(1) { left: 10%; height: 52vh; animation: auroraDrift 11s ease-in-out infinite; }
+.aurora-beam:nth-child(2) { left: 26%; height: 68vh; animation: auroraDrift 15s ease-in-out infinite reverse; animation-delay: -4s; }
+.aurora-beam:nth-child(3) { left: 44%; height: 42vh; animation: auroraDrift 13s ease-in-out infinite; animation-delay: -7s; }
+.aurora-beam:nth-child(4) { left: 62%; height: 60vh; animation: auroraDrift 17s ease-in-out infinite reverse; animation-delay: -2s; }
+.aurora-beam:nth-child(5) { left: 80%; height: 46vh; animation: auroraDrift 12s ease-in-out infinite; animation-delay: -9s; }
+.aurora-beam:nth-child(6) { left: 91%; height: 38vh; animation: auroraDrift 9s ease-in-out infinite reverse; animation-delay: -5s; }
+
+@keyframes auroraDrift {
+  0%,100% { transform: translateX(0px) scaleY(1);    opacity: 0.65; }
+  25%      { transform: translateX(18px) scaleY(1.06); opacity: 1;    }
+  50%      { transform: translateX(-11px) scaleY(0.94); opacity: 0.75; }
+  75%      { transform: translateX(8px)  scaleY(1.03); opacity: 0.90; }
+}
+
+/* ============================================================
+   SKILLS TICKER — infinite horizontal marquee
+   ============================================================ */
+.skills-ticker-container {
+  overflow: hidden;
+  margin: 0 0 52px;
+  padding: 13px 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+}
+
+.skills-ticker-track {
+  display: flex;
+  gap: 18px;
+  animation: tickerRun 36s linear infinite;
+  width: max-content;
+  will-change: transform;
+}
+
+.skills-ticker-container:hover .skills-ticker-track {
+  animation-play-state: paused;
+}
+
+.ticker-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 15px;
+  border-radius: 100px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  font-size: 0.77rem;
+  font-weight: 600;
+  color: var(--text-2);
+  white-space: nowrap;
+  transition: border-color 0.25s ease, color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+  cursor: default;
+  user-select: none;
+}
+
+.ticker-item:hover {
+  border-color: rgba(0, 255, 65, 0.45);
+  color: var(--accent);
+  box-shadow: 0 0 12px rgba(0, 255, 65, 0.12);
+  transform: translateY(-2px);
+}
+
+.ticker-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 5px rgba(0, 255, 65, 0.55);
+  flex-shrink: 0;
+}
+
+@keyframes tickerRun {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* ============================================================
+   SIDE NAVIGATION DOTS
+   ============================================================ */
+.sidenav-dots {
+  position: fixed;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  z-index: 400;
+}
+
+@media (max-width: 1260px) { .sidenav-dots { display: none; } }
+
+.sidenav-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: transparent;
+  border: 1.5px solid var(--text-3);
+  cursor: pointer;
+  transition: all 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  padding: 0;
+  outline: none;
+  -webkit-appearance: none;
+}
+
+.sidenav-dot:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.sidenav-dot::after {
+  content: attr(data-label);
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%) translateX(5px);
+  font-size: 0.67rem;
+  font-weight: 600;
+  color: var(--text-2);
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.04em;
+  pointer-events: none;
+  background: var(--bg-card);
+  padding: 3px 9px;
+  border-radius: 5px;
+  border: 1px solid var(--border);
+  backdrop-filter: blur(8px);
+}
+
+.sidenav-dots:hover .sidenav-dot::after {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
+}
+
+.sidenav-dot.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(0, 255, 65, 0.18), 0 0 10px rgba(0, 255, 65, 0.45);
+  width: 9px; height: 9px;
+}
+
+.sidenav-dot:hover:not(.active) {
+  border-color: rgba(0, 255, 65, 0.65);
+  transform: scale(1.45);
+}
+
+/* ============================================================
+   GLITCH FLASH — JS-triggered on skill titles
+   ============================================================ */
+@keyframes glitchFlash {
+  0%   { filter: none; transform: none; }
+  12%  { filter: brightness(1.6) hue-rotate(160deg); transform: translateX(3px); }
+  28%  { filter: brightness(1.0) hue-rotate(0deg);   transform: translateX(-2px); }
+  46%  { filter: brightness(1.4) hue-rotate(80deg);  transform: translateX(2px); }
+  65%  { filter: brightness(1.1) hue-rotate(0deg);   transform: translateX(-1px); }
+  82%  { filter: brightness(1.2) hue-rotate(40deg);  transform: translateX(0.5px); }
+  100% { filter: none; transform: none; }
+}
+
+.glitch-flash {
+  animation: glitchFlash 0.38s ease forwards;
+}
+
+/* ============================================================
+   HERO TITLE BLINKING CURSOR (after scramble)
+   ============================================================ */
+.hero-title-cursor {
+  display: inline-block;
+  width: 4px;
+  height: 0.82em;
+  background: var(--accent);
+  margin-left: 8px;
+  vertical-align: middle;
+  border-radius: 2px;
+  animation: titleCursorBlink 0.95s step-end infinite;
+  box-shadow: 0 0 9px rgba(0, 255, 65, 0.65);
+}
+
+@keyframes titleCursorBlink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+/* ============================================================
+   CONTACT SECTION — animated ambient mesh
+   ============================================================ */
+#contact { position: relative; overflow: hidden; }
+
+#contact::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 55% 55% at 18% 55%, rgba(0,255,65,0.045) 0%, transparent 65%),
+    radial-gradient(ellipse 38% 55% at 82% 22%, rgba(0,200,60,0.030) 0%, transparent 65%);
+  pointer-events: none;
+  z-index: 0;
+  animation: contactMesh 12s ease-in-out infinite alternate;
+}
+html:not(.dark) #contact::before {
+  background:
+    radial-gradient(ellipse 55% 55% at 18% 55%, rgba(0,168,50,0.025) 0%, transparent 65%),
+    radial-gradient(ellipse 38% 55% at 82% 22%, rgba(0,130,40,0.015) 0%, transparent 65%);
+}
+
+@keyframes contactMesh {
+  from { transform: scale(1)    translate(0,    0);   }
+  to   { transform: scale(1.10) translate(22px, -12px); }
+}
+
+#contact .section-inner { position: relative; z-index: 1; }
+
+/* ============================================================
+   SKILL CARD — accent left border on hover
+   ============================================================ */
+.skill-card {
+  border-left: 2px solid transparent;
+  transition: all var(--t), border-left-color 0.35s ease;
+}
+.skill-card:hover { border-left-color: var(--accent); }
+
+/* ============================================================
+   TERMINAL — enhanced neon glow (dark mode)
+   ============================================================ */
+html.dark .terminal {
+  box-shadow:
+    0 0 0 1px rgba(0, 255, 65, 0.11),
+    0 0 42px rgba(0, 255, 65, 0.06),
+    var(--shadow-lg);
+  transition: box-shadow 0.4s ease;
+}
+html.dark .terminal:hover {
+  box-shadow:
+    0 0 0 1px rgba(0, 255, 65, 0.28),
+    0 0 65px rgba(0, 255, 65, 0.13),
+    var(--shadow-lg);
+}
+
+/* ============================================================
+   KINETIC — section-desc parallax placeholder
+   ============================================================ */
+.section-desc { will-change: transform; }
+
+/* ============================================================
+   TIMELINE MAGNETIC DOT — enhanced active state
+   ============================================================ */
+.timeline-dot.mag-pull {
+  box-shadow: 0 0 0 5px rgba(0,255,65,0.20), 0 0 14px rgba(0,255,65,0.38) !important;
+}
+
+/* ============================================================
+   HERO — horizontal scan line that sweeps once on load
+   ============================================================ */
+.hero-scanline {
+  position: absolute;
+  left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(0,255,65,0.55), transparent);
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0;
+}
+
+/* ============================================================
+   NAV LOGO — neon glow on hover
+   ============================================================ */
+.nav-logo span {
+  transition: text-shadow var(--t);
+}
+.nav-logo:hover span {
+  text-shadow: 0 0 14px rgba(0, 255, 65, 0.65);
+}
+
+/* ============================================================
+   SECTION HEADER — floating big number more vibrant
+   ============================================================ */
+html.dark .section-bg-num {
+  -webkit-text-stroke: 1px rgba(0,255,65,0.13);
+}
+
+/* ============================================================
+   ACCESSIBILITY — prefers-reduced-motion (new additions)
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .aurora-beam           { animation: none !important; opacity: 0.4 !important; }
+  .skills-ticker-track   { animation: none !important; }
+  .hero-aurora           { display: none; }
+  .sidenav-dots          { display: none; }
+  .glitch-flash          { animation: none !important; }
+  .hero-title-cursor     { animation: none !important; opacity: 1; }
+  .page-spotlight        { display: none; }
+  #contact::before       { animation: none !important; }
+}

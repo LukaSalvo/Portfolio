@@ -705,6 +705,252 @@ document.addEventListener('DOMContentLoaded', () => {
   })();
 
   /* ----------------------------------------------------------
+     PAGE SPOTLIGHT — soft radial glow follows cursor
+     ---------------------------------------------------------- */
+  (function initSpotlight() {
+    if (reduced) return;
+    const el = document.createElement('div');
+    el.className = 'page-spotlight';
+    document.body.appendChild(el);
+    document.addEventListener('mousemove', e => {
+      el.style.setProperty('--sx', e.clientX + 'px');
+      el.style.setProperty('--sy', e.clientY + 'px');
+    }, { passive: true });
+  })();
+
+  /* ----------------------------------------------------------
+     HERO AURORA BEAMS — vertical neon light columns
+     ---------------------------------------------------------- */
+  (function initAurora() {
+    if (reduced) return;
+    const hero = document.querySelector('.hero');
+    const blobs = hero && hero.querySelector('.hero-blobs');
+    if (!hero || !blobs) return;
+    const aurora = document.createElement('div');
+    aurora.className = 'hero-aurora';
+    for (let i = 0; i < 6; i++) {
+      aurora.appendChild(Object.assign(document.createElement('div'), { className: 'aurora-beam' }));
+    }
+    hero.insertBefore(aurora, blobs);
+
+    // One-shot hero scan line sweeping top-to-bottom
+    const scan = document.createElement('div');
+    scan.className = 'hero-scanline';
+    hero.appendChild(scan);
+    setTimeout(() => {
+      gsap.fromTo(scan,
+        { top: '0%', opacity: 0 },
+        { top: '105%', opacity: 1, duration: 1.8, ease: 'power1.inOut',
+          onComplete: () => scan.remove() }
+      );
+    }, 500);
+  })();
+
+  /* ----------------------------------------------------------
+     SKILLS TICKER — infinite horizontal marquee
+     ---------------------------------------------------------- */
+  (function initSkillsTicker() {
+    const skillsSection = document.getElementById('skills');
+    if (!skillsSection) return;
+    const allSkills = [
+      { e: '🐧', n: 'Linux'       }, { e: '🐳', n: 'Docker'       },
+      { e: '☁️',  n: 'GCP'         }, { e: '🔐', n: 'Cybersécurité' },
+      { e: '📊', n: 'Grafana'     }, { e: '🔥', n: 'Prometheus'   },
+      { e: '⚙️',  n: 'DevOps'      }, { e: '📦', n: 'Vagrant'      },
+      { e: '☸️',  n: 'Kubernetes'  }, { e: '🌐', n: 'Réseaux'      },
+      { e: '💻', n: 'Java'        }, { e: '🐘', n: 'PHP'          },
+      { e: '🐍', n: 'Python'      }, { e: '💎', n: 'Ruby'         },
+      { e: '📜', n: 'Bash'        }, { e: '🎯', n: 'LaTeX'        },
+      { e: '🖥️',  n: 'HTML / CSS'  }, { e: '🔧', n: 'VirtualBox'  },
+      { e: '🕵️',  n: 'OSINT'       }, { e: '🛡️',  n: 'TryHackMe'  },
+      { e: '🤖', n: 'Claude AI'  }, { e: '📁', n: 'Git'          },
+    ];
+    const container = document.createElement('div');
+    container.className = 'skills-ticker-container';
+    const track = document.createElement('div');
+    track.className = 'skills-ticker-track';
+    [...allSkills, ...allSkills].forEach(s => {
+      const item = document.createElement('div');
+      item.className = 'ticker-item';
+      item.innerHTML = `<span class="ticker-dot"></span>${s.e} ${s.n}`;
+      track.appendChild(item);
+    });
+    container.appendChild(track);
+    const firstGroup = skillsSection.querySelector('.skills-group');
+    if (firstGroup) firstGroup.parentNode.insertBefore(container, firstGroup);
+  })();
+
+  /* ----------------------------------------------------------
+     GLITCH FLASH — triggered on hover over skills group titles
+     ---------------------------------------------------------- */
+  (function initGlitch() {
+    if (reduced) return;
+    document.querySelectorAll('.skills-group-title').forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        if (el.classList.contains('glitch-flash')) return;
+        el.classList.add('glitch-flash');
+        el.addEventListener('animationend', () => el.classList.remove('glitch-flash'), { once: true });
+      });
+    });
+  })();
+
+  /* ----------------------------------------------------------
+     SIDE NAVIGATION DOTS — fixed right side, ScrollTrigger
+     ---------------------------------------------------------- */
+  (function initSideNav() {
+    const sects = [
+      { id: 'about',       label: 'À propos'    },
+      { id: 'skills',      label: 'Compétences' },
+      { id: 'journey',     label: 'Parcours'    },
+      { id: 'experiences', label: 'Expériences' },
+      { id: 'work',        label: 'Projets'     },
+      { id: 'contact',     label: 'Contact'     },
+    ];
+    const nav = document.createElement('nav');
+    nav.className = 'sidenav-dots';
+    nav.setAttribute('aria-label', 'Navigation rapide par section');
+
+    sects.forEach(({ id, label }, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'sidenav-dot';
+      btn.dataset.label = label;
+      btn.setAttribute('aria-label', `Aller à : ${label}`);
+      btn.addEventListener('click', () => {
+        const t = document.getElementById(id);
+        if (t) t.scrollIntoView({ behavior: 'smooth' });
+      });
+      nav.appendChild(btn);
+
+      const section = document.getElementById(id);
+      if (!section) return;
+      ScrollTrigger.create({
+        trigger: section,
+        start: 'top 50%',
+        end: 'bottom 50%',
+        onEnter:     () => nav.querySelectorAll('.sidenav-dot').forEach((d, j) => d.classList.toggle('active', j === i)),
+        onEnterBack: () => nav.querySelectorAll('.sidenav-dot').forEach((d, j) => d.classList.toggle('active', j === i)),
+      });
+    });
+    document.body.appendChild(nav);
+  })();
+
+  /* ----------------------------------------------------------
+     SCROLL VELOCITY — stretch cursor ring on fast scroll
+     ---------------------------------------------------------- */
+  (function initScrollVelocity() {
+    if (reduced) return;
+    const ring = document.getElementById('cursor-ring');
+    if (!ring) return;
+    let lastY = 0, ticking = false;
+    window.addEventListener('scroll', () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const v = Math.abs(window.scrollY - lastY);
+        lastY = window.scrollY;
+        if (v > 18 && !ring.classList.contains('is-hovering')) {
+          const s = Math.min(1 + v * 0.011, 1.55);
+          ring.style.transform = `translate(-50%,-50%) scale(${s})`;
+          setTimeout(() => { ring.style.transform = ''; }, 200);
+        }
+        ticking = false;
+      });
+    }, { passive: true });
+  })();
+
+  /* ----------------------------------------------------------
+     KINETIC PARALLAX — section descriptions drift on scroll
+     ---------------------------------------------------------- */
+  (function initKineticParallax() {
+    if (reduced) return;
+    gsap.utils.toArray('.section-desc').forEach(el => {
+      gsap.fromTo(el,
+        { y: 12 },
+        { y: -12,
+          scrollTrigger: {
+            trigger: el,
+            scrub: 2.2,
+            start: 'top bottom',
+            end: 'bottom top'
+          }
+        }
+      );
+    });
+  })();
+
+  /* ----------------------------------------------------------
+     MAGNETIC TIMELINE DOTS — attract toward cursor on hover
+     ---------------------------------------------------------- */
+  (function initTimelineMagnets() {
+    if (reduced) return;
+    if (!window.matchMedia('(pointer: fine)').matches) return;
+    document.querySelectorAll('.timeline-item').forEach(item => {
+      const dot = item.querySelector('.timeline-dot');
+      if (!dot) return;
+      item.addEventListener('mousemove', e => {
+        const r   = dot.getBoundingClientRect();
+        const cx  = r.left + r.width / 2;
+        const cy  = r.top  + r.height / 2;
+        const dx  = e.clientX - cx;
+        const dy  = e.clientY - cy;
+        const dist = Math.hypot(dx, dy);
+        if (dist < 95) {
+          const f = (1 - dist / 95) * 8;
+          dot.style.transform = `translate(${(dx / dist) * f}px, ${(dy / dist) * f}px) scale(1.3)`;
+          dot.classList.add('mag-pull');
+        } else {
+          dot.style.transform = '';
+          dot.classList.remove('mag-pull');
+        }
+      });
+      item.addEventListener('mouseleave', () => {
+        dot.style.transform = '';
+        dot.classList.remove('mag-pull');
+      });
+    });
+  })();
+
+  /* ----------------------------------------------------------
+     TERMINAL PERSPECTIVE TILT — 3D hover effect
+     ---------------------------------------------------------- */
+  (function initTerminalTilt() {
+    if (reduced) return;
+    if (!window.matchMedia('(pointer: fine)').matches) return;
+    const term = document.querySelector('.about-grid .terminal');
+    if (!term) return;
+    term.addEventListener('mousemove', e => {
+      const r = term.getBoundingClientRect();
+      const x = ((e.clientX - r.left) / r.width  - 0.5) * 6;
+      const y = ((e.clientY - r.top)  / r.height - 0.5) * 4;
+      term.style.transform  = `perspective(920px) rotateY(${x}deg) rotateX(${-y}deg) scale(1.01)`;
+      term.style.transition = 'box-shadow 0.2s, border-color 0.2s';
+    });
+    term.addEventListener('mouseleave', () => {
+      term.style.transform  = '';
+      term.style.transition = 'all var(--t)';
+    });
+  })();
+
+  /* ----------------------------------------------------------
+     HERO TITLE — blinking cursor after scramble completes
+     ---------------------------------------------------------- */
+  (function initHeroTitleCursor() {
+    if (reduced) return;
+    const title = document.querySelector('.hero-title');
+    if (!title) return;
+    setTimeout(() => {
+      const cursor = document.createElement('span');
+      cursor.className = 'hero-title-cursor';
+      cursor.setAttribute('aria-hidden', 'true');
+      title.appendChild(cursor);
+      setTimeout(() => {
+        gsap.to(cursor, { opacity: 0, duration: 0.4, ease: 'power2.out',
+          onComplete: () => cursor.remove() });
+      }, 5500);
+    }, 1300);
+  })();
+
+  /* ----------------------------------------------------------
      HERO PARTICLES
      ---------------------------------------------------------- */
   (function initParticles() {
