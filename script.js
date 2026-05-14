@@ -719,6 +719,35 @@ document.addEventListener('DOMContentLoaded', () => {
   })();
 
   /* ----------------------------------------------------------
+     BIG HERO MARQUEE — ribbit.dk style statement strip
+     ---------------------------------------------------------- */
+  (function initBigMarquee() {
+    const about = document.getElementById('about');
+    if (!about) return;
+
+    const row1 = ['ADMIN SYS', '·', 'CYBERSÉCURITÉ', '·', 'DEVOPS', '·', 'CLOUD', '·', 'RÉSEAUX', '·', 'OSINT', '·', 'CTF', '·'];
+    const row2 = ['IMT NORD EUROPE', '·', 'ALTERNANCE 2026', '·', 'LINUX', '·', 'DOCKER', '·', 'GCP', '·', 'TRYHACKME', '·'];
+
+    const marquee = document.createElement('div');
+    marquee.className = 'hero-marquee';
+    marquee.setAttribute('aria-hidden', 'true');
+
+    [row1, row2].forEach((words, ri) => {
+      const track = document.createElement('div');
+      track.className = `hero-marquee-track row-${ri + 1}`;
+      [...words, ...words].forEach(w => {
+        const el = document.createElement('span');
+        el.className = w === '·' ? 'marq-sep' : 'marq-word';
+        el.textContent = w;
+        track.appendChild(el);
+      });
+      marquee.appendChild(track);
+    });
+
+    about.parentNode.insertBefore(marquee, about);
+  })();
+
+  /* ----------------------------------------------------------
      HERO AURORA BEAMS — vertical neon light columns
      ---------------------------------------------------------- */
   (function initAurora() {
@@ -975,7 +1004,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function draw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       const isDark = document.documentElement.classList.contains('dark');
-      const rgb = isDark ? '0,255,65' : '0,168,50';
+      const rgb = isDark ? '167,139,250' : '124,58,237';
 
       for (let i = 0; i < pts.length; i++) {
         for (let j = i + 1; j < pts.length; j++) {
