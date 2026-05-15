@@ -1,5 +1,5 @@
 /* ============================================================
-   THEME — dark default, persisted in localStorage
+   THEME
    ============================================================ */
 (function () {
   const saved = localStorage.getItem('theme');
@@ -13,104 +13,92 @@
 
 document.addEventListener('DOMContentLoaded', () => {
 
-  /* ----------------------------------------------------------
-     GSAP + ScrollTrigger
-     ---------------------------------------------------------- */
   gsap.registerPlugin(ScrollTrigger);
 
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
   /* ----------------------------------------------------------
-     INTRO SCREEN — fullscreen landing, personnages + slide-up
+     ADAPTIVE VELOCITY — manual scroll speed tracker
+     ---------------------------------------------------------- */
+  let _vel = 0;
+  let _lastY = window.scrollY;
+  let _lastT = Date.now();
+  window.addEventListener('scroll', () => {
+    const now = Date.now();
+    const dt  = now - _lastT;
+    if (dt > 0) _vel = Math.abs(window.scrollY - _lastY) / dt * 1000;
+    _lastY = window.scrollY;
+    _lastT = now;
+  }, { passive: true });
+
+  function getVel() { return _vel; }
+  function dur(normal) {
+    const v = getVel();
+    if (v > 1200) return 0.08;
+    if (v >  500) return Math.max(0.08, normal * 0.45);
+    return normal;
+  }
+  function del(normal) {
+    return getVel() > 500 ? 0 : normal;
+  }
+  function stag(normal) {
+    const v = getVel();
+    if (v > 1200) return 0;
+    if (v >  500) return normal * 0.3;
+    return normal;
+  }
+
+  /* ----------------------------------------------------------
+     INTRO SCREEN
      ---------------------------------------------------------- */
   (function initIntro() {
     const intro = document.getElementById('intro-screen');
     if (!intro) return;
-
-    // Block native scroll while intro is active
     document.documentElement.style.overflow = 'hidden';
 
-    // Initial GSAP state (CSS already sets opacity:0 on chars)
     gsap.set('.intro-c1, .intro-c2, .intro-c3', { y: 90 });
     gsap.set('.intro-name',    { y: 28 });
     gsap.set('.intro-eyebrow', { y: 12 });
 
     const tl = gsap.timeline({ delay: 0.15 });
-
-    // 1 — Characters rise from below, staggered
     tl.to('.intro-c2', { opacity: 1, y: 0, duration: 0.85, ease: 'expo.out' }, 0.1)
       .to('.intro-c1', { opacity: 1, y: 0, duration: 0.95, ease: 'expo.out' }, 0.28)
       .to('.intro-c3', { opacity: 1, y: 0, duration: 0.85, ease: 'expo.out' }, 0.44)
-
-    // 2 — Text reveals
       .to('.intro-eyebrow', { opacity: 1, y: 0, duration: 0.55, ease: 'power3.out' }, 0.55)
       .to('.intro-name',    { opacity: 1, y: 0, duration: 0.80, ease: 'expo.out'   }, 0.66)
       .to('.intro-role',    { opacity: 1,        duration: 0.50, ease: 'power2.out' }, 0.98)
-
-    // 3 — Scroll hint
       .to('.intro-hint',    { opacity: 1,        duration: 0.45, ease: 'power2.out' }, 1.45);
 
-    // 4 — Floating loop after reveal
     tl.call(() => {
       gsap.to('.intro-c1', { y: -14, duration: 2.5, ease: 'sine.inOut', repeat: -1, yoyo: true });
       gsap.to('.intro-c2', { y: -9,  duration: 3.1, ease: 'sine.inOut', repeat: -1, yoyo: true, delay: 0.5 });
       gsap.to('.intro-c3', { y: -11, duration: 2.8, ease: 'sine.inOut', repeat: -1, yoyo: true, delay: 1.0 });
     }, null, 1.6);
 
-    // ── Dismiss function ──
     let dismissed = false;
     function dismiss() {
       if (dismissed) return;
       dismissed = true;
-
-      // Kill floating loops
       gsap.killTweensOf('.intro-c1, .intro-c2, .intro-c3');
-
-      // Characters scatter in different directions
-      gsap.to('.intro-c2', { x: -160, y: 380, rotate: -22, opacity: 0,
-        duration: 0.55, ease: 'power3.in' });
-      gsap.to('.intro-c1', { y: 280, scale: 0.88, opacity: 0,
-        duration: 0.48, ease: 'power3.in', delay: 0.07 });
-      gsap.to('.intro-c3', { x: 160, y: 340, rotate: 20, opacity: 0,
-        duration: 0.55, ease: 'power3.in', delay: 0.12 });
-
-      // Text fades up
-      gsap.to('.intro-text, .intro-hint', {
-        opacity: 0, y: -18, duration: 0.32, ease: 'power2.in'
-      });
-
-      // Whole screen slides up like a curtain
+      gsap.to('.intro-c2', { x: -160, y: 380, rotate: -22, opacity: 0, duration: 0.55, ease: 'power3.in' });
+      gsap.to('.intro-c1', { y: 280, scale: 0.88, opacity: 0, duration: 0.48, ease: 'power3.in', delay: 0.07 });
+      gsap.to('.intro-c3', { x: 160, y: 340, rotate: 20, opacity: 0, duration: 0.55, ease: 'power3.in', delay: 0.12 });
+      gsap.to('.intro-text, .intro-hint', { opacity: 0, y: -18, duration: 0.32, ease: 'power2.in' });
       gsap.to('#intro-screen', {
-        y: '-100%',
-        duration: 0.88,
-        ease: 'power3.inOut',
-        delay: 0.30,
-        onStart: () => {
-          // Re-enable scroll just as the curtain starts pulling up
-          document.documentElement.style.overflow = '';
-        },
-        onComplete: () => {
-          intro.remove();
-        }
+        y: '-100%', duration: 0.88, ease: 'power3.inOut', delay: 0.30,
+        onStart: () => { document.documentElement.style.overflow = ''; },
+        onComplete: () => { intro.remove(); }
       });
     }
 
-    // Triggers
     intro.addEventListener('click',      dismiss, { once: true });
     intro.addEventListener('touchstart', dismiss, { once: true, passive: true });
     window.addEventListener('wheel',     () => { if (!dismissed) dismiss(); }, { once: true, passive: true });
     document.addEventListener('keydown', e => {
-      if (['ArrowDown', ' ', 'Enter', 'PageDown'].includes(e.key)) {
-        e.preventDefault();
-        dismiss();
-      }
+      if (['ArrowDown', ' ', 'Enter', 'PageDown'].includes(e.key)) { e.preventDefault(); dismiss(); }
     }, { once: true });
-
-    // Safety net: auto-dismiss after 10s
     setTimeout(dismiss, 10000);
   })();
-
-  /* ----------------------------------------------------------
-     ScrollTrigger — sync with native scroll
-     ---------------------------------------------------------- */
 
   /* ----------------------------------------------------------
      THEME TOGGLE
@@ -144,7 +132,6 @@ document.addEventListener('DOMContentLoaded', () => {
       hamburgerIcon.className = navLinks.classList.contains('active') ? 'fas fa-times' : 'fas fa-bars';
     }
   });
-
   navLinks?.querySelectorAll('a').forEach(a => {
     a.addEventListener('click', () => {
       navLinks.classList.remove('active');
@@ -153,7 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* ----------------------------------------------------------
-     ANCHOR LINKS — native smooth scroll
+     ANCHOR SMOOTH SCROLL
      ---------------------------------------------------------- */
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', e => {
@@ -173,7 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }, { passive: true });
 
   /* ----------------------------------------------------------
-     HERO — cancel CSS animations, drive with GSAP
+     HERO — GSAP entrance (monospace name, no gradient)
      ---------------------------------------------------------- */
   const HERO_SEL = [
     '.hero-eyebrow', '.hero-title', '.hero-subtitle',
@@ -185,21 +172,19 @@ document.addEventListener('DOMContentLoaded', () => {
     if (el) { el.style.animation = 'none'; el.style.opacity = '0'; }
   });
 
-  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
   if (!reduced) {
     const heroTl = gsap.timeline({ delay: 0.1 });
     heroTl
-      .fromTo('.hero-eyebrow',  { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.65, ease: 'power3.out' }, 0)
-      .fromTo('.hero-title',    { opacity: 0, y: 52 }, { opacity: 1, y: 0, duration: 0.9,  ease: 'expo.out'   }, 0.12)
-      .fromTo('.hero-subtitle', { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.65, ease: 'power3.out' }, 0.28)
-      .fromTo('.hero-desc',     { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.65, ease: 'power3.out' }, 0.4)
-      .fromTo('.hero-tags',     { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.55, ease: 'power3.out' }, 0.52)
-      .fromTo('.hero-cta',      { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.55, ease: 'power3.out' }, 0.62)
-      .fromTo('.hero-scroll',   { opacity: 0 },        { opacity: 1, duration: 0.5 },                           0.88)
-      .fromTo('.hero-stats',    { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.55, ease: 'power3.out' }, 0.82);
+      .fromTo('.hero-eyebrow',  { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6,  ease: 'power3.out' }, 0)
+      .fromTo('.hero-title',    { opacity: 0, y: 48 }, { opacity: 1, y: 0, duration: 0.85, ease: 'expo.out'   }, 0.12)
+      .fromTo('.hero-subtitle', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6,  ease: 'power3.out' }, 0.28)
+      .fromTo('.hero-desc',     { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.6,  ease: 'power3.out' }, 0.4)
+      .fromTo('.hero-tags',     { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.5,  ease: 'power3.out' }, 0.52)
+      .fromTo('.hero-cta',      { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.5,  ease: 'power3.out' }, 0.62)
+      .fromTo('.hero-scroll',   { opacity: 0 },        { opacity: 1, duration: 0.5 },                            0.85)
+      .fromTo('.hero-stats',    { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5,  ease: 'power3.out' }, 0.8);
 
-    // One-shot title scramble on hero entrance
+    /* Title scramble */
     const heroTitle = document.querySelector('.hero-title');
     if (heroTitle) {
       const FINAL = heroTitle.textContent;
@@ -224,8 +209,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ----------------------------------------------------------
-     WORD SPLIT REVEAL — GSAP ScrollTrigger
-     Must run before generic .reveal handler.
+     WORD SPLIT REVEAL — section titles
      ---------------------------------------------------------- */
   function initWordReveal() {
     document.querySelectorAll('.section-title').forEach(el => {
@@ -234,25 +218,16 @@ document.addEventListener('DOMContentLoaded', () => {
       el.classList.remove('reveal');
       el.style.opacity = '1';
       el.style.transform = 'none';
-
       const words = el.textContent.trim().split(' ');
-      el.innerHTML = words.map(word =>
-        `<span class="word-wrap"><span class="word">${word}</span></span>`
-      ).join(' ');
-
+      el.innerHTML = words.map(w => `<span class="word-wrap"><span class="word">${w}</span></span>`).join(' ');
       const wordSpans = el.querySelectorAll('.word');
-      gsap.set(wordSpans, { y: '115%', rotate: 3 });
-
+      gsap.set(wordSpans, { y: '110%', rotate: 2 });
       ScrollTrigger.create({
-        trigger: el,
-        start: 'top 90%',
-        once: true,
+        trigger: el, start: 'top 90%', once: true,
         onEnter: () => {
           gsap.to(wordSpans, {
             y: 0, rotate: 0,
-            duration: 0.55,
-            ease: 'expo.out',
-            stagger: 0.05,
+            duration: dur(0.55), ease: 'expo.out', stagger: stag(0.05),
             onComplete: () => el.classList.add('words-revealed')
           });
         }
@@ -264,8 +239,7 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ----------------------------------------------------------
      SECTION LABEL SCRAMBLE
      ---------------------------------------------------------- */
-  const SCRAMBLE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ•·';
-
+  const SCRAMBLE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ•·—';
   function scrambleEl(el) {
     const final = el.dataset.original || el.textContent;
     el.dataset.original = final;
@@ -277,76 +251,99 @@ document.addEventListener('DOMContentLoaded', () => {
         i / final.length < p ? ch : SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)]
       ).join('');
       if (++frame > TOTAL) { clearInterval(iv); el.textContent = final; }
-    }, 40);
+    }, 38);
   }
-
   document.querySelectorAll('.section-label').forEach(el => {
     ScrollTrigger.create({
-      trigger: el,
-      start: 'top 92%',
-      once: true,
-      onEnter: () => setTimeout(() => scrambleEl(el), 80)
+      trigger: el, start: 'top 92%', once: true,
+      onEnter: () => setTimeout(() => scrambleEl(el), getVel() > 500 ? 0 : 80)
     });
   });
 
   /* ----------------------------------------------------------
-     BENTO GRID — scroll reveal stagger
+     BENTO GRID — staggered entrance
      ---------------------------------------------------------- */
   (function initBento() {
-    const grid  = document.querySelector('.bento-grid');
+    const grid = document.querySelector('.bento-grid');
     if (!grid) return;
     const cards = grid.querySelectorAll('.bento-card');
-
-    gsap.set(cards, { opacity: 0, y: 28 });
-
+    gsap.set(cards, { opacity: 0, y: 24, scale: 0.97 });
     ScrollTrigger.create({
-      trigger: grid,
-      start: 'top 88%',
-      once: true,
+      trigger: grid, start: 'top 88%', once: true,
       onEnter: () => {
         gsap.to(cards, {
-          opacity: 1, y: 0,
-          duration: 0.52,
-          stagger: { amount: 0.38, from: 'start' },
-          ease: 'power2.out',
+          opacity: 1, y: 0, scale: 1,
+          duration: dur(0.5),
+          stagger: { amount: stag(0.35), from: 'start' },
+          ease: 'power2.out'
         });
-      },
+      }
     });
   })();
 
-
   /* ----------------------------------------------------------
-     GENERIC REVEAL — all remaining .reveal elements
-     Section titles and project cards already handled above.
+     TIMELINE — alternate horizontal slide-in (new animation)
      ---------------------------------------------------------- */
-  document.querySelectorAll('.reveal').forEach(el => {
-    gsap.set(el, { opacity: 0, y: 28 });
-    const delay = el.classList.contains('reveal-d1') ? 0.06
-                : el.classList.contains('reveal-d2') ? 0.12
-                : el.classList.contains('reveal-d3') ? 0.18
-                : el.classList.contains('reveal-d4') ? 0.24 : 0;
+  document.querySelectorAll('.timeline-item').forEach((el, i) => {
+    const xDir = i % 2 === 0 ? -28 : 28;
+    gsap.set(el, { opacity: 0, x: xDir });
     ScrollTrigger.create({
-      trigger: el,
-      start: 'top 90%',
-      once: true,
-      onEnter: () => gsap.to(el, { opacity: 1, y: 0, duration: 0.42, ease: 'power3.out', delay })
+      trigger: el, start: 'top 90%', once: true,
+      onEnter: () => gsap.to(el, {
+        opacity: 1, x: 0,
+        duration: dur(0.55), ease: 'power3.out',
+        delay: del((i % 3) * 0.06)
+      })
     });
   });
 
   /* ----------------------------------------------------------
-     PROGRESS BARS
+     SKILL ROWS — slide in from left (new animation)
      ---------------------------------------------------------- */
-  document.querySelectorAll('.progress-fill').forEach(el => {
+  document.querySelectorAll('.skill-row').forEach((el, i) => {
+    gsap.set(el, { opacity: 0, x: -20 });
+    ScrollTrigger.create({
+      trigger: el, start: 'top 92%', once: true,
+      onEnter: () => gsap.to(el, {
+        opacity: 1, x: 0,
+        duration: dur(0.38), ease: 'power2.out',
+        delay: del((i % 8) * 0.04)
+      })
+    });
+  });
+
+  /* ----------------------------------------------------------
+     GENERIC REVEAL — all .reveal elements
+     (timeline-item and skill-row handled above, but .reveal class
+      may still be present; set handled flag to avoid double animation)
+     ---------------------------------------------------------- */
+  document.querySelectorAll('.reveal').forEach(el => {
+    if (el.classList.contains('timeline-item') || el.classList.contains('skill-row')) return;
+    gsap.set(el, { opacity: 0, y: 22 });
+    const baseDelay = el.classList.contains('reveal-d1') ? 0.05
+                    : el.classList.contains('reveal-d2') ? 0.10
+                    : el.classList.contains('reveal-d3') ? 0.15
+                    : el.classList.contains('reveal-d4') ? 0.20 : 0;
+    ScrollTrigger.create({
+      trigger: el, start: 'top 90%', once: true,
+      onEnter: () => gsap.to(el, {
+        opacity: 1, y: 0,
+        duration: dur(0.42), ease: 'power3.out',
+        delay: del(baseDelay)
+      })
+    });
+  });
+
+  /* ----------------------------------------------------------
+     PROGRESS BARS (sr-fill — new class)
+     ---------------------------------------------------------- */
+  document.querySelectorAll('.sr-fill').forEach(el => {
     gsap.set(el, { width: '0%' });
     ScrollTrigger.create({
-      trigger: el,
-      start: 'top 90%',
-      once: true,
+      trigger: el, start: 'top 90%', once: true,
       onEnter: () => gsap.to(el, {
         width: (el.getAttribute('data-width') || '0') + '%',
-        duration: 0.8,
-        ease: 'power2.out',
-        delay: 0.1
+        duration: dur(0.9), ease: 'power2.out', delay: del(0.1)
       })
     });
   });
@@ -356,17 +353,13 @@ document.addEventListener('DOMContentLoaded', () => {
      ---------------------------------------------------------- */
   document.querySelectorAll('.stat-number[data-target]').forEach(el => {
     ScrollTrigger.create({
-      trigger: el,
-      start: 'top 90%',
-      once: true,
+      trigger: el, start: 'top 90%', once: true,
       onEnter: () => {
         const target = parseInt(el.getAttribute('data-target'), 10);
         const start  = parseInt(el.textContent, 10) || 0;
         const obj = { val: start };
         gsap.to(obj, {
-          val: target,
-          duration: 1.4,
-          ease: 'power2.out',
+          val: target, duration: dur(1.4), ease: 'power2.out',
           onUpdate: () => { el.textContent = Math.round(obj.val); }
         });
       }
@@ -374,7 +367,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* ----------------------------------------------------------
-     SECTION BACKGROUND NUMBERS — 01 … 06
+     SECTION BACKGROUND NUMBERS
      ---------------------------------------------------------- */
   const sectionMeta = [
     { id: 'about',       num: '01' },
@@ -384,7 +377,6 @@ document.addEventListener('DOMContentLoaded', () => {
     { id: 'work',        num: '05' },
     { id: 'contact',     num: '06' },
   ];
-
   sectionMeta.forEach(({ id, num }) => {
     const section = document.getElementById(id);
     if (!section) return;
@@ -394,23 +386,20 @@ document.addEventListener('DOMContentLoaded', () => {
     section.style.position = 'relative';
     section.style.overflow = 'hidden';
     section.insertBefore(div, section.firstChild);
-    gsap.set(div, { opacity: 0, x: 40 });
+    gsap.set(div, { opacity: 0, x: 28 });
     ScrollTrigger.create({
-      trigger: section,
-      start: 'top 85%',
-      once: true,
-      onEnter: () => gsap.to(div, { opacity: 1, x: 0, duration: 0.8, ease: 'power3.out' })
+      trigger: section, start: 'top 85%', once: true,
+      onEnter: () => gsap.to(div, { opacity: 1, x: 0, duration: dur(0.9), ease: 'power3.out' })
     });
   });
 
   /* ----------------------------------------------------------
-     SCROLL SPY + NAV SLIDING INDICATOR
+     SCROLL SPY + NAV INDICATOR
      ---------------------------------------------------------- */
   const navAnchorEls = document.querySelectorAll('.nav-links a[href^="#"]');
   const spySections  = [...navAnchorEls]
     .map(a => document.querySelector(a.getAttribute('href')))
     .filter(Boolean);
-
   const navLinksEl = document.getElementById('nav-links');
   let navIndicator = null;
 
@@ -418,7 +407,6 @@ document.addEventListener('DOMContentLoaded', () => {
     navIndicator = document.createElement('span');
     navIndicator.className = 'nav-indicator';
     navLinksEl.appendChild(navIndicator);
-
     function moveIndicatorTo(linkEl) {
       if (!linkEl || !navIndicator) return;
       const lr = linkEl.getBoundingClientRect();
@@ -427,7 +415,6 @@ document.addEventListener('DOMContentLoaded', () => {
       navIndicator.style.width   = lr.width + 'px';
       navIndicator.style.opacity = '1';
     }
-
     navAnchorEls.forEach(a => a.addEventListener('mouseenter', () => moveIndicatorTo(a)));
     navLinksEl.addEventListener('mouseleave', () => {
       const active = navLinksEl.querySelector('.nav-active');
@@ -452,30 +439,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
   spySections.forEach(section => {
     ScrollTrigger.create({
-      trigger: section,
-      start: 'top 40%',
-      end: 'bottom 40%',
+      trigger: section, start: 'top 40%', end: 'bottom 40%',
       onEnter:     () => activateNavLink(section.id),
       onEnterBack: () => activateNavLink(section.id)
     });
   });
 
   /* ----------------------------------------------------------
-     SVG CIRCUIT DIVIDERS — animated neon paths between sections
-     stroke-dashoffset draw + traveling orb via getPointAtLength
+     SVG CIRCUIT DIVIDERS
      ---------------------------------------------------------- */
   function initCircuitDividers() {
-    if (reduced) return;
-    if (window.innerWidth < 768) return;
-
+    if (reduced || window.innerWidth < 768) return;
     const pairs = [
-      ['hero',        'about'      ],
-      ['about',       'skills'     ],
-      ['skills',      'journey'    ],
-      ['journey',     'experiences'],
-      ['experiences', 'work'       ],
+      ['hero','about'], ['about','skills'], ['skills','journey'],
+      ['journey','experiences'], ['experiences','work'],
     ];
-
     const pathDefs = [
       'M 0,40 L 120,40 L 120,12 L 360,12 L 360,40 L 480,40',
       'M 0,12 L 160,12 L 320,50 L 480,50',
@@ -483,28 +461,23 @@ document.addEventListener('DOMContentLoaded', () => {
       'M 0,50 Q 240,8 480,50',
       'M 0,48 C 100,8 380,60 480,16',
     ];
-
     pairs.forEach(([aId, bId], index) => {
-      const sectionA = aId === 'hero'
-        ? document.querySelector('.hero')
-        : document.getElementById(aId);
+      const sectionA = aId === 'hero' ? document.querySelector('.hero') : document.getElementById(aId);
       const sectionB = document.getElementById(bId);
       if (!sectionA || !sectionB) return;
-
       const wrapper = document.createElement('div');
       wrapper.className = 'circuit-divider';
-
       const d = pathDefs[index];
       const uid = `cd-${index}`;
       wrapper.innerHTML = `
         <svg class="circuit-svg" viewBox="0 0 480 60" preserveAspectRatio="none" aria-hidden="true">
           <defs>
             <filter id="gp-${uid}" x="-10%" y="-150%" width="120%" height="400%">
-              <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="b"/>
+              <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="b"/>
               <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
             </filter>
             <filter id="go-${uid}" x="-200%" y="-200%" width="500%" height="500%">
-              <feGaussianBlur in="SourceGraphic" stdDeviation="3.5" result="b"/>
+              <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="b"/>
               <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
             </filter>
           </defs>
@@ -512,26 +485,18 @@ document.addEventListener('DOMContentLoaded', () => {
           <path class="circuit-draw" d="${d}" fill="none" filter="url(#gp-${uid})"/>
           <circle class="circuit-orb" r="4" cx="-20" cy="-20" filter="url(#go-${uid})"/>
         </svg>`;
-
       sectionA.parentNode.insertBefore(wrapper, sectionB);
-
       const drawPath = wrapper.querySelector('.circuit-draw');
       const orbEl    = wrapper.querySelector('.circuit-orb');
-
       requestAnimationFrame(() => {
         const len = drawPath.getTotalLength();
         gsap.set(drawPath, { strokeDasharray: len, strokeDashoffset: len });
         gsap.set(orbEl, { opacity: 0 });
-
         ScrollTrigger.create({
-          trigger: wrapper,
-          start: 'top 90%',
-          end: 'top 10%',
-          scrub: 1.5,
+          trigger: wrapper, start: 'top 90%', end: 'top 10%', scrub: 1.5,
           onUpdate: (self) => {
             const p = self.progress;
             drawPath.style.strokeDashoffset = len * (1 - p);
-
             if (p > 0.04) {
               const pt = drawPath.getPointAtLength(p * len);
               orbEl.setAttribute('cx', pt.x);
@@ -547,34 +512,46 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   initCircuitDividers();
 
+  /* Add circuit divider CSS if not present */
+  if (!document.querySelector('style[data-circuit]')) {
+    const s = document.createElement('style');
+    s.dataset.circuit = '1';
+    s.textContent = `
+      .circuit-divider{position:relative;width:100%;height:60px;overflow:visible;pointer-events:none;display:none;}
+      @media(min-width:768px){.circuit-divider{display:block;}}
+      .circuit-svg{width:100%;height:100%;overflow:visible;}
+      .circuit-base{stroke:rgba(130,130,130,0.07);stroke-width:1.5;stroke-dasharray:6 12;}
+      html.dark .circuit-base{stroke:rgba(167,139,250,0.08);}
+      .circuit-draw{stroke:rgba(21,96,189,0.35);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;}
+      html.dark .circuit-draw{stroke:rgba(167,139,250,0.55);}
+      .circuit-orb{fill:#1560BD;}
+      html.dark .circuit-orb{fill:#a78bfa;}
+    `;
+    document.head.appendChild(s);
+  }
+
   /* ----------------------------------------------------------
-     HERO PARALLAX — content follows cursor with lerp
+     HERO PARALLAX — content follows cursor
      ---------------------------------------------------------- */
   (function initHeroParallax() {
     if (reduced) return;
-    const hero        = document.querySelector('.hero');
+    const hero = document.querySelector('.hero');
     const heroContent = document.querySelector('.hero-content');
     if (!hero || !heroContent) return;
-
     let tx = 0, ty = 0, cx = 0, cy = 0, raf = null;
-
     function lerp(a, b, t) { return a + (b - a) * t; }
-
     function update() {
-      cx = lerp(cx, tx, 0.07);
-      cy = lerp(cy, ty, 0.07);
-      heroContent.style.transform = `translate(${cx * -16}px, ${cy * -10}px)`;
+      cx = lerp(cx, tx, 0.07); cy = lerp(cy, ty, 0.07);
+      heroContent.style.transform = `translate(${cx * -14}px, ${cy * -9}px)`;
       raf = (Math.abs(cx - tx) > 0.01 || Math.abs(cy - ty) > 0.01)
         ? requestAnimationFrame(update) : null;
     }
-
     hero.addEventListener('mousemove', e => {
       const r = hero.getBoundingClientRect();
       tx = (e.clientX - r.left) / r.width  - 0.5;
       ty = (e.clientY - r.top)  / r.height - 0.5;
       if (!raf) raf = requestAnimationFrame(update);
     }, { passive: true });
-
     hero.addEventListener('mouseleave', () => { tx = 0; ty = 0; });
   })();
 
@@ -596,10 +573,10 @@ document.addEventListener('DOMContentLoaded', () => {
       { cmd: 'cat indice.txt', out: '> Tape cette commande dans le terminal interactif :\n  sudo apt install easteregg' }
     ]
   ];
-
   let cmds = [], cmdIdx = 0, charIdx = 0, typing = true;
   function pickSet() { return Math.random() < 0.15 ? commandSets[2] : commandSets[Math.floor(Math.random() * 2)]; }
   function addLine(text) {
+    if (!terminalAbout) return;
     const d = document.createElement('div'); d.textContent = text;
     terminalAbout.appendChild(d); terminalAbout.scrollTop = terminalAbout.scrollHeight;
   }
@@ -632,7 +609,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (terminalAbout) { cmds = [...pickSet()]; setTimeout(typeNext, 1200); }
 
   /* ----------------------------------------------------------
-     INTERACTIVE TERMINAL
+     INTERACTIVE TERMINAL (UNCHANGED — easter egg preserved)
      ---------------------------------------------------------- */
   const termInput  = document.getElementById('terminal-input');
   const termOutput = document.getElementById('terminal-interactive-output');
@@ -655,7 +632,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!termOutput) return;
     termOutput.appendChild(el); termOutput.scrollTop = termOutput.scrollHeight;
   }
-
   function runProgressBar(cb) {
     let pct = 0; writeLine('');
     const div = document.createElement('div'); termOutput.appendChild(div);
@@ -667,13 +643,11 @@ document.addEventListener('DOMContentLoaded', () => {
       if (pct >= 100) { clearInterval(iv); setTimeout(cb, 300); }
     }, 180);
   }
-
   const eggFrames = [
 `   ___\n  /   \\\n /     \\\n(_______)\n  [Egg]`,
 `   ___\n  /* *\\\n /* * *\\\n(______*)\n[Hatching]`,
 `  *****\n *     *\n* ( ^v^)*\n *     *\n  *****\n[Cracked!]`
   ];
-
   function runHatchAnimation() {
     let fi = 0;
     const div = document.createElement('div');
@@ -685,13 +659,12 @@ document.addEventListener('DOMContentLoaded', () => {
         clearInterval(iv); writeLine(''); writeLine('🎉 Félicitations ! Tu as trouvé l\'easter egg secret !');
         const btn = document.createElement('button');
         btn.textContent = '🔄 Rejouer l\'animation';
-        btn.style.cssText = 'margin-top:10px;padding:6px 14px;background:var(--accent);color:#000;border:none;border-radius:4px;cursor:pointer;font-size:0.8rem;font-weight:700;font-family:inherit;';
+        btn.style.cssText = 'margin-top:10px;padding:6px 14px;background:var(--accent);color:#000;border:none;border-radius:2px;cursor:pointer;font-size:0.75rem;font-weight:700;font-family:var(--mono);letter-spacing:0.06em;text-transform:uppercase;';
         btn.addEventListener('click', () => { writeLine(''); writeLine('$ sudo apt install easteregg'); runProgressBar(runHatchAnimation); });
         writeEl(btn);
       }
     }, 900);
   }
-
   function handleCommand(raw) {
     const cmd = raw.trim().toLowerCase();
     writeLine('$ ' + raw.trim());
@@ -699,9 +672,9 @@ document.addEventListener('DOMContentLoaded', () => {
       writeLine(sections.map(s => s.name).join('   '));
     } else if (cmd === 'clear') {
       termOutput.innerHTML = '';
-    } else if (cmd === 'whoami') { writeLine('luka.salvo');
-    } else if (cmd === 'pwd')    { writeLine('/home/luka/portfolio');
-    } else if (cmd === 'help')   { writeLine('Commandes : ls · cd <section> · whoami · pwd · clear · help · sudo apt install easteregg');
+    } else if (cmd === 'whoami')  { writeLine('luka.salvo');
+    } else if (cmd === 'pwd')     { writeLine('/home/luka/portfolio');
+    } else if (cmd === 'help')    { writeLine('Commandes : ls · cd <section> · whoami · pwd · clear · help · sudo apt install easteregg');
     } else if (cmd === 'sudo' || cmd === 'sudo ') { writeLine('Pas de droits suffisants — contactez-moi pour en obtenir 😄');
     } else if (cmd === 'sudo apt install easteregg') { runProgressBar(runHatchAnimation);
     } else if (cmd.startsWith('sudo apt install')) { writeLine('Erreur : paquet introuvable.');
@@ -740,44 +713,35 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ----------------------------------------------------------
-     CUSTOM CURSOR — velocity-based ring stretch
+     CUSTOM CURSOR
      ---------------------------------------------------------- */
   (function initCursor() {
-    if (!window.matchMedia('(pointer: fine)').matches) return;
-    if (reduced) return;
-
+    if (!window.matchMedia('(pointer: fine)').matches || reduced) return;
     const dot  = document.getElementById('cursor-dot');
     const ring = document.getElementById('cursor-ring');
     if (!dot || !ring) return;
-
     let mx = -200, my = -200, rx = -200, ry = -200;
     let velX = 0, velY = 0, prevMx = -200, prevMy = -200;
-
     document.addEventListener('mousemove', e => {
-      velX = e.clientX - prevMx;
-      velY = e.clientY - prevMy;
+      velX = e.clientX - prevMx; velY = e.clientY - prevMy;
       prevMx = mx; prevMy = my;
       mx = e.clientX; my = e.clientY;
       dot.style.left = mx + 'px'; dot.style.top = my + 'px';
     }, { passive: true });
-
     (function animateRing() {
       rx += (mx - rx) * 0.11;
       ry += (my - ry) * 0.11;
-      ring.style.left = rx + 'px';
-      ring.style.top  = ry + 'px';
-
+      ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
       if (!ring.classList.contains('is-hovering') && !ring.classList.contains('is-clicking')) {
-        const speed   = Math.hypot(velX, velY);
-        const angle   = Math.atan2(velY, velX) * 180 / Math.PI;
-        const stretch = Math.min(speed * 0.09, 0.5);
-        ring.style.transform = `translate(-50%,-50%) rotate(${angle}deg) scaleX(${1 + stretch}) scaleY(${1 - stretch * 0.45})`;
+        const speed  = Math.hypot(velX, velY);
+        const angle  = Math.atan2(velY, velX) * 180 / Math.PI;
+        const stretch = Math.min(speed * 0.09, 0.45);
+        ring.style.transform = `translate(-50%,-50%) rotate(${angle}deg) scaleX(${1 + stretch}) scaleY(${1 - stretch * 0.4})`;
       }
       velX *= 0.82; velY *= 0.82;
       requestAnimationFrame(animateRing);
     })();
-
-    const hoverEls = document.querySelectorAll('a, button, .info-card, .tag, .skill-card, .competence-card, .contact-link');
+    const hoverEls = document.querySelectorAll('a,button,.info-card,.tag,.skill-row,.competence-card,.contact-link,.bento-card');
     hoverEls.forEach(el => {
       el.addEventListener('mouseenter', () => ring.classList.add('is-hovering'));
       el.addEventListener('mouseleave', () => ring.classList.remove('is-hovering'));
@@ -787,7 +751,7 @@ document.addEventListener('DOMContentLoaded', () => {
   })();
 
   /* ----------------------------------------------------------
-     PAGE SPOTLIGHT — soft radial glow follows cursor
+     PAGE SPOTLIGHT
      ---------------------------------------------------------- */
   (function initSpotlight() {
     if (reduced) return;
@@ -801,19 +765,16 @@ document.addEventListener('DOMContentLoaded', () => {
   })();
 
   /* ----------------------------------------------------------
-     BIG HERO MARQUEE — ribbit.dk style statement strip
+     BIG HERO MARQUEE
      ---------------------------------------------------------- */
   (function initBigMarquee() {
     const about = document.getElementById('about');
     if (!about) return;
-
     const row1 = ['ADMIN SYS', '·', 'CYBERSÉCURITÉ', '·', 'DEVOPS', '·', 'CLOUD', '·', 'RÉSEAUX', '·', 'OSINT', '·', 'CTF', '·'];
     const row2 = ['IMT NORD EUROPE', '·', 'ALTERNANCE 2026', '·', 'LINUX', '·', 'DOCKER', '·', 'GCP', '·', 'TRYHACKME', '·'];
-
     const marquee = document.createElement('div');
     marquee.className = 'hero-marquee';
     marquee.setAttribute('aria-hidden', 'true');
-
     [row1, row2].forEach((words, ri) => {
       const track = document.createElement('div');
       track.className = `hero-marquee-track row-${ri + 1}`;
@@ -825,40 +786,11 @@ document.addEventListener('DOMContentLoaded', () => {
       });
       marquee.appendChild(track);
     });
-
     about.parentNode.insertBefore(marquee, about);
   })();
 
   /* ----------------------------------------------------------
-     HERO AURORA BEAMS — vertical neon light columns
-     ---------------------------------------------------------- */
-  (function initAurora() {
-    if (reduced) return;
-    const hero = document.querySelector('.hero');
-    const blobs = hero && hero.querySelector('.hero-blobs');
-    if (!hero || !blobs) return;
-    const aurora = document.createElement('div');
-    aurora.className = 'hero-aurora';
-    for (let i = 0; i < 6; i++) {
-      aurora.appendChild(Object.assign(document.createElement('div'), { className: 'aurora-beam' }));
-    }
-    hero.insertBefore(aurora, blobs);
-
-    // One-shot hero scan line sweeping top-to-bottom
-    const scan = document.createElement('div');
-    scan.className = 'hero-scanline';
-    hero.appendChild(scan);
-    setTimeout(() => {
-      gsap.fromTo(scan,
-        { top: '0%', opacity: 0 },
-        { top: '105%', opacity: 1, duration: 1.8, ease: 'power1.inOut',
-          onComplete: () => scan.remove() }
-      );
-    }, 500);
-  })();
-
-  /* ----------------------------------------------------------
-     SKILLS TICKER — infinite horizontal marquee
+     SKILLS TICKER
      ---------------------------------------------------------- */
   (function initSkillsTicker() {
     const skillsSection = document.getElementById('skills');
@@ -892,7 +824,7 @@ document.addEventListener('DOMContentLoaded', () => {
   })();
 
   /* ----------------------------------------------------------
-     GLITCH FLASH — triggered on hover over skills group titles
+     GLITCH FLASH on skill group title hover
      ---------------------------------------------------------- */
   (function initGlitch() {
     if (reduced) return;
@@ -906,7 +838,7 @@ document.addEventListener('DOMContentLoaded', () => {
   })();
 
   /* ----------------------------------------------------------
-     SIDE NAVIGATION DOTS — fixed right side, ScrollTrigger
+     SIDE NAV DOTS
      ---------------------------------------------------------- */
   (function initSideNav() {
     const sects = [
@@ -920,7 +852,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const nav = document.createElement('nav');
     nav.className = 'sidenav-dots';
     nav.setAttribute('aria-label', 'Navigation rapide par section');
-
     sects.forEach(({ id, label }, i) => {
       const btn = document.createElement('button');
       btn.className = 'sidenav-dot';
@@ -931,13 +862,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (t) t.scrollIntoView({ behavior: 'smooth' });
       });
       nav.appendChild(btn);
-
       const section = document.getElementById(id);
       if (!section) return;
       ScrollTrigger.create({
-        trigger: section,
-        start: 'top 50%',
-        end: 'bottom 50%',
+        trigger: section, start: 'top 50%', end: 'bottom 50%',
         onEnter:     () => nav.querySelectorAll('.sidenav-dot').forEach((d, j) => d.classList.toggle('active', j === i)),
         onEnterBack: () => nav.querySelectorAll('.sidenav-dot').forEach((d, j) => d.classList.toggle('active', j === i)),
       });
@@ -946,7 +874,103 @@ document.addEventListener('DOMContentLoaded', () => {
   })();
 
   /* ----------------------------------------------------------
-     SCROLL VELOCITY — stretch cursor ring on fast scroll
+     KINETIC PARALLAX — section-desc
+     ---------------------------------------------------------- */
+  (function initKineticParallax() {
+    if (reduced) return;
+    gsap.utils.toArray('.section-desc').forEach(el => {
+      gsap.fromTo(el, { y: 10 }, {
+        y: -10, scrollTrigger: { trigger: el, scrub: 2, start: 'top bottom', end: 'bottom top' }
+      });
+    });
+  })();
+
+  /* ----------------------------------------------------------
+     MAGNETIC BUTTONS
+     ---------------------------------------------------------- */
+  (function initMagnet() {
+    if (reduced || !window.matchMedia('(pointer: fine)').matches) return;
+    document.querySelectorAll('.btn-primary,.btn-secondary,.contact-link').forEach(btn => {
+      btn.addEventListener('mousemove', e => {
+        const r = btn.getBoundingClientRect();
+        const x = (e.clientX - r.left - r.width  / 2) * 0.25;
+        const y = (e.clientY - r.top  - r.height / 2) * 0.25;
+        btn.style.transform  = `translate(${x}px, ${y}px) translateY(-1px)`;
+        btn.style.transition = 'box-shadow 0.2s';
+      });
+      btn.addEventListener('mouseleave', () => {
+        btn.style.transform  = '';
+        btn.style.transition = 'all var(--t)';
+      });
+    });
+  })();
+
+  /* ----------------------------------------------------------
+     MAGNETIC TIMELINE DOTS
+     ---------------------------------------------------------- */
+  (function initTimelineMagnets() {
+    if (reduced || !window.matchMedia('(pointer: fine)').matches) return;
+    document.querySelectorAll('.timeline-item').forEach(item => {
+      const dot = item.querySelector('.timeline-dot');
+      if (!dot) return;
+      item.addEventListener('mousemove', e => {
+        const r = dot.getBoundingClientRect();
+        const cx = r.left + r.width / 2;
+        const cy = r.top  + r.height / 2;
+        const dx = e.clientX - cx;
+        const dy = e.clientY - cy;
+        const dist = Math.hypot(dx, dy);
+        if (dist < 90) {
+          const f = (1 - dist / 90) * 7;
+          dot.style.transform = `translate(${(dx / dist) * f}px, ${(dy / dist) * f}px)`;
+        } else {
+          dot.style.transform = '';
+        }
+      });
+      item.addEventListener('mouseleave', () => { dot.style.transform = ''; });
+    });
+  })();
+
+  /* ----------------------------------------------------------
+     TERMINAL TILT (about section)
+     ---------------------------------------------------------- */
+  (function initTerminalTilt() {
+    if (reduced || !window.matchMedia('(pointer: fine)').matches) return;
+    const term = document.querySelector('.about-grid .terminal');
+    if (!term) return;
+    term.addEventListener('mousemove', e => {
+      const r = term.getBoundingClientRect();
+      const x = ((e.clientX - r.left) / r.width  - 0.5) * 5;
+      const y = ((e.clientY - r.top)  / r.height - 0.5) * 3;
+      term.style.transform  = `perspective(900px) rotateY(${x}deg) rotateX(${-y}deg) scale(1.01)`;
+      term.style.transition = 'box-shadow 0.2s';
+    });
+    term.addEventListener('mouseleave', () => {
+      term.style.transform  = '';
+      term.style.transition = 'all var(--t)';
+    });
+  })();
+
+  /* ----------------------------------------------------------
+     HERO TITLE CURSOR (after scramble)
+     ---------------------------------------------------------- */
+  (function initHeroTitleCursor() {
+    if (reduced) return;
+    const title = document.querySelector('.hero-title');
+    if (!title) return;
+    setTimeout(() => {
+      const cursor = document.createElement('span');
+      cursor.className = 'hero-title-cursor';
+      cursor.setAttribute('aria-hidden', 'true');
+      title.appendChild(cursor);
+      setTimeout(() => {
+        gsap.to(cursor, { opacity: 0, duration: 0.4, ease: 'power2.out', onComplete: () => cursor.remove() });
+      }, 5500);
+    }, 1300);
+  })();
+
+  /* ----------------------------------------------------------
+     SCROLL VELOCITY — cursor ring
      ---------------------------------------------------------- */
   (function initScrollVelocity() {
     if (reduced) return;
@@ -960,200 +984,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const v = Math.abs(window.scrollY - lastY);
         lastY = window.scrollY;
         if (v > 18 && !ring.classList.contains('is-hovering')) {
-          const s = Math.min(1 + v * 0.011, 1.55);
+          const s = Math.min(1 + v * 0.01, 1.5);
           ring.style.transform = `translate(-50%,-50%) scale(${s})`;
           setTimeout(() => { ring.style.transform = ''; }, 200);
         }
         ticking = false;
       });
     }, { passive: true });
-  })();
-
-  /* ----------------------------------------------------------
-     KINETIC PARALLAX — section descriptions drift on scroll
-     ---------------------------------------------------------- */
-  (function initKineticParallax() {
-    if (reduced) return;
-    gsap.utils.toArray('.section-desc').forEach(el => {
-      gsap.fromTo(el,
-        { y: 12 },
-        { y: -12,
-          scrollTrigger: {
-            trigger: el,
-            scrub: 2.2,
-            start: 'top bottom',
-            end: 'bottom top'
-          }
-        }
-      );
-    });
-  })();
-
-  /* ----------------------------------------------------------
-     MAGNETIC TIMELINE DOTS — attract toward cursor on hover
-     ---------------------------------------------------------- */
-  (function initTimelineMagnets() {
-    if (reduced) return;
-    if (!window.matchMedia('(pointer: fine)').matches) return;
-    document.querySelectorAll('.timeline-item').forEach(item => {
-      const dot = item.querySelector('.timeline-dot');
-      if (!dot) return;
-      item.addEventListener('mousemove', e => {
-        const r   = dot.getBoundingClientRect();
-        const cx  = r.left + r.width / 2;
-        const cy  = r.top  + r.height / 2;
-        const dx  = e.clientX - cx;
-        const dy  = e.clientY - cy;
-        const dist = Math.hypot(dx, dy);
-        if (dist < 95) {
-          const f = (1 - dist / 95) * 8;
-          dot.style.transform = `translate(${(dx / dist) * f}px, ${(dy / dist) * f}px) scale(1.3)`;
-          dot.classList.add('mag-pull');
-        } else {
-          dot.style.transform = '';
-          dot.classList.remove('mag-pull');
-        }
-      });
-      item.addEventListener('mouseleave', () => {
-        dot.style.transform = '';
-        dot.classList.remove('mag-pull');
-      });
-    });
-  })();
-
-  /* ----------------------------------------------------------
-     TERMINAL PERSPECTIVE TILT — 3D hover effect
-     ---------------------------------------------------------- */
-  (function initTerminalTilt() {
-    if (reduced) return;
-    if (!window.matchMedia('(pointer: fine)').matches) return;
-    const term = document.querySelector('.about-grid .terminal');
-    if (!term) return;
-    term.addEventListener('mousemove', e => {
-      const r = term.getBoundingClientRect();
-      const x = ((e.clientX - r.left) / r.width  - 0.5) * 6;
-      const y = ((e.clientY - r.top)  / r.height - 0.5) * 4;
-      term.style.transform  = `perspective(920px) rotateY(${x}deg) rotateX(${-y}deg) scale(1.01)`;
-      term.style.transition = 'box-shadow 0.2s, border-color 0.2s';
-    });
-    term.addEventListener('mouseleave', () => {
-      term.style.transform  = '';
-      term.style.transition = 'all var(--t)';
-    });
-  })();
-
-  /* ----------------------------------------------------------
-     HERO TITLE — blinking cursor after scramble completes
-     ---------------------------------------------------------- */
-  (function initHeroTitleCursor() {
-    if (reduced) return;
-    const title = document.querySelector('.hero-title');
-    if (!title) return;
-    setTimeout(() => {
-      const cursor = document.createElement('span');
-      cursor.className = 'hero-title-cursor';
-      cursor.setAttribute('aria-hidden', 'true');
-      title.appendChild(cursor);
-      setTimeout(() => {
-        gsap.to(cursor, { opacity: 0, duration: 0.4, ease: 'power2.out',
-          onComplete: () => cursor.remove() });
-      }, 5500);
-    }, 1300);
-  })();
-
-  /* ----------------------------------------------------------
-     HERO PARTICLES
-     ---------------------------------------------------------- */
-  (function initParticles() {
-    if (reduced) return;
-    const canvas = document.getElementById('hero-particles');
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-
-    function resize() {
-      canvas.width  = canvas.parentElement.offsetWidth;
-      canvas.height = canvas.parentElement.offsetHeight;
-    }
-    resize(); new ResizeObserver(resize).observe(canvas.parentElement);
-
-    const COUNT = window.innerWidth < 768 ? 28 : 55;
-    const pts = Array.from({ length: COUNT }, () => ({
-      x: Math.random() * canvas.width, y: Math.random() * canvas.height,
-      vx: (Math.random() - 0.5) * 0.38, vy: (Math.random() - 0.5) * 0.38,
-      r: Math.random() * 1.2 + 0.4
-    }));
-
-    function draw() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      const isDark = document.documentElement.classList.contains('dark');
-      const rgb = isDark ? '167,139,250' : '124,58,237';
-
-      for (let i = 0; i < pts.length; i++) {
-        for (let j = i + 1; j < pts.length; j++) {
-          const dx = pts[i].x - pts[j].x, dy = pts[i].y - pts[j].y;
-          const d  = Math.hypot(dx, dy);
-          if (d < 115) {
-            ctx.beginPath();
-            ctx.strokeStyle = `rgba(${rgb},${0.07 * (1 - d / 115)})`;
-            ctx.lineWidth = 1;
-            ctx.moveTo(pts[i].x, pts[i].y); ctx.lineTo(pts[j].x, pts[j].y);
-            ctx.stroke();
-          }
-        }
-      }
-      pts.forEach(p => {
-        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(${rgb},0.32)`; ctx.fill();
-        p.x += p.vx; p.y += p.vy;
-        if (p.x < 0) p.x = canvas.width;  if (p.x > canvas.width)  p.x = 0;
-        if (p.y < 0) p.y = canvas.height; if (p.y > canvas.height) p.y = 0;
-      });
-      requestAnimationFrame(draw);
-    }
-    draw();
-  })();
-
-  /* ----------------------------------------------------------
-     3D CARD TILT
-     ---------------------------------------------------------- */
-  (function initTilt() {
-    if (reduced) return;
-    if (!window.matchMedia('(pointer: fine)').matches) return;
-    const MAX = 7;
-    document.querySelectorAll('.info-card').forEach(card => {
-      card.addEventListener('mousemove', e => {
-        const r = card.getBoundingClientRect();
-        const x = (e.clientX - r.left) / r.width  - 0.5;
-        const y = (e.clientY - r.top)  / r.height - 0.5;
-        card.style.transform  = `perspective(700px) rotateX(${-y * MAX}deg) rotateY(${x * MAX}deg) translateY(-5px)`;
-        card.style.transition = 'box-shadow var(--t), border-color var(--t)';
-      });
-      card.addEventListener('mouseleave', () => {
-        card.style.transform  = '';
-        card.style.transition = 'all var(--t)';
-      });
-    });
-  })();
-
-  /* ----------------------------------------------------------
-     MAGNETIC BUTTONS
-     ---------------------------------------------------------- */
-  (function initMagnet() {
-    if (reduced) return;
-    if (!window.matchMedia('(pointer: fine)').matches) return;
-    document.querySelectorAll('.btn-primary, .btn-secondary, .contact-link').forEach(btn => {
-      btn.addEventListener('mousemove', e => {
-        const r = btn.getBoundingClientRect();
-        const x = (e.clientX - r.left - r.width  / 2) * 0.28;
-        const y = (e.clientY - r.top  - r.height / 2) * 0.28;
-        btn.style.transform  = `translate(${x}px, ${y}px) translateY(-2px)`;
-        btn.style.transition = 'box-shadow 0.2s, filter 0.2s';
-      });
-      btn.addEventListener('mouseleave', () => {
-        btn.style.transform  = '';
-        btn.style.transition = 'all var(--t)';
-      });
-    });
   })();
 
 });

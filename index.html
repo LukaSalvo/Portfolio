@@ -97,13 +97,6 @@
 
   <!-- ═══════════ HERO ═══════════ -->
   <section class="hero" aria-label="Introduction">
-    <!-- Ambient light blobs -->
-    <div class="hero-blobs" aria-hidden="true">
-      <canvas id="hero-particles" class="hero-particles"></canvas>
-      <div class="blob blob-1"></div>
-      <div class="blob blob-2"></div>
-      <div class="blob blob-3"></div>
-    </div>
 
     <div class="hero-content">
       <div class="hero-eyebrow">Futur apprenti ingénieur · IMT Nord Europe 2026</div>
@@ -261,46 +254,30 @@
       <!-- Administration Système -->
       <div class="skills-group">
         <h3 class="skills-group-title reveal">🖥️ Administration Système</h3>
-        <div class="skills-grid">
-          <div class="skill-card reveal reveal-d1">
-            <div class="skill-top">
-              <div class="skill-info"><i class="fab fa-linux skill-icon" style="color:#ffa500"></i><span
-                  class="skill-name">Linux (Debian, Ubuntu)</span></div>
-              <span class="skill-pct">80%</span>
-            </div>
-            <div class="progress-bar">
-              <div class="progress-fill" data-width="80"></div>
-            </div>
+        <div class="skill-list">
+          <div class="skill-row reveal reveal-d1">
+            <span class="sr-icon"><i class="fab fa-linux" style="color:#ffa500"></i></span>
+            <span class="sr-name">Linux (Debian, Ubuntu)</span>
+            <div class="sr-bar"><div class="sr-fill" data-width="80"></div></div>
+            <span class="sr-pct">80%</span>
           </div>
-          <div class="skill-card reveal reveal-d2">
-            <div class="skill-top">
-              <div class="skill-info"><i class="fas fa-server skill-icon" style="color:#22c55e"></i><span
-                  class="skill-name">Configuration Serveur</span></div>
-              <span class="skill-pct">75%</span>
-            </div>
-            <div class="progress-bar">
-              <div class="progress-fill" data-width="75"></div>
-            </div>
+          <div class="skill-row reveal reveal-d2">
+            <span class="sr-icon"><i class="fas fa-server" style="color:#22c55e"></i></span>
+            <span class="sr-name">Configuration Serveur</span>
+            <div class="sr-bar"><div class="sr-fill" data-width="75"></div></div>
+            <span class="sr-pct">75%</span>
           </div>
-          <div class="skill-card reveal reveal-d3">
-            <div class="skill-top">
-              <div class="skill-info"><i class="fas fa-terminal skill-icon" style="color:#14b8a6"></i><span
-                  class="skill-name">Bash Scripting</span></div>
-              <span class="skill-pct">80%</span>
-            </div>
-            <div class="progress-bar">
-              <div class="progress-fill" data-width="80"></div>
-            </div>
+          <div class="skill-row reveal reveal-d3">
+            <span class="sr-icon"><i class="fas fa-terminal" style="color:#14b8a6"></i></span>
+            <span class="sr-name">Bash Scripting</span>
+            <div class="sr-bar"><div class="sr-fill" data-width="80"></div></div>
+            <span class="sr-pct">80%</span>
           </div>
-          <div class="skill-card reveal reveal-d4">
-            <div class="skill-top">
-              <div class="skill-info"><i class="fas fa-laptop-code skill-icon" style="color:#a1a1a6"></i><span
-                  class="skill-name">MacOS</span></div>
-              <span class="skill-pct">95%</span>
-            </div>
-            <div class="progress-bar">
-              <div class="progress-fill" data-width="95"></div>
-            </div>
+          <div class="skill-row reveal reveal-d4">
+            <span class="sr-icon"><i class="fas fa-laptop-code" style="color:#a1a1a6"></i></span>
+            <span class="sr-name">MacOS</span>
+            <div class="sr-bar"><div class="sr-fill" data-width="95"></div></div>
+            <span class="sr-pct">95%</span>
           </div>
         </div>
       </div>
@@ -308,26 +285,18 @@
       <!-- Réseaux -->
       <div class="skills-group">
         <h3 class="skills-group-title reveal">🌐 Réseaux</h3>
-        <div class="skills-grid">
-          <div class="skill-card reveal reveal-d1">
-            <div class="skill-top">
-              <div class="skill-info"><i class="fas fa-network-wired skill-icon" style="color:#6366f1"></i><span
-                  class="skill-name">Configuration Réseau</span></div>
-              <span class="skill-pct">70%</span>
-            </div>
-            <div class="progress-bar">
-              <div class="progress-fill" data-width="70"></div>
-            </div>
+        <div class="skill-list">
+          <div class="skill-row reveal reveal-d1">
+            <span class="sr-icon"><i class="fas fa-network-wired" style="color:#6366f1"></i></span>
+            <span class="sr-name">Configuration Réseau</span>
+            <div class="sr-bar"><div class="sr-fill" data-width="70"></div></div>
+            <span class="sr-pct">70%</span>
           </div>
-          <div class="skill-card reveal reveal-d2">
-            <div class="skill-top">
-              <div class="skill-info"><i class="fas fa-shield-alt skill-icon" style="color:#ef4444"></i><span
-                  class="skill-name">Sécurisation</span></div>
-              <span class="skill-pct">65%</span>
-            </div>
-            <div class="progress-bar">
-              <div class="progress-fill" data-width="65"></div>
-            </div>
+          <div class="skill-row reveal reveal-d2">
+            <span class="sr-icon"><i class="fas fa-shield-alt" style="color:#ef4444"></i></span>
+            <span class="sr-name">Sécurisation</span>
+            <div class="sr-bar"><div class="sr-fill" data-width="65"></div></div>
+            <span class="sr-pct">65%</span>
           </div>
         </div>
       </div>
@@ -335,36 +304,24 @@
       <!-- Virtualisation -->
       <div class="skills-group">
         <h3 class="skills-group-title reveal">📦 Virtualisation</h3>
-        <div class="skills-grid">
-          <div class="skill-card reveal reveal-d1">
-            <div class="skill-top">
-              <div class="skill-info"><i class="fas fa-cube skill-icon" style="color:#a855f7"></i><span
-                  class="skill-name">Vagrant</span></div>
-              <span class="skill-pct">70%</span>
-            </div>
-            <div class="progress-bar">
-              <div class="progress-fill" data-width="70"></div>
-            </div>
+        <div class="skill-list">
+          <div class="skill-row reveal reveal-d1">
+            <span class="sr-icon"><i class="fas fa-cube" style="color:#a855f7"></i></span>
+            <span class="sr-name">Vagrant</span>
+            <div class="sr-bar"><div class="sr-fill" data-width="70"></div></div>
+            <span class="sr-pct">70%</span>
           </div>
-          <div class="skill-card reveal reveal-d2">
-            <div class="skill-top">
-              <div class="skill-info"><i class="fab fa-docker skill-icon" style="color:#0ea5e9"></i><span
-                  class="skill-name">Docker</span></div>
-              <span class="skill-pct">75%</span>
-            </div>
-            <div class="progress-bar">
-              <div class="progress-fill" data-width="75"></div>
-            </div>
+          <div class="skill-row reveal reveal-d2">
+            <span class="sr-icon"><i class="fab fa-docker" style="color:#0ea5e9"></i></span>
+            <span class="sr-name">Docker</span>
+            <div class="sr-bar"><div class="sr-fill" data-width="75"></div></div>
+            <span class="sr-pct">75%</span>
           </div>
-          <div class="skill-card reveal reveal-d3">
-            <div class="skill-top">
-              <div class="skill-info"><i class="fas fa-server skill-icon" style="color:#22c55e"></i><span
-                  class="skill-name">VirtualBox</span></div>
-              <span class="skill-pct">65%</span>
-            </div>
-            <div class="progress-bar">
-              <div class="progress-fill" data-width="65"></div>
-            </div>
+          <div class="skill-row reveal reveal-d3">
+            <span class="sr-icon"><i class="fas fa-server" style="color:#22c55e"></i></span>
+            <span class="sr-name">VirtualBox</span>
+            <div class="sr-bar"><div class="sr-fill" data-width="65"></div></div>
+            <span class="sr-pct">65%</span>
           </div>
         </div>
       </div>
@@ -372,76 +329,48 @@
       <!-- Cloud & Observabilité -->
       <div class="skills-group">
         <h3 class="skills-group-title reveal">☁️ Cloud &amp; Observabilité</h3>
-        <div class="skills-grid">
-          <div class="skill-card reveal reveal-d1">
-            <div class="skill-top">
-              <div class="skill-info"><i class="fab fa-google skill-icon" style="color:#4285f4"></i><span
-                  class="skill-name">Google Cloud Platform</span></div>
-              <span class="skill-pct">60%</span>
-            </div>
-            <div class="progress-bar">
-              <div class="progress-fill" data-width="60"></div>
-            </div>
+        <div class="skill-list">
+          <div class="skill-row reveal reveal-d1">
+            <span class="sr-icon"><i class="fab fa-google" style="color:#4285f4"></i></span>
+            <span class="sr-name">Google Cloud Platform</span>
+            <div class="sr-bar"><div class="sr-fill" data-width="60"></div></div>
+            <span class="sr-pct">60%</span>
           </div>
-          <div class="skill-card reveal reveal-d2">
-            <div class="skill-top">
-              <div class="skill-info"><i class="fas fa-hdd skill-icon" style="color:#fbbc04"></i><span
-                  class="skill-name">GCP — Buckets (Cloud Storage)</span></div>
-              <span class="skill-pct">65%</span>
-            </div>
-            <div class="progress-bar">
-              <div class="progress-fill" data-width="65"></div>
-            </div>
+          <div class="skill-row reveal reveal-d2">
+            <span class="sr-icon"><i class="fas fa-hdd" style="color:#fbbc04"></i></span>
+            <span class="sr-name">GCP — Buckets (Cloud Storage)</span>
+            <div class="sr-bar"><div class="sr-fill" data-width="65"></div></div>
+            <span class="sr-pct">65%</span>
           </div>
-          <div class="skill-card reveal reveal-d3">
-            <div class="skill-top">
-              <div class="skill-info"><i class="fas fa-server skill-icon" style="color:#34a853"></i><span
-                  class="skill-name">GCP — Compute Engine (VMs)</span></div>
-              <span class="skill-pct">60%</span>
-            </div>
-            <div class="progress-bar">
-              <div class="progress-fill" data-width="60"></div>
-            </div>
+          <div class="skill-row reveal reveal-d3">
+            <span class="sr-icon"><i class="fas fa-server" style="color:#34a853"></i></span>
+            <span class="sr-name">GCP — Compute Engine (VMs)</span>
+            <div class="sr-bar"><div class="sr-fill" data-width="60"></div></div>
+            <span class="sr-pct">60%</span>
           </div>
-          <div class="skill-card reveal reveal-d4">
-            <div class="skill-top">
-              <div class="skill-info"><i class="fas fa-tachometer-alt skill-icon" style="color:#ea4335"></i><span
-                  class="skill-name">Tests de montée en charge</span></div>
-              <span class="skill-pct">55%</span>
-            </div>
-            <div class="progress-bar">
-              <div class="progress-fill" data-width="55"></div>
-            </div>
+          <div class="skill-row reveal reveal-d4">
+            <span class="sr-icon"><i class="fas fa-tachometer-alt" style="color:#ea4335"></i></span>
+            <span class="sr-name">Tests de montée en charge</span>
+            <div class="sr-bar"><div class="sr-fill" data-width="55"></div></div>
+            <span class="sr-pct">55%</span>
           </div>
-          <div class="skill-card reveal reveal-d5">
-            <div class="skill-top">
-              <div class="skill-info"><i class="fas fa-chart-line skill-icon" style="color:#f46800"></i><span
-                  class="skill-name">Grafana</span></div>
-              <span class="skill-pct">60%</span>
-            </div>
-            <div class="progress-bar">
-              <div class="progress-fill" data-width="60"></div>
-            </div>
+          <div class="skill-row reveal reveal-d5">
+            <span class="sr-icon"><i class="fas fa-chart-line" style="color:#f46800"></i></span>
+            <span class="sr-name">Grafana</span>
+            <div class="sr-bar"><div class="sr-fill" data-width="60"></div></div>
+            <span class="sr-pct">60%</span>
           </div>
-          <div class="skill-card reveal reveal-d6">
-            <div class="skill-top">
-              <div class="skill-info"><i class="fas fa-fire skill-icon" style="color:#e6522c"></i><span
-                  class="skill-name">Prometheus</span></div>
-              <span class="skill-pct">55%</span>
-            </div>
-            <div class="progress-bar">
-              <div class="progress-fill" data-width="55"></div>
-            </div>
+          <div class="skill-row reveal reveal-d6">
+            <span class="sr-icon"><i class="fas fa-fire" style="color:#e6522c"></i></span>
+            <span class="sr-name">Prometheus</span>
+            <div class="sr-bar"><div class="sr-fill" data-width="55"></div></div>
+            <span class="sr-pct">55%</span>
           </div>
-          <div class="skill-card reveal reveal-d1">
-            <div class="skill-top">
-              <div class="skill-info"><i class="fas fa-dharmachakra skill-icon" style="color:#326ce5"></i><span
-                  class="skill-name">Kubernetes (notions)</span></div>
-              <span class="skill-pct">35%</span>
-            </div>
-            <div class="progress-bar">
-              <div class="progress-fill" data-width="35"></div>
-            </div>
+          <div class="skill-row reveal">
+            <span class="sr-icon"><i class="fas fa-dharmachakra" style="color:#326ce5"></i></span>
+            <span class="sr-name">Kubernetes (notions)</span>
+            <div class="sr-bar"><div class="sr-fill" data-width="35"></div></div>
+            <span class="sr-pct">35%</span>
           </div>
         </div>
       </div>
@@ -449,85 +378,54 @@
       <!-- Développement -->
       <div class="skills-group">
         <h3 class="skills-group-title reveal">💻 Développement</h3>
-        <div class="skills-grid">
-          <div class="skill-card reveal reveal-d1">
-            <div class="skill-top">
-              <div class="skill-info"><i class="fab fa-java skill-icon" style="color:#f59e0b"></i><span
-                  class="skill-name">Java</span></div>
-              <span class="skill-pct">85%</span>
-            </div>
-            <div class="progress-bar">
-              <div class="progress-fill" data-width="85"></div>
-            </div>
+        <div class="skill-list">
+          <div class="skill-row reveal reveal-d1">
+            <span class="sr-icon"><i class="fab fa-java" style="color:#f59e0b"></i></span>
+            <span class="sr-name">Java</span>
+            <div class="sr-bar"><div class="sr-fill" data-width="85"></div></div>
+            <span class="sr-pct">85%</span>
           </div>
-          <div class="skill-card reveal reveal-d2">
-            <div class="skill-top">
-              <div class="skill-info"><i class="fab fa-php skill-icon" style="color:#a855f7"></i><span
-                  class="skill-name">PHP</span></div>
-              <span class="skill-pct">75%</span>
-            </div>
-            <div class="progress-bar">
-              <div class="progress-fill" data-width="75"></div>
-            </div>
+          <div class="skill-row reveal reveal-d2">
+            <span class="sr-icon"><i class="fab fa-php" style="color:#a855f7"></i></span>
+            <span class="sr-name">PHP</span>
+            <div class="sr-bar"><div class="sr-fill" data-width="75"></div></div>
+            <span class="sr-pct">75%</span>
           </div>
-          <div class="skill-card reveal reveal-d3">
-            <div class="skill-top">
-              <div class="skill-info"><i class="fab fa-html5 skill-icon" style="color:#ef4444"></i><span
-                  class="skill-name">HTML / CSS</span></div>
-              <span class="skill-pct">90%</span>
-            </div>
-            <div class="progress-bar">
-              <div class="progress-fill" data-width="90"></div>
-            </div>
+          <div class="skill-row reveal reveal-d3">
+            <span class="sr-icon"><i class="fab fa-html5" style="color:#ef4444"></i></span>
+            <span class="sr-name">HTML / CSS</span>
+            <div class="sr-bar"><div class="sr-fill" data-width="90"></div></div>
+            <span class="sr-pct">90%</span>
           </div>
-          <div class="skill-card reveal reveal-d4">
-            <div class="skill-top">
-              <div class="skill-info"><i class="fab fa-python skill-icon" style="color:#3b82f6"></i><span
-                  class="skill-name">Python</span></div>
-              <span class="skill-pct">70%</span>
-            </div>
-            <div class="progress-bar">
-              <div class="progress-fill" data-width="70"></div>
-            </div>
+          <div class="skill-row reveal reveal-d4">
+            <span class="sr-icon"><i class="fab fa-python" style="color:#3b82f6"></i></span>
+            <span class="sr-name">Python</span>
+            <div class="sr-bar"><div class="sr-fill" data-width="70"></div></div>
+            <span class="sr-pct">70%</span>
           </div>
-          <div class="skill-card reveal reveal-d5">
-            <div class="skill-top">
-              <div class="skill-info"><span class="skill-icon">💎</span><span class="skill-name">Ruby</span></div>
-              <span class="skill-pct">75%</span>
-            </div>
-            <div class="progress-bar">
-              <div class="progress-fill" data-width="75"></div>
-            </div>
+          <div class="skill-row reveal reveal-d5">
+            <span class="sr-icon">💎</span>
+            <span class="sr-name">Ruby</span>
+            <div class="sr-bar"><div class="sr-fill" data-width="75"></div></div>
+            <span class="sr-pct">75%</span>
           </div>
-          <div class="skill-card reveal reveal-d6">
-            <div class="skill-top">
-              <div class="skill-info"><i class="fas fa-file-alt skill-icon" style="color:#ef4444"></i><span
-                  class="skill-name">LaTeX</span></div>
-              <span class="skill-pct">85%</span>
-            </div>
-            <div class="progress-bar">
-              <div class="progress-fill" data-width="85"></div>
-            </div>
+          <div class="skill-row reveal reveal-d6">
+            <span class="sr-icon"><i class="fas fa-file-alt" style="color:#ef4444"></i></span>
+            <span class="sr-name">LaTeX</span>
+            <div class="sr-bar"><div class="sr-fill" data-width="85"></div></div>
+            <span class="sr-pct">85%</span>
           </div>
-          <div class="skill-card reveal reveal-d1">
-            <div class="skill-top">
-              <div class="skill-info"><i class="fas fa-code skill-icon" style="color:#a1a1a6"></i><span
-                  class="skill-name">C</span></div>
-              <span class="skill-pct">50%</span>
-            </div>
-            <div class="progress-bar">
-              <div class="progress-fill" data-width="50"></div>
-            </div>
+          <div class="skill-row reveal">
+            <span class="sr-icon"><i class="fas fa-code" style="color:#a1a1a6"></i></span>
+            <span class="sr-name">C</span>
+            <div class="sr-bar"><div class="sr-fill" data-width="50"></div></div>
+            <span class="sr-pct">50%</span>
           </div>
-          <div class="skill-card reveal reveal-d2">
-            <div class="skill-top">
-              <div class="skill-info"><i class="fas fa-table skill-icon" style="color:#22c55e"></i><span
-                  class="skill-name">VBA</span></div>
-              <span class="skill-pct">65%</span>
-            </div>
-            <div class="progress-bar">
-              <div class="progress-fill" data-width="65"></div>
-            </div>
+          <div class="skill-row reveal">
+            <span class="sr-icon"><i class="fas fa-table" style="color:#22c55e"></i></span>
+            <span class="sr-name">VBA</span>
+            <div class="sr-bar"><div class="sr-fill" data-width="65"></div></div>
+            <span class="sr-pct">65%</span>
           </div>
         </div>
       </div>
