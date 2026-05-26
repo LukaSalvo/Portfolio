@@ -14,7 +14,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap"
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap"
     rel="stylesheet">
 
   <!-- Icons -->
@@ -112,12 +112,12 @@
       </p>
 
       <div class="hero-tags">
-        <span class="tag">🐧 Linux</span>
-        <span class="tag">🔐 Cybersécurité</span>
-        <span class="tag">🐳 Docker</span>
-        <span class="tag">⚙️ DevOps</span>
-        <span class="tag">🕵️ OSINT</span>
-        <span class="tag">🖧 Réseaux</span>
+        <span class="tag">Linux</span>
+        <span class="tag">Cybersécurité</span>
+        <span class="tag">Docker</span>
+        <span class="tag">DevOps</span>
+        <span class="tag">OSINT</span>
+        <span class="tag">Réseaux</span>
       </div>
 
       <div class="hero-cta">
@@ -235,439 +235,325 @@
   <!-- ═══════════ SKILLS ═══════════ -->
   <section id="skills" class="bg-alt" aria-label="Compétences">
     <div class="section-inner">
-      <div class="section-header">
+
+      <!-- Sticky header -->
+      <div class="section-header skills-sticky-header">
         <span class="section-label reveal">Compétences</span>
         <h2 class="section-title reveal">Mon arsenal technique</h2>
-        <p class="section-desc reveal">Administration système, réseaux, virtualisation, cybersécurité et développement.
-        </p>
+        <p class="section-desc reveal">Administration système, réseaux, virtualisation, cybersécurité et développement.</p>
       </div>
 
       <!-- TryHackMe badge -->
       <div class="thm-badge reveal">
-        <div class="thm-icon">🏴</div>
+        <div class="thm-icon"><i class="fas fa-flag"></i></div>
         <div class="thm-text">
           <strong>TryHackMe — Pratique CTF active</strong>
           <span>Rooms offensives &amp; défensives · Reconnaissance · Exploitation · Forensics</span>
         </div>
       </div>
 
-      <!-- Administration Système -->
-      <div class="skills-group">
-        <h3 class="skills-group-title reveal">🖥️ Administration Système</h3>
-        <div class="skill-list">
-          <div class="skill-row reveal reveal-d1">
-            <span class="sr-icon"><i class="fab fa-linux" style="color:#ffa500"></i></span>
-            <span class="sr-name">Linux (Debian, Ubuntu)</span>
-            <div class="sr-bar"><div class="sr-fill" data-width="80"></div></div>
-            <span class="sr-pct">80%</span>
-          </div>
-          <div class="skill-row reveal reveal-d2">
-            <span class="sr-icon"><i class="fas fa-server" style="color:#22c55e"></i></span>
-            <span class="sr-name">Configuration Serveur</span>
-            <div class="sr-bar"><div class="sr-fill" data-width="75"></div></div>
-            <span class="sr-pct">75%</span>
-          </div>
-          <div class="skill-row reveal reveal-d3">
-            <span class="sr-icon"><i class="fas fa-terminal" style="color:#14b8a6"></i></span>
-            <span class="sr-name">Bash Scripting</span>
-            <div class="sr-bar"><div class="sr-fill" data-width="80"></div></div>
-            <span class="sr-pct">80%</span>
-          </div>
-          <div class="skill-row reveal reveal-d4">
-            <span class="sr-icon"><i class="fas fa-laptop-code" style="color:#a1a1a6"></i></span>
-            <span class="sr-name">MacOS</span>
-            <div class="sr-bar"><div class="sr-fill" data-width="95"></div></div>
-            <span class="sr-pct">95%</span>
-          </div>
-        </div>
-      </div>
+      <!-- 5 catégories — grille de cartes -->
+      <div class="skills-cards-grid">
 
-      <!-- Réseaux -->
-      <div class="skills-group">
-        <h3 class="skills-group-title reveal">🌐 Réseaux</h3>
-        <div class="skill-list">
-          <div class="skill-row reveal reveal-d1">
-            <span class="sr-icon"><i class="fas fa-network-wired" style="color:#6366f1"></i></span>
-            <span class="sr-name">Configuration Réseau</span>
-            <div class="sr-bar"><div class="sr-fill" data-width="70"></div></div>
-            <span class="sr-pct">70%</span>
+        <div class="skill-card">
+          <span class="skill-card-prefix">[sys]</span>
+          <h3 class="skill-card-title">Administration</h3>
+          <div class="skill-card-tags">
+            <span class="skill-tag">Linux</span>
+            <span class="skill-tag">Debian</span>
+            <span class="skill-tag">Ubuntu</span>
+            <span class="skill-tag">Bash</span>
+            <span class="skill-tag">SSH</span>
+            <span class="skill-tag">Nginx</span>
+            <span class="skill-tag">Apache</span>
+            <span class="skill-tag">MacOS</span>
           </div>
-          <div class="skill-row reveal reveal-d2">
-            <span class="sr-icon"><i class="fas fa-shield-alt" style="color:#ef4444"></i></span>
-            <span class="sr-name">Sécurisation</span>
-            <div class="sr-bar"><div class="sr-fill" data-width="65"></div></div>
-            <span class="sr-pct">65%</span>
-          </div>
+          <div class="skill-card-level">Opérationnel</div>
         </div>
-      </div>
 
-      <!-- Virtualisation -->
-      <div class="skills-group">
-        <h3 class="skills-group-title reveal">📦 Virtualisation</h3>
-        <div class="skill-list">
-          <div class="skill-row reveal reveal-d1">
-            <span class="sr-icon"><i class="fas fa-cube" style="color:#a855f7"></i></span>
-            <span class="sr-name">Vagrant</span>
-            <div class="sr-bar"><div class="sr-fill" data-width="70"></div></div>
-            <span class="sr-pct">70%</span>
+        <div class="skill-card">
+          <span class="skill-card-prefix">[net]</span>
+          <h3 class="skill-card-title">Réseaux</h3>
+          <div class="skill-card-tags">
+            <span class="skill-tag">Cisco</span>
+            <span class="skill-tag">VLANs</span>
+            <span class="skill-tag">Routage</span>
+            <span class="skill-tag">Marionnet</span>
+            <span class="skill-tag">Sécurisation</span>
+            <span class="skill-tag">Firewall</span>
           </div>
-          <div class="skill-row reveal reveal-d2">
-            <span class="sr-icon"><i class="fab fa-docker" style="color:#0ea5e9"></i></span>
-            <span class="sr-name">Docker</span>
-            <div class="sr-bar"><div class="sr-fill" data-width="75"></div></div>
-            <span class="sr-pct">75%</span>
-          </div>
-          <div class="skill-row reveal reveal-d3">
-            <span class="sr-icon"><i class="fas fa-server" style="color:#22c55e"></i></span>
-            <span class="sr-name">VirtualBox</span>
-            <div class="sr-bar"><div class="sr-fill" data-width="65"></div></div>
-            <span class="sr-pct">65%</span>
-          </div>
+          <div class="skill-card-level">Opérationnel</div>
         </div>
-      </div>
 
-      <!-- Cloud & Observabilité -->
-      <div class="skills-group">
-        <h3 class="skills-group-title reveal">☁️ Cloud &amp; Observabilité</h3>
-        <div class="skill-list">
-          <div class="skill-row reveal reveal-d1">
-            <span class="sr-icon"><i class="fab fa-google" style="color:#4285f4"></i></span>
-            <span class="sr-name">Google Cloud Platform</span>
-            <div class="sr-bar"><div class="sr-fill" data-width="60"></div></div>
-            <span class="sr-pct">60%</span>
+        <div class="skill-card">
+          <span class="skill-card-prefix">[virt]</span>
+          <h3 class="skill-card-title">Virtualisation</h3>
+          <div class="skill-card-tags">
+            <span class="skill-tag">Docker</span>
+            <span class="skill-tag">Vagrant</span>
+            <span class="skill-tag">VirtualBox</span>
+            <span class="skill-tag">Kubernetes</span>
+            <span class="skill-tag">Compose</span>
           </div>
-          <div class="skill-row reveal reveal-d2">
-            <span class="sr-icon"><i class="fas fa-hdd" style="color:#fbbc04"></i></span>
-            <span class="sr-name">GCP — Buckets (Cloud Storage)</span>
-            <div class="sr-bar"><div class="sr-fill" data-width="65"></div></div>
-            <span class="sr-pct">65%</span>
-          </div>
-          <div class="skill-row reveal reveal-d3">
-            <span class="sr-icon"><i class="fas fa-server" style="color:#34a853"></i></span>
-            <span class="sr-name">GCP — Compute Engine (VMs)</span>
-            <div class="sr-bar"><div class="sr-fill" data-width="60"></div></div>
-            <span class="sr-pct">60%</span>
-          </div>
-          <div class="skill-row reveal reveal-d4">
-            <span class="sr-icon"><i class="fas fa-tachometer-alt" style="color:#ea4335"></i></span>
-            <span class="sr-name">Tests de montée en charge</span>
-            <div class="sr-bar"><div class="sr-fill" data-width="55"></div></div>
-            <span class="sr-pct">55%</span>
-          </div>
-          <div class="skill-row reveal reveal-d5">
-            <span class="sr-icon"><i class="fas fa-chart-line" style="color:#f46800"></i></span>
-            <span class="sr-name">Grafana</span>
-            <div class="sr-bar"><div class="sr-fill" data-width="60"></div></div>
-            <span class="sr-pct">60%</span>
-          </div>
-          <div class="skill-row reveal reveal-d6">
-            <span class="sr-icon"><i class="fas fa-fire" style="color:#e6522c"></i></span>
-            <span class="sr-name">Prometheus</span>
-            <div class="sr-bar"><div class="sr-fill" data-width="55"></div></div>
-            <span class="sr-pct">55%</span>
-          </div>
-          <div class="skill-row reveal">
-            <span class="sr-icon"><i class="fas fa-dharmachakra" style="color:#326ce5"></i></span>
-            <span class="sr-name">Kubernetes (notions)</span>
-            <div class="sr-bar"><div class="sr-fill" data-width="35"></div></div>
-            <span class="sr-pct">35%</span>
-          </div>
+          <div class="skill-card-level">Opérationnel</div>
         </div>
-      </div>
 
-      <!-- Développement -->
-      <div class="skills-group">
-        <h3 class="skills-group-title reveal">💻 Développement</h3>
-        <div class="skill-list">
-          <div class="skill-row reveal reveal-d1">
-            <span class="sr-icon"><i class="fab fa-java" style="color:#f59e0b"></i></span>
-            <span class="sr-name">Java</span>
-            <div class="sr-bar"><div class="sr-fill" data-width="85"></div></div>
-            <span class="sr-pct">85%</span>
+        <div class="skill-card">
+          <span class="skill-card-prefix">[cloud]</span>
+          <h3 class="skill-card-title">Cloud &amp; Observabilité</h3>
+          <div class="skill-card-tags">
+            <span class="skill-tag">GCP</span>
+            <span class="skill-tag">Compute Engine</span>
+            <span class="skill-tag">Cloud Storage</span>
+            <span class="skill-tag">Grafana</span>
+            <span class="skill-tag">Prometheus</span>
           </div>
-          <div class="skill-row reveal reveal-d2">
-            <span class="sr-icon"><i class="fab fa-php" style="color:#a855f7"></i></span>
-            <span class="sr-name">PHP</span>
-            <div class="sr-bar"><div class="sr-fill" data-width="75"></div></div>
-            <span class="sr-pct">75%</span>
-          </div>
-          <div class="skill-row reveal reveal-d3">
-            <span class="sr-icon"><i class="fab fa-html5" style="color:#ef4444"></i></span>
-            <span class="sr-name">HTML / CSS</span>
-            <div class="sr-bar"><div class="sr-fill" data-width="90"></div></div>
-            <span class="sr-pct">90%</span>
-          </div>
-          <div class="skill-row reveal reveal-d4">
-            <span class="sr-icon"><i class="fab fa-python" style="color:#3b82f6"></i></span>
-            <span class="sr-name">Python</span>
-            <div class="sr-bar"><div class="sr-fill" data-width="70"></div></div>
-            <span class="sr-pct">70%</span>
-          </div>
-          <div class="skill-row reveal reveal-d5">
-            <span class="sr-icon">💎</span>
-            <span class="sr-name">Ruby</span>
-            <div class="sr-bar"><div class="sr-fill" data-width="75"></div></div>
-            <span class="sr-pct">75%</span>
-          </div>
-          <div class="skill-row reveal reveal-d6">
-            <span class="sr-icon"><i class="fas fa-file-alt" style="color:#ef4444"></i></span>
-            <span class="sr-name">LaTeX</span>
-            <div class="sr-bar"><div class="sr-fill" data-width="85"></div></div>
-            <span class="sr-pct">85%</span>
-          </div>
-          <div class="skill-row reveal">
-            <span class="sr-icon"><i class="fas fa-code" style="color:#a1a1a6"></i></span>
-            <span class="sr-name">C</span>
-            <div class="sr-bar"><div class="sr-fill" data-width="50"></div></div>
-            <span class="sr-pct">50%</span>
-          </div>
-          <div class="skill-row reveal">
-            <span class="sr-icon"><i class="fas fa-table" style="color:#22c55e"></i></span>
-            <span class="sr-name">VBA</span>
-            <div class="sr-bar"><div class="sr-fill" data-width="65"></div></div>
-            <span class="sr-pct">65%</span>
-          </div>
+          <div class="skill-card-level">Notions</div>
         </div>
-      </div>
+
+        <div class="skill-card">
+          <span class="skill-card-prefix">[dev]</span>
+          <h3 class="skill-card-title">Développement</h3>
+          <div class="skill-card-tags">
+            <span class="skill-tag">Java</span>
+            <span class="skill-tag">PHP</span>
+            <span class="skill-tag">Python</span>
+            <span class="skill-tag">Ruby</span>
+            <span class="skill-tag">HTML/CSS</span>
+            <span class="skill-tag">LaTeX</span>
+            <span class="skill-tag">C</span>
+            <span class="skill-tag">VBA</span>
+          </div>
+          <div class="skill-card-level">Opérationnel</div>
+        </div>
+
+      </div><!-- /skills-cards-grid -->
 
       <!-- IA & Auto-formation -->
       <div class="skills-group">
-        <h3 class="skills-group-title reveal">🤖 IA &amp; Auto-formation Claude / Anthropic</h3>
+        <h3 class="skills-group-title reveal">IA &amp; Auto-formation Claude / Anthropic</h3>
 
-        <!-- Certifications acquises -->
-        <p class="skills-subgroup-label reveal">Certifications acquises</p>
+        <!-- Certifications vedettes -->
+        <p class="skills-subgroup-label reveal">Certifications — sélection admin sys / DevOps / cyber</p>
         <div class="cert-grid">
           <div class="cert-card reveal reveal-d1">
-            <div class="cert-status cert-done"><i class="fas fa-check-circle"></i> Obtenu</div>
-            <div class="cert-name">AI Capabilities and Limitations</div>
-            <div class="cert-org">Anthropic · Cours en ligne</div>
-          </div>
-          <div class="cert-card reveal reveal-d2">
-            <div class="cert-status cert-done"><i class="fas fa-check-circle"></i> Obtenu</div>
-            <div class="cert-name">AI Fluency for Students</div>
-            <div class="cert-org">Anthropic · Cours en ligne</div>
-          </div>
-          <div class="cert-card reveal reveal-d3">
-            <div class="cert-status cert-done"><i class="fas fa-check-circle"></i> Obtenu</div>
-            <div class="cert-name">Claude 101</div>
-            <div class="cert-org">Anthropic · Cours en ligne</div>
-          </div>
-          <div class="cert-card reveal reveal-d4">
-            <div class="cert-status cert-done"><i class="fas fa-check-circle"></i> Obtenu</div>
-            <div class="cert-name">Introduction to Subagents</div>
-            <div class="cert-org">Anthropic · Cours en ligne</div>
-          </div>
-          <div class="cert-card reveal reveal-d5">
-            <div class="cert-status cert-done"><i class="fas fa-check-circle"></i> Obtenu</div>
-            <div class="cert-name">Introduction to Model Context Protocol</div>
-            <div class="cert-org">Anthropic · Cours en ligne</div>
-          </div>
-          <div class="cert-card reveal reveal-d6">
-            <div class="cert-status cert-done"><i class="fas fa-check-circle"></i> Obtenu</div>
-            <div class="cert-name">Teaching AI Fluency</div>
-            <div class="cert-org">Anthropic · Cours en ligne</div>
-          </div>
-          <div class="cert-card reveal reveal-d7">
-            <div class="cert-status cert-done"><i class="fas fa-check-circle"></i> Obtenu</div>
-            <div class="cert-name">Introduction à la cybersécurité</div>
-            <div class="cert-org">Cisco Networking Academy</div>
-          </div>
-          <div class="cert-card reveal reveal-d8">
             <div class="cert-status cert-done"><i class="fas fa-check-circle"></i> Obtenu</div>
             <div class="cert-name">Claude Code 101</div>
             <div class="cert-org">Anthropic · Cours en ligne</div>
           </div>
-          <div class="cert-card reveal reveal-d8">
+          <div class="cert-card reveal reveal-d2">
             <div class="cert-status cert-done"><i class="fas fa-check-circle"></i> Obtenu</div>
-            <div class="cert-name">Introduction à Claude Cowork</div>
+            <div class="cert-name">Introduction to Model Context Protocol</div>
             <div class="cert-org">Anthropic · Cours en ligne</div>
           </div>
-          <div class="cert-card reveal reveal-d9">
+          <div class="cert-card reveal reveal-d3">
             <div class="cert-status cert-done"><i class="fas fa-check-circle"></i> Obtenu</div>
-            <div class="cert-name">Introduction to Greenhouse Gas Accounting for IT</div>
-            <div class="cert-org">Cisco Networking Academy</div>
+            <div class="cert-name">Introduction to Subagents</div>
+            <div class="cert-org">Anthropic · Cours en ligne</div>
           </div>
-
-          <div class="cert-card reveal reveal-d10">
-            <div class="cert-status cert-done"><i class="fas fa-check-circle"></i> Obtenu</div>
-            <div class="cert-name">Google AI Fundamentals</div>
-            <div class="cert-org">Coursera Google Courses</div>
-          </div>
-
-          <div class="cert-card reveal reveal-d11">
-            <div class="cert-status cert-done"><i class="fas fa-check-circle"></i> Obtenu</div>
-            <div class="cert-name">Google AI Professional Certificate</div>
-            <div class="cert-org">Coursera Google Courses</div>
-          </div>
-          
-          <div class="cert-card reveal reveal-d12">
-            <div class="cert-status cert-done"><i class="fas fa-check-circle"></i> Obtenu</div>
-            <div class="cert-name">Google AI for Data Analysis</div>
-            <div class="cert-org">Coursera Google Courses</div>
-          </div>
-
-          <div class="cert-card reveal reveal-d13">
-            <div class="cert-status cert-done"><i class="fas fa-check-circle"></i> Obtenu</div>
-            <div class="cert-name">Google AI for App Building</div>
-            <div class="cert-org">Coursera Google Courses</div>
-          </div>
-        </div>
-
-        <!-- Certifications en cours -->
-        <p class="skills-subgroup-label reveal" style="margin-top:20px;">En cours d'acquisition</p>
-        <div class="cert-grid">
-          <div class="cert-card cert-wip reveal reveal-d1">
+          <div class="cert-card cert-wip reveal reveal-d4">
             <div class="cert-status cert-progress"><i class="fas fa-spinner"></i> En cours</div>
             <div class="cert-name">Building with the Claude API</div>
             <div class="cert-org">Anthropic · Cours en ligne</div>
           </div>
-          <div class="cert-card cert-wip reveal reveal-d2">
-            <div class="cert-status cert-progress"><i class="fas fa-spinner"></i> En cours</div>
-            <div class="cert-name">Linux Unhatched</div>
-            <div class="cert-org">Cisco Networking Academy</div>
-          </div>
-          <div class="cert-card cert-wip reveal reveal-d3">
-            <div class="cert-status cert-progress"><i class="fas fa-spinner"></i> En cours</div>
-            <div class="cert-name">Défense du Réseau</div>
-            <div class="cert-org">Cisco Networking Academy</div>
-          </div>
-          <div class="cert-card cert-wip reveal reveal-d4">
-            <div class="cert-status cert-progress"><i class="fas fa-spinner"></i> En cours</div>
-            <div class="cert-name">Introduction à l'IA moderne</div>
-            <div class="cert-org">Cisco Networking Academy</div>
-          </div>
-          <div class="cert-card cert-wip reveal reveal-d5">
-            <div class="cert-status cert-progress"><i class="fas fa-spinner"></i> En cours</div>
-            <div class="cert-name">Appliquer l’IA : analyser les avis des clients</div>
-            <div class="cert-org">Cisco Networking Academy</div>
-          </div>
         </div>
+
+        <!-- Toutes les certifications (repliable) -->
+        <details class="cert-details reveal">
+          <summary class="cert-summary">
+            Voir toutes les certifications <span class="cert-count">(15 autres)</span>
+          </summary>
+          <div class="cert-grid cert-details-grid">
+            <div class="cert-card">
+              <div class="cert-status cert-done"><i class="fas fa-check-circle"></i> Obtenu</div>
+              <div class="cert-name">AI Capabilities and Limitations</div>
+              <div class="cert-org">Anthropic · Cours en ligne</div>
+            </div>
+            <div class="cert-card">
+              <div class="cert-status cert-done"><i class="fas fa-check-circle"></i> Obtenu</div>
+              <div class="cert-name">AI Fluency for Students</div>
+              <div class="cert-org">Anthropic · Cours en ligne</div>
+            </div>
+            <div class="cert-card">
+              <div class="cert-status cert-done"><i class="fas fa-check-circle"></i> Obtenu</div>
+              <div class="cert-name">Claude 101</div>
+              <div class="cert-org">Anthropic · Cours en ligne</div>
+            </div>
+            <div class="cert-card">
+              <div class="cert-status cert-done"><i class="fas fa-check-circle"></i> Obtenu</div>
+              <div class="cert-name">Teaching AI Fluency</div>
+              <div class="cert-org">Anthropic · Cours en ligne</div>
+            </div>
+            <div class="cert-card">
+              <div class="cert-status cert-done"><i class="fas fa-check-circle"></i> Obtenu</div>
+              <div class="cert-name">Introduction à Claude Cowork</div>
+              <div class="cert-org">Anthropic · Cours en ligne</div>
+            </div>
+            <div class="cert-card">
+              <div class="cert-status cert-done"><i class="fas fa-check-circle"></i> Obtenu</div>
+              <div class="cert-name">Introduction à la cybersécurité</div>
+              <div class="cert-org">Cisco Networking Academy</div>
+            </div>
+            <div class="cert-card">
+              <div class="cert-status cert-done"><i class="fas fa-check-circle"></i> Obtenu</div>
+              <div class="cert-name">Introduction to Greenhouse Gas Accounting for IT</div>
+              <div class="cert-org">Cisco Networking Academy</div>
+            </div>
+            <div class="cert-card">
+              <div class="cert-status cert-done"><i class="fas fa-check-circle"></i> Obtenu</div>
+              <div class="cert-name">Google AI Fundamentals</div>
+              <div class="cert-org">Coursera Google Courses</div>
+            </div>
+            <div class="cert-card">
+              <div class="cert-status cert-done"><i class="fas fa-check-circle"></i> Obtenu</div>
+              <div class="cert-name">Google AI Professional Certificate</div>
+              <div class="cert-org">Coursera Google Courses</div>
+            </div>
+            <div class="cert-card">
+              <div class="cert-status cert-done"><i class="fas fa-check-circle"></i> Obtenu</div>
+              <div class="cert-name">Google AI for Data Analysis</div>
+              <div class="cert-org">Coursera Google Courses</div>
+            </div>
+            <div class="cert-card">
+              <div class="cert-status cert-done"><i class="fas fa-check-circle"></i> Obtenu</div>
+              <div class="cert-name">Google AI for App Building</div>
+              <div class="cert-org">Coursera Google Courses</div>
+            </div>
+            <div class="cert-card cert-wip">
+              <div class="cert-status cert-progress"><i class="fas fa-spinner"></i> En cours</div>
+              <div class="cert-name">Linux Unhatched</div>
+              <div class="cert-org">Cisco Networking Academy</div>
+            </div>
+            <div class="cert-card cert-wip">
+              <div class="cert-status cert-progress"><i class="fas fa-spinner"></i> En cours</div>
+              <div class="cert-name">Défense du Réseau</div>
+              <div class="cert-org">Cisco Networking Academy</div>
+            </div>
+            <div class="cert-card cert-wip">
+              <div class="cert-status cert-progress"><i class="fas fa-spinner"></i> En cours</div>
+              <div class="cert-name">Introduction à l'IA moderne</div>
+              <div class="cert-org">Cisco Networking Academy</div>
+            </div>
+            <div class="cert-card cert-wip">
+              <div class="cert-status cert-progress"><i class="fas fa-spinner"></i> En cours</div>
+              <div class="cert-name">Appliquer l'IA : analyser les avis des clients</div>
+              <div class="cert-org">Cisco Networking Academy</div>
+            </div>
+          </div>
+        </details>
       </div>
 
       <p class="skills-subgroup-label reveal" style="margin-top:20px;">Mes badges</p>
-      <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="efb11d6d-10c1-446e-8ad4-65a1ee15174c" data-share-badge-host="https://www.credly.com"></div><script type="text/javascript" async src="//cdn.credly.com/assets/utilities/embed.js"></script>
-      <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="d2e9bc6f-d3bb-407d-9ff9-f7d6b444d109" data-share-badge-host="https://www.credly.com"></div><script type="text/javascript" async src="//cdn.credly.com/assets/utilities/embed.js"></script>
-      <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="66027680-6cca-4250-a29d-6267ae702269" data-share-badge-host="https://www.credly.com"></div><script type="text/javascript" async src="//cdn.credly.com/assets/utilities/embed.js"></script>
-      <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="1f5f8901-502d-4acc-8052-6165c776e456" data-share-badge-host="https://www.credly.com"></div><script type="text/javascript" async src="//cdn.credly.com/assets/utilities/embed.js"></script>
-      <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="78331096-ba12-4123-912d-55123b8dc19b" data-share-badge-host="https://www.credly.com"></div><script type="text/javascript" async src="//cdn.credly.com/assets/utilities/embed.js"></script>
-      <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="ca468245-1a2a-425a-b82c-5972887afa4b" data-share-badge-host="https://www.credly.com"></div><script type="text/javascript" async src="//cdn.credly.com/assets/utilities/embed.js"></script>
-      <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="3c7b5deb-27af-4980-8694-601c8b319a21" data-share-badge-host="https://www.credly.com"></div><script type="text/javascript" async src="//cdn.credly.com/assets/utilities/embed.js"></script>
-      <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="816c2782-f058-4fac-8395-eddcb8e7c49e" data-share-badge-host="https://www.credly.com"></div><script type="text/javascript" async src="//cdn.credly.com/assets/utilities/embed.js"></script>
-      <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="43b3ca16-5a68-4cca-a889-bb7def557ed5" data-share-badge-host="https://www.credly.com"></div><script type="text/javascript" async src="//cdn.credly.com/assets/utilities/embed.js"></script>
-      <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="a379e0bb-059a-4902-8e41-21fb59fac5d9" data-share-badge-host="https://www.credly.com"></div><script type="text/javascript" async src="//cdn.credly.com/assets/utilities/embed.js"></script>
-      <!-- Auto-évaluation -->
+      <div class="badges-row">
+        <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="efb11d6d-10c1-446e-8ad4-65a1ee15174c" data-share-badge-host="https://www.credly.com"></div><script type="text/javascript" async src="//cdn.credly.com/assets/utilities/embed.js"></script>
+        <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="d2e9bc6f-d3bb-407d-9ff9-f7d6b444d109" data-share-badge-host="https://www.credly.com"></div><script type="text/javascript" async src="//cdn.credly.com/assets/utilities/embed.js"></script>
+        <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="66027680-6cca-4250-a29d-6267ae702269" data-share-badge-host="https://www.credly.com"></div><script type="text/javascript" async src="//cdn.credly.com/assets/utilities/embed.js"></script>
+        <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="1f5f8901-502d-4acc-8052-6165c776e456" data-share-badge-host="https://www.credly.com"></div><script type="text/javascript" async src="//cdn.credly.com/assets/utilities/embed.js"></script>
+        <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="78331096-ba12-4123-912d-55123b8dc19b" data-share-badge-host="https://www.credly.com"></div><script type="text/javascript" async src="//cdn.credly.com/assets/utilities/embed.js"></script>
+        <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="ca468245-1a2a-425a-b82c-5972887afa4b" data-share-badge-host="https://www.credly.com"></div><script type="text/javascript" async src="//cdn.credly.com/assets/utilities/embed.js"></script>
+        <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="3c7b5deb-27af-4980-8694-601c8b319a21" data-share-badge-host="https://www.credly.com"></div><script type="text/javascript" async src="//cdn.credly.com/assets/utilities/embed.js"></script>
+        <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="816c2782-f058-4fac-8395-eddcb8e7c49e" data-share-badge-host="https://www.credly.com"></div><script type="text/javascript" async src="//cdn.credly.com/assets/utilities/embed.js"></script>
+        <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="43b3ca16-5a68-4cca-a889-bb7def557ed5" data-share-badge-host="https://www.credly.com"></div><script type="text/javascript" async src="//cdn.credly.com/assets/utilities/embed.js"></script>
+        <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="a379e0bb-059a-4902-8e41-21fb59fac5d9" data-share-badge-host="https://www.credly.com"></div><script type="text/javascript" async src="//cdn.credly.com/assets/utilities/embed.js"></script>
+      </div>
+
+      <!-- Auto-évaluation BUT DACS — 2 colonnes, sans étoiles -->
       <div>
         <span class="section-label reveal">Auto-évaluation</span>
         <h3 class="section-title reveal" style="font-size:1.8rem;margin-bottom:32px;">Compétences clés BUT DACS</h3>
-        <div class="competence-grid">
+        <div class="comp-list">
 
-          <div class="competence-card reveal reveal-d1">
-            <div class="competence-head">
+          <div class="comp-row reveal">
+            <div class="comp-row-name">
               <div class="competence-ic"><i class="fas fa-globe"></i></div>
-              <div class="competence-name">Architectures et protocoles Internet</div>
+              <span>Architectures et protocoles Internet</span>
             </div>
-            <span class="stars">★★☆☆☆</span>
-            <span class="comp-section-label">Justification</span>
-            <p class="comp-text">Administration de serveurs Debian, mise en place de Nginx, scripts Bash pour
-              l'automatisation des sauvegardes.</p>
-            <span class="comp-section-label">Axes d'amélioration</span>
-            <p class="comp-text" style="margin-bottom:0">Approfondir l'orchestration avec Kubernetes et Docker Swarm.
-            </p>
+            <div class="comp-row-detail">
+              <p class="comp-text">Administration de serveurs Debian, mise en place de Nginx, scripts Bash pour l'automatisation des sauvegardes.</p>
+              <p class="comp-text"><span class="comp-axe-label">Amélioration —</span> Approfondir l'orchestration avec Kubernetes et Docker Swarm.</p>
+            </div>
           </div>
 
-          <div class="competence-card reveal reveal-d2">
-            <div class="competence-head">
+          <div class="comp-row reveal reveal-d1">
+            <div class="comp-row-name">
               <div class="competence-ic"><i class="fab fa-linux"></i></div>
-              <div class="competence-name">Installation &amp; administration Linux</div>
+              <span>Installation &amp; administration Linux</span>
             </div>
-            <span class="stars">★★★☆☆</span>
-            <span class="comp-section-label">Justification</span>
-            <p class="comp-text">Installation et administration de Debian/Ubuntu, configuration SSH, Apache sur des
-              projets académiques.</p>
-            <span class="comp-section-label">Axes d'amélioration</span>
-            <p class="comp-text" style="margin-bottom:0">VPN avancés, protocoles IPsec.</p>
+            <div class="comp-row-detail">
+              <p class="comp-text">Installation et administration de Debian/Ubuntu, configuration SSH, Apache sur des projets académiques.</p>
+              <p class="comp-text"><span class="comp-axe-label">Amélioration —</span> VPN avancés, protocoles IPsec.</p>
+            </div>
           </div>
 
-          <div class="competence-card reveal reveal-d3">
-            <div class="competence-head">
+          <div class="comp-row reveal reveal-d2">
+            <div class="comp-row-name">
               <div class="competence-ic"><i class="fas fa-network-wired"></i></div>
-              <div class="competence-name">Administration réseau</div>
+              <span>Administration réseau</span>
             </div>
-            <span class="stars">★★★★☆</span>
-            <span class="comp-section-label">Justification</span>
-            <p class="comp-text">Configuration de routeurs virtuels et VLANs pour segmenter le trafic via Marionnet.</p>
-            <span class="comp-section-label">Axes d'amélioration</span>
-            <p class="comp-text" style="margin-bottom:0">Protocoles de routage dynamique (OSPF, BGP).</p>
+            <div class="comp-row-detail">
+              <p class="comp-text">Configuration de routeurs virtuels et VLANs pour segmenter le trafic via Marionnet.</p>
+              <p class="comp-text"><span class="comp-axe-label">Amélioration —</span> Protocoles de routage dynamique (OSPF, BGP).</p>
+            </div>
           </div>
 
-          <div class="competence-card reveal reveal-d4">
-            <div class="competence-head">
+          <div class="comp-row reveal reveal-d3">
+            <div class="comp-row-name">
               <div class="competence-ic"><i class="fas fa-server"></i></div>
-              <div class="competence-name">Administration des serveurs et services</div>
+              <span>Administration des serveurs et services</span>
             </div>
-            <span class="stars">★★★★☆</span>
-            <span class="comp-section-label">Justification</span>
-            <p class="comp-text">Gestion de serveurs Debian (petits projets perso), optimisation et maintenance.</p>
-            <span class="comp-section-label">Axes d'amélioration</span>
-            <p class="comp-text" style="margin-bottom:0">Cloud AWS / Azure.</p>
+            <div class="comp-row-detail">
+              <p class="comp-text">Gestion de serveurs Debian (petits projets perso), optimisation et maintenance.</p>
+              <p class="comp-text"><span class="comp-axe-label">Amélioration —</span> Cloud AWS / Azure.</p>
+            </div>
           </div>
 
-          <div class="competence-card reveal reveal-d5">
-            <div class="competence-head">
+          <div class="comp-row reveal">
+            <div class="comp-row-name">
               <div class="competence-ic"><i class="fas fa-cloud"></i></div>
-              <div class="competence-name">Virtualisation, cloud</div>
+              <span>Virtualisation, cloud</span>
             </div>
-            <span class="stars">★★★★☆</span>
-            <span class="comp-section-label">Justification</span>
-            <p class="comp-text">Docker, Vagrant et VirtualBox pour des environnements isolés. Cours Google Cloud
-              Platform : déploiement de VMs (Compute Engine), stockage objet (Cloud Storage Buckets), tests de montée en
-              charge. Notions de pods et orchestration Kubernetes.</p>
-            <span class="comp-section-label">Axes d'amélioration</span>
-            <p class="comp-text" style="margin-bottom:0">Approffondir Kubernetes en production, infrastructure as code
-              (Terraform).</p>
+            <div class="comp-row-detail">
+              <p class="comp-text">Docker, Vagrant et VirtualBox pour des environnements isolés. Cours Google Cloud Platform : déploiement de VMs, stockage objet, tests de montée en charge. Notions Kubernetes.</p>
+              <p class="comp-text"><span class="comp-axe-label">Amélioration —</span> Kubernetes en production, infrastructure as code (Terraform).</p>
+            </div>
           </div>
 
-          <div class="competence-card reveal reveal-d6">
-            <div class="competence-head">
+          <div class="comp-row reveal reveal-d1">
+            <div class="comp-row-name">
               <div class="competence-ic"><i class="fas fa-cogs"></i></div>
-              <div class="competence-name">Administration d'infrastructure</div>
+              <span>Administration d'infrastructure</span>
             </div>
-            <span class="stars">★★★★☆</span>
-            <span class="comp-section-label">Justification</span>
-            <p class="comp-text">Conception et déploiement d'une infrastructure complète avec serveurs virtuels et
-              réseaux interconnectés.</p>
-            <span class="comp-section-label">Axes d'amélioration</span>
-            <p class="comp-text" style="margin-bottom:0">Infrastructures hybrides (Terraform).</p>
+            <div class="comp-row-detail">
+              <p class="comp-text">Conception et déploiement d'une infrastructure complète avec serveurs virtuels et réseaux interconnectés.</p>
+              <p class="comp-text"><span class="comp-axe-label">Amélioration —</span> Infrastructures hybrides (Terraform).</p>
+            </div>
           </div>
 
-          <div class="competence-card reveal reveal-d1">
-            <div class="competence-head">
+          <div class="comp-row reveal reveal-d2">
+            <div class="comp-row-name">
               <div class="competence-ic"><i class="fas fa-tools"></i></div>
-              <div class="competence-name">Logiciels libres &amp; open source</div>
+              <span>Logiciels libres &amp; open source</span>
             </div>
-            <span class="stars">★★★★☆</span>
-            <span class="comp-section-label">Justification</span>
-            <p class="comp-text">Git, Docker, Vagrant, VirtualBox en formation et en démarche personnelle. Configuration
-              Unix sur Debian 12.</p>
-            <span class="comp-section-label">Axes d'amélioration</span>
-            <p class="comp-text" style="margin-bottom:0">Explorer de nouvelles distributions Linux.</p>
+            <div class="comp-row-detail">
+              <p class="comp-text">Git, Docker, Vagrant, VirtualBox en formation et en démarche personnelle. Configuration Unix sur Debian 12.</p>
+              <p class="comp-text"><span class="comp-axe-label">Amélioration —</span> Explorer de nouvelles distributions Linux.</p>
+            </div>
           </div>
 
-          <div class="competence-card reveal reveal-d2">
-            <div class="competence-head">
+          <div class="comp-row reveal reveal-d3">
+            <div class="comp-row-name">
               <div class="competence-ic"><i class="fas fa-shield-alt"></i></div>
-              <div class="competence-name">Sécurité</div>
+              <span>Sécurité</span>
             </div>
-            <span class="stars">★★★★☆</span>
-            <span class="comp-section-label">Justification</span>
-            <p class="comp-text">Sécurisation d'un site web (chiffrement, validation des entrées) (NRV Projet). CTF
-              réguliers sur TryHackMe.</p>
-            <span class="comp-section-label">Axes d'amélioration</span>
-            <p class="comp-text" style="margin-bottom:0">Pentesting avancé, normes OWASP.</p>
+            <div class="comp-row-detail">
+              <p class="comp-text">Sécurisation d'un site web (chiffrement, validation des entrées) (NRV Projet). CTF réguliers sur TryHackMe.</p>
+              <p class="comp-text"><span class="comp-axe-label">Amélioration —</span> Pentesting avancé, normes OWASP.</p>
+            </div>
           </div>
 
-        </div>
+        </div><!-- /comp-list -->
       </div>
+
     </div>
   </section>
 
@@ -814,7 +700,7 @@
           </div>
         </div>
 
-        <!-- 2 · MAC Monitor — tall (2 rows) -->
+        <!-- 2 · MAC Monitor -->
         <div class="bento-card">
           <div class="bento-bg"><img src="img/mac-Monitor.png" alt="" loading="lazy"></div>
           <div class="bento-face">
@@ -921,7 +807,7 @@
           </div>
         </div>
 
-        <!-- 6 · Générateur de diagramme de classe — wide (2 cols) -->
+        <!-- 6 · Générateur de diagramme de classe — wide -->
         <div class="bento-card bento-wide">
           <div class="bento-bg"><img src="img/DiagrammeClasse.png" alt="" loading="lazy"></div>
           <div class="bento-face">
@@ -947,7 +833,7 @@
           </div>
         </div>
 
-        <!-- 7 · Shell mbash — wide (2 cols) -->
+        <!-- 7 · Shell mbash — wide -->
         <div class="bento-card bento-wide">
           <div class="bento-bg"><img src="img/mbash.png" alt="" loading="lazy"></div>
           <div class="bento-face">

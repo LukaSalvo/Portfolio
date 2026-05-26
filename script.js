@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* ----------------------------------------------------------
-     ADAPTIVE VELOCITY — manual scroll speed tracker
+     ADAPTIVE VELOCITY
      ---------------------------------------------------------- */
   let _vel = 0;
   let _lastY = window.scrollY;
@@ -160,7 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }, { passive: true });
 
   /* ----------------------------------------------------------
-     HERO — GSAP entrance (monospace name, no gradient)
+     HERO — GSAP entrance
      ---------------------------------------------------------- */
   const HERO_SEL = [
     '.hero-eyebrow', '.hero-title', '.hero-subtitle',
@@ -184,7 +184,6 @@ document.addEventListener('DOMContentLoaded', () => {
       .fromTo('.hero-scroll',   { opacity: 0 },        { opacity: 1, duration: 0.5 },                            0.85)
       .fromTo('.hero-stats',    { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5,  ease: 'power3.out' }, 0.8);
 
-    /* Title scramble */
     const heroTitle = document.querySelector('.hero-title');
     if (heroTitle) {
       const FINAL = heroTitle.textContent;
@@ -214,6 +213,9 @@ document.addEventListener('DOMContentLoaded', () => {
   function initWordReveal() {
     document.querySelectorAll('.section-title').forEach(el => {
       if (el.dataset.split) return;
+      if (el.closest('#skills')) {
+        el.style.opacity = '1'; el.style.transform = 'none'; return;
+      }
       el.dataset.split = '1';
       el.classList.remove('reveal');
       el.style.opacity = '1';
@@ -254,71 +256,95 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 38);
   }
   document.querySelectorAll('.section-label').forEach(el => {
+    if (el.closest('#skills')) return;
     ScrollTrigger.create({
       trigger: el, start: 'top 92%', once: true,
       onEnter: () => setTimeout(() => scrambleEl(el), getVel() > 500 ? 0 : 80)
     });
   });
 
+  /* Skill cards — pas d'animation de scroll, visibles directement */
+
   /* ----------------------------------------------------------
-     BENTO GRID — staggered entrance
+     BENTO GRID — slide from bottom + rebond par carte
      ---------------------------------------------------------- */
   (function initBento() {
-    const grid = document.querySelector('.bento-grid');
-    if (!grid) return;
-    const cards = grid.querySelectorAll('.bento-card');
-    gsap.set(cards, { opacity: 0, y: 24, scale: 0.97 });
-    ScrollTrigger.create({
-      trigger: grid, start: 'top 88%', once: true,
-      onEnter: () => {
-        gsap.to(cards, {
-          opacity: 1, y: 0, scale: 1,
-          duration: dur(0.5),
-          stagger: { amount: stag(0.35), from: 'start' },
-          ease: 'power2.out'
-        });
-      }
+    const cards = document.querySelectorAll('.bento-card');
+    if (!cards.length) return;
+    if (reduced) return;
+    cards.forEach((card, i) => {
+      card.style.willChange = 'transform, opacity';
+      gsap.set(card, { opacity: 0, y: 60, scale: 0.96 });
+      ScrollTrigger.create({
+        trigger: card,
+        start: 'top 88%',
+        once: true,
+        onEnter: () => {
+          gsap.to(card, {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            duration: dur(0.7),
+            ease: 'back.out(1.4)',
+            delay: del((i % 4) * 0.10),
+            onComplete: () => { card.style.willChange = 'auto'; }
+          });
+        }
+      });
     });
   })();
 
   /* ----------------------------------------------------------
-     TIMELINE — alternate horizontal slide-in (new animation)
+     TIMELINE — draw de la ligne verticale + entrées
      ---------------------------------------------------------- */
-  document.querySelectorAll('.timeline-item').forEach((el, i) => {
-    const xDir = i % 2 === 0 ? -28 : 28;
-    gsap.set(el, { opacity: 0, x: xDir });
-    ScrollTrigger.create({
-      trigger: el, start: 'top 90%', once: true,
-      onEnter: () => gsap.to(el, {
-        opacity: 1, x: 0,
-        duration: dur(0.55), ease: 'power3.out',
-        delay: del((i % 3) * 0.06)
-      })
+  document.querySelectorAll('.timeline').forEach(timeline => {
+    /* Ligne animée */
+    if (!reduced) {
+      const line = document.createElement('div');
+      line.className = 'timeline-progress-line';
+      timeline.style.position = 'relative';
+      timeline.insertBefore(line, timeline.firstChild);
+      line.style.willChange = 'height';
+      ScrollTrigger.create({
+        trigger: timeline,
+        start: 'top 80%',
+        end: 'bottom 60%',
+        scrub: 1.4,
+        onUpdate: (self) => {
+          line.style.height = (self.progress * 100) + '%';
+        },
+        onLeave: () => { line.style.willChange = 'auto'; }
+      });
+    }
+    /* Entrées des items */
+    timeline.querySelectorAll('.timeline-item').forEach((el, i) => {
+      if (!reduced) {
+        const xDir = i % 2 === 0 ? -28 : 28;
+        gsap.set(el, { opacity: 0, x: xDir });
+        ScrollTrigger.create({
+          trigger: el, start: 'top 90%', once: true,
+          onEnter: () => gsap.to(el, {
+            opacity: 1, x: 0,
+            duration: dur(0.55), ease: 'power3.out',
+            delay: del((i % 3) * 0.06)
+          })
+        });
+      }
     });
   });
 
   /* ----------------------------------------------------------
-     SKILL ROWS — slide in from left (new animation)
-     ---------------------------------------------------------- */
-  document.querySelectorAll('.skill-row').forEach((el, i) => {
-    gsap.set(el, { opacity: 0, x: -20 });
-    ScrollTrigger.create({
-      trigger: el, start: 'top 92%', once: true,
-      onEnter: () => gsap.to(el, {
-        opacity: 1, x: 0,
-        duration: dur(0.38), ease: 'power2.out',
-        delay: del((i % 8) * 0.04)
-      })
-    });
-  });
-
-  /* ----------------------------------------------------------
-     GENERIC REVEAL — all .reveal elements
-     (timeline-item and skill-row handled above, but .reveal class
-      may still be present; set handled flag to avoid double animation)
+     GENERIC REVEAL
      ---------------------------------------------------------- */
   document.querySelectorAll('.reveal').forEach(el => {
-    if (el.classList.contains('timeline-item') || el.classList.contains('skill-row')) return;
+    if (el.classList.contains('timeline-item')) return;
+    /* Elements in #skills — always visible, no animation */
+    if (el.closest('#skills')) {
+      el.style.transition = 'none';
+      el.style.opacity = '1';
+      el.style.transform = 'none';
+      return;
+    }
     gsap.set(el, { opacity: 0, y: 22 });
     const baseDelay = el.classList.contains('reveal-d1') ? 0.05
                     : el.classList.contains('reveal-d2') ? 0.10
@@ -335,31 +361,16 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* ----------------------------------------------------------
-     PROGRESS BARS (sr-fill — new class)
-     ---------------------------------------------------------- */
-  document.querySelectorAll('.sr-fill').forEach(el => {
-    gsap.set(el, { width: '0%' });
-    ScrollTrigger.create({
-      trigger: el, start: 'top 90%', once: true,
-      onEnter: () => gsap.to(el, {
-        width: (el.getAttribute('data-width') || '0') + '%',
-        duration: dur(0.9), ease: 'power2.out', delay: del(0.1)
-      })
-    });
-  });
-
-  /* ----------------------------------------------------------
-     STAT COUNTERS
+     STAT COUNTERS — count-up depuis 0
      ---------------------------------------------------------- */
   document.querySelectorAll('.stat-number[data-target]').forEach(el => {
     ScrollTrigger.create({
       trigger: el, start: 'top 90%', once: true,
       onEnter: () => {
         const target = parseInt(el.getAttribute('data-target'), 10);
-        const start  = parseInt(el.textContent, 10) || 0;
-        const obj = { val: start };
+        const obj = { val: 0 };
         gsap.to(obj, {
-          val: target, duration: dur(1.4), ease: 'power2.out',
+          val: target, duration: dur(1.2), ease: 'power2.out',
           onUpdate: () => { el.textContent = Math.round(obj.val); }
         });
       }
@@ -383,9 +394,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const div = document.createElement('div');
     div.className = 'section-bg-num';
     div.textContent = num;
-    section.style.position = 'relative';
-    section.style.overflow = 'hidden';
     section.insertBefore(div, section.firstChild);
+    if (id === 'skills') return; // Pas de numéro animé dans skills
     gsap.set(div, { opacity: 0, x: 28 });
     ScrollTrigger.create({
       trigger: section, start: 'top 85%', once: true,
@@ -446,7 +456,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* ----------------------------------------------------------
-     SVG CIRCUIT DIVIDERS
+     SVG CIRCUIT DIVIDERS (palette verte)
      ---------------------------------------------------------- */
   function initCircuitDividers() {
     if (reduced || window.innerWidth < 768) return;
@@ -512,7 +522,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   initCircuitDividers();
 
-  /* Add circuit divider CSS if not present */
   if (!document.querySelector('style[data-circuit]')) {
     const s = document.createElement('style');
     s.dataset.circuit = '1';
@@ -521,17 +530,17 @@ document.addEventListener('DOMContentLoaded', () => {
       @media(min-width:768px){.circuit-divider{display:block;}}
       .circuit-svg{width:100%;height:100%;overflow:visible;}
       .circuit-base{stroke:rgba(130,130,130,0.07);stroke-width:1.5;stroke-dasharray:6 12;}
-      html.dark .circuit-base{stroke:rgba(167,139,250,0.08);}
-      .circuit-draw{stroke:rgba(21,96,189,0.35);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;}
-      html.dark .circuit-draw{stroke:rgba(167,139,250,0.55);}
-      .circuit-orb{fill:#1560BD;}
-      html.dark .circuit-orb{fill:#a78bfa;}
+      html.dark .circuit-base{stroke:rgba(82,183,136,0.08);}
+      .circuit-draw{stroke:rgba(45,106,79,0.35);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;}
+      html.dark .circuit-draw{stroke:rgba(82,183,136,0.55);}
+      .circuit-orb{fill:#2D6A4F;}
+      html.dark .circuit-orb{fill:#52B788;}
     `;
     document.head.appendChild(s);
   }
 
   /* ----------------------------------------------------------
-     HERO PARALLAX — content follows cursor
+     HERO PARALLAX
      ---------------------------------------------------------- */
   (function initHeroParallax() {
     if (reduced) return;
@@ -609,7 +618,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (terminalAbout) { cmds = [...pickSet()]; setTimeout(typeNext, 1200); }
 
   /* ----------------------------------------------------------
-     INTERACTIVE TERMINAL (UNCHANGED — easter egg preserved)
+     INTERACTIVE TERMINAL (easter egg préservé)
      ---------------------------------------------------------- */
   const termInput  = document.getElementById('terminal-input');
   const termOutput = document.getElementById('terminal-interactive-output');
@@ -658,8 +667,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (fi >= eggFrames.length) {
         clearInterval(iv); writeLine(''); writeLine('🎉 Félicitations ! Tu as trouvé l\'easter egg secret !');
         const btn = document.createElement('button');
-        btn.textContent = '🔄 Rejouer l\'animation';
-        btn.style.cssText = 'margin-top:10px;padding:6px 14px;background:var(--accent);color:#000;border:none;border-radius:2px;cursor:pointer;font-size:0.75rem;font-weight:700;font-family:var(--mono);letter-spacing:0.06em;text-transform:uppercase;';
+        btn.textContent = '↺ Rejouer l\'animation';
+        btn.style.cssText = 'margin-top:10px;padding:6px 14px;background:var(--accent);color:var(--accent-fg);border:none;border-radius:2px;cursor:pointer;font-size:0.75rem;font-weight:700;font-family:var(--mono);letter-spacing:0.06em;text-transform:uppercase;';
         btn.addEventListener('click', () => { writeLine(''); writeLine('$ sudo apt install easteregg'); runProgressBar(runHatchAnimation); });
         writeEl(btn);
       }
@@ -675,7 +684,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (cmd === 'whoami')  { writeLine('luka.salvo');
     } else if (cmd === 'pwd')     { writeLine('/home/luka/portfolio');
     } else if (cmd === 'help')    { writeLine('Commandes : ls · cd <section> · whoami · pwd · clear · help · sudo apt install easteregg');
-    } else if (cmd === 'sudo' || cmd === 'sudo ') { writeLine('Pas de droits suffisants — contactez-moi pour en obtenir 😄');
+    } else if (cmd === 'sudo' || cmd === 'sudo ') { writeLine('Pas de droits suffisants — contactez-moi pour en obtenir.');
     } else if (cmd === 'sudo apt install easteregg') { runProgressBar(runHatchAnimation);
     } else if (cmd.startsWith('sudo apt install')) { writeLine('Erreur : paquet introuvable.');
     } else if (cmd.startsWith('cd ')) {
@@ -741,7 +750,7 @@ document.addEventListener('DOMContentLoaded', () => {
       velX *= 0.82; velY *= 0.82;
       requestAnimationFrame(animateRing);
     })();
-    const hoverEls = document.querySelectorAll('a,button,.info-card,.tag,.skill-row,.competence-card,.contact-link,.bento-card');
+    const hoverEls = document.querySelectorAll('a,button,.info-card,.tag,.skill-card,.contact-link,.bento-card,.cert-card,.comp-row');
     hoverEls.forEach(el => {
       el.addEventListener('mouseenter', () => ring.classList.add('is-hovering'));
       el.addEventListener('mouseleave', () => ring.classList.remove('is-hovering'));
@@ -790,32 +799,25 @@ document.addEventListener('DOMContentLoaded', () => {
   })();
 
   /* ----------------------------------------------------------
-     SKILLS TICKER
+     SKILLS TICKER (sans emojis)
      ---------------------------------------------------------- */
   (function initSkillsTicker() {
     const skillsSection = document.getElementById('skills');
     if (!skillsSection) return;
     const allSkills = [
-      { e: '🐧', n: 'Linux'       }, { e: '🐳', n: 'Docker'       },
-      { e: '☁️',  n: 'GCP'         }, { e: '🔐', n: 'Cybersécurité' },
-      { e: '📊', n: 'Grafana'     }, { e: '🔥', n: 'Prometheus'   },
-      { e: '⚙️',  n: 'DevOps'      }, { e: '📦', n: 'Vagrant'      },
-      { e: '☸️',  n: 'Kubernetes'  }, { e: '🌐', n: 'Réseaux'      },
-      { e: '💻', n: 'Java'        }, { e: '🐘', n: 'PHP'          },
-      { e: '🐍', n: 'Python'      }, { e: '💎', n: 'Ruby'         },
-      { e: '📜', n: 'Bash'        }, { e: '🎯', n: 'LaTeX'        },
-      { e: '🖥️',  n: 'HTML / CSS'  }, { e: '🔧', n: 'VirtualBox'  },
-      { e: '🕵️',  n: 'OSINT'       }, { e: '🛡️',  n: 'TryHackMe'  },
-      { e: '🤖', n: 'Claude AI'  }, { e: '📁', n: 'Git'          },
+      'Linux', 'Docker', 'GCP', 'Cybersécurité', 'Grafana', 'Prometheus',
+      'DevOps', 'Vagrant', 'Kubernetes', 'Réseaux', 'Java', 'PHP',
+      'Python', 'Ruby', 'Bash', 'LaTeX', 'HTML / CSS', 'VirtualBox',
+      'OSINT', 'TryHackMe', 'Claude AI', 'Git',
     ];
     const container = document.createElement('div');
     container.className = 'skills-ticker-container';
     const track = document.createElement('div');
     track.className = 'skills-ticker-track';
-    [...allSkills, ...allSkills].forEach(s => {
+    [...allSkills, ...allSkills].forEach(n => {
       const item = document.createElement('div');
       item.className = 'ticker-item';
-      item.innerHTML = `<span class="ticker-dot"></span>${s.e} ${s.n}`;
+      item.innerHTML = `<span class="ticker-dot"></span>${n}`;
       track.appendChild(item);
     });
     container.appendChild(track);
@@ -824,7 +826,7 @@ document.addEventListener('DOMContentLoaded', () => {
   })();
 
   /* ----------------------------------------------------------
-     GLITCH FLASH on skill group title hover
+     GLITCH FLASH sur group title hover
      ---------------------------------------------------------- */
   (function initGlitch() {
     if (reduced) return;
@@ -879,6 +881,7 @@ document.addEventListener('DOMContentLoaded', () => {
   (function initKineticParallax() {
     if (reduced) return;
     gsap.utils.toArray('.section-desc').forEach(el => {
+      if (el.closest('#skills')) return; // Pas de parallax dans skills
       gsap.fromTo(el, { y: 10 }, {
         y: -10, scrollTrigger: { trigger: el, scrub: 2, start: 'top bottom', end: 'bottom top' }
       });
