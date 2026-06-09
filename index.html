@@ -8,7 +8,22 @@
     content="Portfolio de Luka Salvo — futur apprenti ingénieur IMT Nord Europe, spécialisé en administration système, cybersécurité et DevOps.">
   <meta name="keywords"
     content="Luka Salvo, alternance, administration système, réseau, cybersécurité, DevOps, IMT Nord Europe">
-  <title>Luka Salvo — Portfolio</title>
+  <title>Luka Salvo — Portfolio · Alternance 2026</title>
+
+  <!-- Open Graph / Social sharing -->
+  <meta property="og:type"        content="website">
+  <meta property="og:title"       content="Luka Salvo — Portfolio · Alternance 2026">
+  <meta property="og:description" content="Futur ingénieur IMT Nord Europe — Admin Système, Cybersécurité, DevOps. En recherche d'alternance 3 ans (2026-2029) au rythme 2 sem. école / 5 sem. entreprise.">
+  <meta property="og:site_name"   content="Luka Salvo Portfolio">
+  <!-- og:url  → remplacer par l'URL de déploiement (ex: https://lukasal vo.github.io/Portfolio) -->
+  <!-- og:image → exporter img/og-image.svg en PNG 1200×630, puis décommenter :
+  <meta property="og:image" content="https://VOTRE_URL/img/og-image.png">
+  <meta property="og:image:width"  content="1200">
+  <meta property="og:image:height" content="630">
+  -->
+  <meta name="twitter:card"        content="summary_large_image">
+  <meta name="twitter:title"       content="Luka Salvo — Portfolio">
+  <meta name="twitter:description" content="Futur ingénieur IMT Nord Europe · Admin Sys · Cybersécurité · DevOps · Alternance 2026.">
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,11 +33,34 @@
     rel="stylesheet">
 
   <!-- Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer">
 
   <!-- Styles -->
   <link rel="stylesheet" href="style.css">
-  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+  <!-- Browser UI color (light/dark) -->
+  <meta name="theme-color" content="#F5F0E6" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0D1A12" media="(prefers-color-scheme: dark)">
+
+  <!-- Structured data — SEO -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Luka Salvo",
+    "email": "mailto:luka.salvo23@gmail.com",
+    "jobTitle": "Étudiant BUT Informatique — futur apprenti ingénieur IMT Nord Europe",
+    "knowsAbout": ["Administration système", "Cybersécurité", "DevOps", "Linux", "Docker", "Réseaux", "OSINT"],
+    "knowsLanguage": ["fr", "de", "en"],
+    "sameAs": [
+      "https://github.com/LukaSalvo",
+      "https://www.linkedin.com/in/luka-salvo-289b10291/",
+      "https://www.credly.com/users/luka-salvo"
+    ]
+  }
+  </script>
 
   <!-- Inline theme script: prevents dark→light flash -->
   <script>
@@ -37,6 +75,8 @@
 </head>
 
 <body>
+
+  <a href="#about" class="skip-link">Aller au contenu</a>
 
   <!-- ═══════════ INTRO SCREEN ═══════════ -->
   <div id="intro-screen" role="presentation" aria-hidden="true">
@@ -99,6 +139,10 @@
   <section class="hero" aria-label="Introduction">
 
     <div class="hero-content">
+      <div class="hero-available">
+        <span class="avail-dot"></span>
+        Disponible · Alternance Sept. 2026
+      </div>
       <div class="hero-eyebrow">Futur apprenti ingénieur · IMT Nord Europe 2026</div>
 
       <h1 class="hero-title">Luka Salvo</h1>
@@ -153,8 +197,8 @@
         <span class="stat-label">Langues</span>
       </div>
       <div class="stat">
-        <span class="stat-number" data-target="2029">2026</span>
-        <span class="stat-label">Diplôme Ingénieur</span>
+        <span class="stat-number">2029</span>
+        <span class="stat-label">Promo Ingénieur</span>
       </div>
     </div>
   </section>
@@ -167,6 +211,30 @@
         <h2 class="section-title reveal">Qui suis-je ?</h2>
         <p class="section-desc reveal">Étudiant passionné par les systèmes Unix, la sécurité et les
           infrastructures modernes.</p>
+      </div>
+
+      <!-- Profil — remplacer l'avatar par <img src="img/votre-photo.jpg" alt="Luka Salvo" class="about-photo-img"> -->
+      <div class="about-profile reveal">
+        <div class="about-avatar-wrap">
+          <div class="about-avatar">
+            <span class="about-avatar-initials">LS</span>
+          </div>
+          <span class="about-avatar-ring"></span>
+        </div>
+        <div class="about-profile-body">
+          <p class="about-profile-name">Luka Salvo</p>
+          <p class="about-profile-title">Étudiant BUT Informatique DACS → Ingénieur IMT Nord Europe</p>
+          <p class="about-profile-bio">Passionné par les systèmes Unix, la cybersécurité et l'automatisation d'infrastructure. Je construis des outils, et j'explore de nouvelles technologies en permanence.</p>
+          <div class="about-profile-tags">
+            <span class="about-tag"><i class="fas fa-map-marker-alt"></i> Lille (prochainement) / Nancy / Sarreguemines</span>
+            <span class="about-tag"><i class="fas fa-flag"></i> TryHackMe · CTF · Cisco · Anthropic Courses · Google</span>
+            <span class="about-tag"><i class="fab fa-linux"></i> Linux</span>
+            <span class="about-tag"><i class="fab fa-docker"></i> Virtualisation</span>
+            <span class="about-tag"><i class="fas fa-code"></i> LLM </span>
+            
+
+          </div>
+        </div>
       </div>
 
       <div class="about-grid">
@@ -383,7 +451,7 @@
               <div class="cert-status cert-done"><i class="fas fa-check-circle"></i> Obtenu</div>
               <div class="cert-name">AI Fluency for Students</div>
               <div class="cert-org">Anthropic · Cours en ligne</div>
-              <a href="pdf/certificat-aiForStudent.pdf" class="timeline-link"><i class="fas fa-file-pdf"></i> Voir le certificat</a>
+              <a href="pdf/certificate-aiForStudent.pdf" class="timeline-link"><i class="fas fa-file-pdf"></i> Voir le certificat</a>
             </div>
             <div class="cert-card">
               <div class="cert-status cert-done"><i class="fas fa-check-circle"></i> Obtenu</div>
@@ -394,7 +462,7 @@
               <div class="cert-status cert-done"><i class="fas fa-check-circle"></i> Obtenu</div>
               <div class="cert-name">Teaching AI Fluency</div>
               <div class="cert-org">Anthropic · Cours en ligne</div>
-              <a href="pdf/certificat-teaching-AI-FluencyFramework.pdf" class="timeline-link"><i class="fas fa-file-pdf"></i> Voir le certificat</a>
+              <a href="pdf/certificate-teaching-AI-FluencyFramework.pdf" class="timeline-link"><i class="fas fa-file-pdf"></i> Voir le certificat</a>
             </div>
             <div class="cert-card">
               <div class="cert-status cert-done"><i class="fas fa-check-circle"></i> Obtenu</div>
@@ -456,20 +524,23 @@
       </div>
 
       <p class="skills-subgroup-label reveal" style="margin-top:20px;">Mes badges</p>
-      <a href="https://www.credly.com/users/luka-salvo/edit#skills" target="_blank">Lien vers mon Creddly</a>
+      <a href="https://www.credly.com/users/luka-salvo" target="_blank" rel="noopener" class="credly-link-btn">
+        <i class="fas fa-award"></i> Voir mon profil Credly
+      </a>
       <div class="badges-row">
-      <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="efb11d6d-10c1-446e-8ad4-65a1ee15174c" data-share-badge-host="https://www.credly.com"></div><script type="text/javascript" async src="//cdn.credly.com/assets/utilities/embed.js"></script>
-      <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="d2e9bc6f-d3bb-407d-9ff9-f7d6b444d109" data-share-badge-host="https://www.credly.com"></div><script type="text/javascript" async src="//cdn.credly.com/assets/utilities/embed.js"></script>
-      <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="66027680-6cca-4250-a29d-6267ae702269" data-share-badge-host="https://www.credly.com"></div><script type="text/javascript" async src="//cdn.credly.com/assets/utilities/embed.js"></script>
-      <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="1f5f8901-502d-4acc-8052-6165c776e456" data-share-badge-host="https://www.credly.com"></div><script type="text/javascript" async src="//cdn.credly.com/assets/utilities/embed.js"></script>
-      <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="78331096-ba12-4123-912d-55123b8dc19b" data-share-badge-host="https://www.credly.com"></div><script type="text/javascript" async src="//cdn.credly.com/assets/utilities/embed.js"></script>
-      <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="ca468245-1a2a-425a-b82c-5972887afa4b" data-share-badge-host="https://www.credly.com"></div><script type="text/javascript" async src="//cdn.credly.com/assets/utilities/embed.js"></script>
-      <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="3c7b5deb-27af-4980-8694-601c8b319a21" data-share-badge-host="https://www.credly.com"></div><script type="text/javascript" async src="//cdn.credly.com/assets/utilities/embed.js"></script>
-      <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="816c2782-f058-4fac-8395-eddcb8e7c49e" data-share-badge-host="https://www.credly.com"></div><script type="text/javascript" async src="//cdn.credly.com/assets/utilities/embed.js"></script>
-      <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="43b3ca16-5a68-4cca-a889-bb7def557ed5" data-share-badge-host="https://www.credly.com"></div><script type="text/javascript" async src="//cdn.credly.com/assets/utilities/embed.js"></script>
-      <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="a379e0bb-059a-4902-8e41-21fb59fac5d9" data-share-badge-host="https://www.credly.com"></div><script type="text/javascript" async src="//cdn.credly.com/assets/utilities/embed.js"></script>
-      <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="e6cc4639-2d01-454d-a063-22e9576ac011" data-share-badge-host="https://www.credly.com"></div><script type="text/javascript" async src="//cdn.credly.com/assets/utilities/embed.js"></script>
+        <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="efb11d6d-10c1-446e-8ad4-65a1ee15174c" data-share-badge-host="https://www.credly.com"></div>
+        <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="d2e9bc6f-d3bb-407d-9ff9-f7d6b444d109" data-share-badge-host="https://www.credly.com"></div>
+        <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="66027680-6cca-4250-a29d-6267ae702269" data-share-badge-host="https://www.credly.com"></div>
+        <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="1f5f8901-502d-4acc-8052-6165c776e456" data-share-badge-host="https://www.credly.com"></div>
+        <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="78331096-ba12-4123-912d-55123b8dc19b" data-share-badge-host="https://www.credly.com"></div>
+        <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="ca468245-1a2a-425a-b82c-5972887afa4b" data-share-badge-host="https://www.credly.com"></div>
+        <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="3c7b5deb-27af-4980-8694-601c8b319a21" data-share-badge-host="https://www.credly.com"></div>
+        <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="816c2782-f058-4fac-8395-eddcb8e7c49e" data-share-badge-host="https://www.credly.com"></div>
+        <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="43b3ca16-5a68-4cca-a889-bb7def557ed5" data-share-badge-host="https://www.credly.com"></div>
+        <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="a379e0bb-059a-4902-8e41-21fb59fac5d9" data-share-badge-host="https://www.credly.com"></div>
+        <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="e6cc4639-2d01-454d-a063-22e9576ac011" data-share-badge-host="https://www.credly.com"></div>
       </div>
+      <script async src="https://cdn.credly.com/assets/utilities/embed.js"></script>
 
       <!-- Auto-évaluation BUT DACS — 2 colonnes, sans étoiles -->
       <div>
@@ -885,7 +956,7 @@
         </div>
 
 
-        <div class="bento-card bento-wide" style="--bento-grad:linear-gradient(135deg,#1a0533 0%,#4c1d95 100%)">
+        <div class="bento-card" style="--bento-grad:linear-gradient(135deg,#1a0533 0%,#4c1d95 100%)">
           <div class="bento-bg"></div>
           <div class="bento-face">
             <div class="bento-top">
@@ -904,8 +975,6 @@
             <div class="bento-hover-title">BUDGETTE</div>
             <p class="bento-desc">Application web de projection et de gestion de budget avec des simulations en cours de développement</p>
             <div class="bento-links">
-              <a href="https://github.com/LukaSalvo/SAESysteme" target="_blank" rel="noopener" class="bento-link"><i
-                  class="fab fa-github"></i> GitHub</a>
               <a href="https://github.com/LukaSalvo/budgette" target="_blank" rel="noopener" class="bento-link"><i
                   class="fab fa-github"></i> GitHub</a>
             </div>
@@ -1006,7 +1075,42 @@
 
   <!-- ═══════════ FOOTER ═══════════ -->
   <footer aria-label="Pied de page">
-    <p>© 2026 Luka Salvo. Tous droits réservés.</p>
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <a href="#" class="footer-logo-link">Luka <span>Salvo</span></a>
+          <p class="footer-tagline">Admin Sys · Cybersécurité · DevOps</p>
+        </div>
+        <div class="footer-right">
+          <nav class="footer-nav" aria-label="Navigation footer">
+            <a href="#about" class="footer-nav-link">À propos</a>
+            <a href="#skills" class="footer-nav-link">Compétences</a>
+            <a href="#work" class="footer-nav-link">Projets</a>
+            <a href="#contact" class="footer-nav-link">Contact</a>
+          </nav>
+          <div class="footer-socials">
+            <a href="https://www.linkedin.com/in/luka-salvo-289b10291/" target="_blank" rel="noopener" class="footer-icon-btn" aria-label="LinkedIn">
+              <i class="fab fa-linkedin"></i>
+            </a>
+            <a href="https://github.com/LukaSalvo" target="_blank" rel="noopener" class="footer-icon-btn" aria-label="GitHub">
+              <i class="fab fa-github"></i>
+            </a>
+            <a href="mailto:luka.salvo23@gmail.com" class="footer-icon-btn" aria-label="Email">
+              <i class="fas fa-envelope"></i>
+            </a>
+            <a href="pdf/CV_Luka_Salvo.pdf" download class="footer-icon-btn" aria-label="Télécharger le CV">
+              <i class="fas fa-download"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p class="footer-copy">© 2026 Luka Salvo — Tous droits réservés.</p>
+        <button class="back-to-top" id="back-to-top" aria-label="Retour en haut de page">
+          <i class="fas fa-arrow-up"></i>
+        </button>
+      </div>
+    </div>
   </footer>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>

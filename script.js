@@ -54,6 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
   (function initIntro() {
     const intro = document.getElementById('intro-screen');
     if (!intro) return;
+    if (reduced) { intro.remove(); return; }
     document.documentElement.style.overflow = 'hidden';
 
     gsap.set('.intro-c1, .intro-c2, .intro-c3', { y: 90 });
@@ -113,9 +114,34 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   syncThemeIcon();
 
-  themeToggle?.addEventListener('click', () => {
+  function applyTheme() {
     html.classList.toggle('dark');
     localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+    syncThemeIcon();
+  }
+
+  themeToggle?.addEventListener('click', () => {
+    /* Révélation circulaire depuis le bouton (View Transitions API, fallback direct) */
+    if (!document.startViewTransition || reduced) { applyTheme(); return; }
+    const r = themeToggle.getBoundingClientRect();
+    const cx = r.left + r.width / 2;
+    const cy = r.top + r.height / 2;
+    const radius = Math.hypot(
+      Math.max(cx, window.innerWidth - cx),
+      Math.max(cy, window.innerHeight - cy)
+    );
+    document.startViewTransition(applyTheme).ready.then(() => {
+      document.documentElement.animate(
+        { clipPath: [`circle(0px at ${cx}px ${cy}px)`, `circle(${radius}px at ${cx}px ${cy}px)`] },
+        { duration: 480, easing: 'cubic-bezier(0.4,0,0.2,1)', pseudoElement: '::view-transition-new(root)' }
+      );
+    });
+  });
+
+  /* Suit le thème système tant que l'utilisateur n'a pas choisi manuellement */
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+    if (localStorage.getItem('theme')) return;
+    html.classList.toggle('dark', e.matches);
     syncThemeIcon();
   });
 
@@ -144,7 +170,9 @@ document.addEventListener('DOMContentLoaded', () => {
      ---------------------------------------------------------- */
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', e => {
-      const target = document.querySelector(anchor.getAttribute('href'));
+      const href = anchor.getAttribute('href');
+      if (href === '#') { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+      const target = document.querySelector(href);
       if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
     });
   });
@@ -163,6 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
      HERO — GSAP entrance
      ---------------------------------------------------------- */
   const HERO_SEL = [
+    '.hero-available',
     '.hero-eyebrow', '.hero-title', '.hero-subtitle',
     '.hero-desc', '.hero-tags', '.hero-cta',
     '.hero-scroll', '.hero-stats'
@@ -175,6 +204,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (!reduced) {
     const heroTl = gsap.timeline({ delay: 0.1 });
     heroTl
+      .fromTo('.hero-available', { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' }, 0)
       .fromTo('.hero-eyebrow',  { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6,  ease: 'power3.out' }, 0)
       .fromTo('.hero-title',    { opacity: 0, y: 48 }, { opacity: 1, y: 0, duration: 0.85, ease: 'expo.out'   }, 0.12)
       .fromTo('.hero-subtitle', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6,  ease: 'power3.out' }, 0.28)
@@ -203,7 +233,7 @@ document.addEventListener('DOMContentLoaded', () => {
   } else {
     HERO_SEL.forEach(sel => {
       const el = document.querySelector(sel);
-      if (el) el.style.opacity = '1';
+      if (el) { el.style.opacity = '1'; el.style.transform = 'none'; }
     });
   }
 
@@ -266,12 +296,265 @@ document.addEventListener('DOMContentLoaded', () => {
   /* Skill cards — pas d'animation de scroll, visibles directement */
 
   /* ----------------------------------------------------------
+     PROJETS — CADRAN ROTATIF façon téléphone fixe
+     Construit depuis les cartes bento existantes (zéro duplication).
+     Desktop uniquement ; la grille reste le fallback mobile/reduced.
+     ---------------------------------------------------------- */
+  let rotaryIsDefault = false;
+  (function initRotaryProjects() {
+    const work = document.getElementById('work');
+    const grid = work?.querySelector('.bento-grid');
+    if (!work || !grid || reduced || window.innerWidth < 900) return;
+
+    const srcCards = [...grid.querySelectorAll('.bento-card')];
+    if (srcCards.length < 3) return;
+    const projects = srcCards.map(card => ({
+      title: (card.querySelector('.bento-hover-title') || card.querySelector('.bento-title'))?.textContent.trim() || '',
+      desc:  card.querySelector('.bento-desc')?.textContent.trim() || '',
+      chips: [...card.querySelectorAll('.bento-chip')].map(c => c.textContent.trim()),
+      badge: card.querySelector('.bento-badge'),
+      glyph: card.querySelector('.bento-glyph')?.textContent.trim() || '',
+      links: [...card.querySelectorAll('.bento-link')],
+      media: card.querySelector('.bento-bg img, .bento-bg video'),
+      grad:  card.style.getPropertyValue('--bento-grad').trim()
+    }));
+    const N = projects.length;
+    const STEP = 360 / N;
+
+    /* — DOM — */
+    const wrap = document.createElement('div');
+    wrap.className = 'rotary-wrap reveal';
+    wrap.innerHTML = `
+      <div class="rotary-col">
+        <div class="rotary-stage" tabindex="0" role="group"
+          aria-label="Cadran de navigation des projets — utilisez les flèches pour tourner">
+          <div class="rotary-dial"></div>
+          <div class="rotary-center">
+            <div class="rotary-center-glyph"></div>
+            <div class="rotary-center-index"></div>
+            <div class="rotary-center-label">Projets</div>
+          </div>
+          <div class="rotary-marker" aria-hidden="true"></div>
+        </div>
+        <p class="rotary-hint">⟲ Glisse pour composer · molette · flèches · clique un numéro</p>
+      </div>
+      <div class="rotary-detail">
+        <div class="terminal-header">
+          <div class="terminal-dot red"></div>
+          <div class="terminal-dot yellow"></div>
+          <div class="terminal-dot green"></div>
+          <div class="terminal-window-title rotary-detail-path"></div>
+        </div>
+        <div class="rotary-detail-media"></div>
+        <div class="rotary-detail-body" aria-live="polite"></div>
+      </div>`;
+    grid.parentNode.insertBefore(wrap, grid);
+
+    const stage       = wrap.querySelector('.rotary-stage');
+    const dial        = wrap.querySelector('.rotary-dial');
+    const centerGlyph = wrap.querySelector('.rotary-center-glyph');
+    const centerIndex = wrap.querySelector('.rotary-center-index');
+    const detailPath  = wrap.querySelector('.rotary-detail-path');
+    const detailMedia = wrap.querySelector('.rotary-detail-media');
+    const detailBody  = wrap.querySelector('.rotary-detail-body');
+
+    const holes = projects.map((p, i) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'rotary-hole';
+      b.setAttribute('aria-label', `Projet ${i + 1} : ${p.title}`);
+      b.innerHTML = `<span>${String(i + 1).padStart(2, '0')}</span>`;
+      dial.appendChild(b);
+      return b;
+    });
+    const labels = holes.map(h => h.firstChild);
+
+    /* — Rotation : le cadran tourne, les numéros restent droits — */
+    const state = { v: 0 };
+    let R = 0;
+    function applyRotation(v) {
+      state.v = v;
+      dial.style.transform = `rotate(${v}deg)`;
+      labels.forEach((s, i) => { s.style.transform = `rotate(${-(i * STEP + v)}deg)`; });
+    }
+    function layout() {
+      R = dial.offsetWidth / 2 - holes[0].offsetWidth / 2 - 14;
+      holes.forEach((h, i) => { h.style.transform = `rotate(${i * STEP}deg) translate(0, ${-R}px)`; });
+      applyRotation(state.v);
+    }
+
+    function slugify(s) {
+      return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    }
+
+    function renderDetail(i, animate) {
+      const p = projects[i];
+      detailPath.textContent = `luka@portfolio — ~/projets/${slugify(p.title)}`;
+      detailMedia.innerHTML = '';
+      if (p.media) {
+        const m = p.media.cloneNode(true);
+        if (m.tagName === 'VIDEO') { m.muted = true; m.autoplay = true; m.loop = true; m.playsInline = true; m.play?.(); }
+        detailMedia.appendChild(m);
+      } else {
+        const g = document.createElement('div');
+        g.className = 'rotary-media-grad';
+        if (p.grad) g.style.background = p.grad;
+        g.textContent = p.glyph;
+        detailMedia.appendChild(g);
+      }
+      detailBody.innerHTML = '';
+      if (p.badge) detailBody.appendChild(p.badge.cloneNode(true));
+      const h = document.createElement('h3');
+      h.className = 'rotary-detail-title'; h.textContent = p.title;
+      detailBody.appendChild(h);
+      const d = document.createElement('p');
+      d.className = 'rotary-detail-desc'; d.textContent = p.desc;
+      detailBody.appendChild(d);
+      if (p.chips.length) {
+        const cw = document.createElement('div');
+        cw.className = 'rotary-detail-chips';
+        p.chips.forEach(c => {
+          const s = document.createElement('span');
+          s.className = 'rotary-chip'; s.textContent = c;
+          cw.appendChild(s);
+        });
+        detailBody.appendChild(cw);
+      }
+      if (p.links.length) {
+        const lw = document.createElement('div');
+        lw.className = 'rotary-detail-links';
+        p.links.forEach(a => {
+          const c = a.cloneNode(true);
+          c.className = 'rotary-link';
+          lw.appendChild(c);
+        });
+        detailBody.appendChild(lw);
+      }
+      if (animate) {
+        gsap.fromTo([detailMedia, detailBody],
+          { opacity: 0, y: 12 },
+          { opacity: 1, y: 0, duration: 0.35, ease: 'power2.out', stagger: 0.06 });
+      }
+    }
+
+    let active = -1;
+    function setActive(i, animate = true) {
+      const changed = i !== active;
+      active = i;
+      holes.forEach((h, j) => h.classList.toggle('active', j === i));
+      /* cible équivalente la plus proche pour tourner par le chemin court */
+      let target = -i * STEP;
+      target += Math.round((state.v - target) / 360) * 360;
+      gsap.killTweensOf(state);
+      if (animate) {
+        gsap.to(state, {
+          v: target, duration: changed ? 0.7 : 0.45, ease: 'back.out(1.4)',
+          onUpdate: () => applyRotation(state.v)
+        });
+      } else {
+        applyRotation(target);
+      }
+      if (changed) {
+        renderDetail(i, animate);
+        centerGlyph.textContent = projects[i].glyph || String(i + 1).padStart(2, '0');
+        centerIndex.textContent = `${String(i + 1).padStart(2, '0')} / ${String(N).padStart(2, '0')}`;
+      }
+    }
+
+    /* — Interactions — */
+    let dragging = false, dragMoved = 0, lastA = 0;
+    function pointerAngle(e) {
+      const r = stage.getBoundingClientRect();
+      return Math.atan2(e.clientY - (r.top + r.height / 2), e.clientX - (r.left + r.width / 2)) * 180 / Math.PI;
+    }
+    stage.addEventListener('pointerdown', e => {
+      dragging = true; dragMoved = 0; lastA = pointerAngle(e);
+      gsap.killTweensOf(state);
+      stage.classList.add('dragging');
+    });
+    window.addEventListener('pointermove', e => {
+      if (!dragging) return;
+      const a = pointerAngle(e);
+      let d = a - lastA;
+      if (d > 180) d -= 360; else if (d < -180) d += 360;
+      lastA = a;
+      dragMoved += Math.abs(d);
+      applyRotation(state.v + d);
+    });
+    function endDrag() {
+      if (!dragging) return;
+      dragging = false;
+      stage.classList.remove('dragging');
+      const snapped = Math.round(state.v / STEP) * STEP;
+      setActive(((-Math.round(snapped / STEP)) % N + N) % N);
+    }
+    window.addEventListener('pointerup', endDrag);
+    window.addEventListener('pointercancel', endDrag);
+
+    holes.forEach((h, i) => h.addEventListener('click', () => { if (dragMoved < 6) setActive(i); }));
+
+    let wheelLock = 0;
+    stage.addEventListener('wheel', e => {
+      e.preventDefault();
+      const now = Date.now();
+      if (now - wheelLock < 180) return;
+      wheelLock = now;
+      setActive((active + (e.deltaY > 0 ? 1 : -1) + N) % N);
+    }, { passive: false });
+
+    stage.addEventListener('keydown', e => {
+      if (['ArrowRight', 'ArrowDown'].includes(e.key)) { e.preventDefault(); setActive((active + 1) % N); }
+      else if (['ArrowLeft', 'ArrowUp'].includes(e.key)) { e.preventDefault(); setActive((active - 1 + N) % N); }
+    });
+
+    let rT;
+    window.addEventListener('resize', () => { clearTimeout(rT); rT = setTimeout(layout, 150); });
+
+    /* Tour d'élan à l'arrivée dans la section */
+    ScrollTrigger.create({
+      trigger: stage, start: 'top 80%', once: true,
+      onEnter: () => {
+        if (dragging) return;
+        gsap.fromTo(state, { v: state.v - 150 },
+          { v: -active * STEP, duration: 1.4, ease: 'power4.out', onUpdate: () => applyRotation(state.v) });
+      }
+    });
+
+    /* — Init (mesure avant que setView ne puisse masquer le cadran) — */
+    layout();
+    setActive(0, false);
+
+    /* — Toggle Cadran / Grille — */
+    const toggle = document.createElement('div');
+    toggle.className = 'work-view-toggle';
+    toggle.innerHTML = `
+      <button type="button" data-view="rotary"><i class="fas fa-circle-notch"></i> Cadran</button>
+      <button type="button" data-view="grid"><i class="fas fa-table-cells-large"></i> Grille</button>`;
+    wrap.parentNode.insertBefore(toggle, wrap);
+    function setView(v) {
+      work.classList.toggle('view-rotary', v === 'rotary');
+      work.classList.toggle('view-grid', v === 'grid');
+      toggle.querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset.view === v));
+      localStorage.setItem('workView', v);
+      if (v === 'rotary') layout();
+      ScrollTrigger.refresh();
+    }
+    toggle.querySelectorAll('button').forEach(b => b.addEventListener('click', () => setView(b.dataset.view)));
+    const startView = localStorage.getItem('workView') === 'grid' ? 'grid' : 'rotary';
+    setView(startView);
+    rotaryIsDefault = startView === 'rotary';
+  })();
+
+  /* ----------------------------------------------------------
      BENTO GRID — slide from bottom + rebond par carte
      ---------------------------------------------------------- */
   (function initBento() {
     const cards = document.querySelectorAll('.bento-card');
     if (!cards.length) return;
-    if (reduced) return;
+    /* Si le cadran est la vue par défaut, la grille est masquée :
+       pas d'animation d'entrée (les cartes restent visibles au toggle) */
+    if (reduced || rotaryIsDefault) return;
     cards.forEach((card, i) => {
       card.style.willChange = 'transform, opacity';
       gsap.set(card, { opacity: 0, y: 60, scale: 0.96 });
@@ -674,6 +957,16 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }, 900);
   }
+  const NEOFETCH = [
+    '        .--.       luka@portfolio',
+    '       |o_o |      ───────────────',
+    '       |:_/ |      OS       Portfolio Linux x86_64',
+    '      //   \\ \\     Cursus   BUT Info DACS → IMT Nord Europe',
+    '     (|     | )    Shell    mbash (fait maison, en C)',
+    '    /\'\\_   _/`\\    Stack    Linux · Docker · GCP · Cyber',
+    '    \\___)=(___/    Statut   Dispo alternance · sept. 2026',
+    '                   Contact  luka.salvo23@gmail.com',
+  ];
   function handleCommand(raw) {
     const cmd = raw.trim().toLowerCase();
     writeLine('$ ' + raw.trim());
@@ -683,7 +976,16 @@ document.addEventListener('DOMContentLoaded', () => {
       termOutput.innerHTML = '';
     } else if (cmd === 'whoami')  { writeLine('luka.salvo');
     } else if (cmd === 'pwd')     { writeLine('/home/luka/portfolio');
-    } else if (cmd === 'help')    { writeLine('Commandes : ls · cd <section> · whoami · pwd · clear · help · sudo apt install easteregg');
+    } else if (cmd === 'date')    { writeLine(new Date().toLocaleString('fr-FR'));
+    } else if (cmd === 'neofetch') {
+      const pre = document.createElement('div');
+      pre.style.cssText = 'font-family:var(--mono);white-space:pre;color:#7ee787;';
+      pre.textContent = NEOFETCH.join('\n');
+      writeEl(pre);
+    } else if (cmd.startsWith('echo ')) { writeLine(raw.trim().slice(5));
+    } else if (cmd === 'history') {
+      termHistory.slice().reverse().forEach((h, i) => writeLine(`  ${i + 1}  ${h}`));
+    } else if (cmd === 'help')    { writeLine('Commandes : ls · cd <section> · whoami · pwd · neofetch · date · echo · history · clear · help · sudo apt install easteregg  (Tab = autocomplétion)');
     } else if (cmd === 'sudo' || cmd === 'sudo ') { writeLine('Pas de droits suffisants — contactez-moi pour en obtenir.');
     } else if (cmd === 'sudo apt install easteregg') { runProgressBar(runHatchAnimation);
     } else if (cmd.startsWith('sudo apt install')) { writeLine('Erreur : paquet introuvable.');
@@ -701,22 +1003,37 @@ document.addEventListener('DOMContentLoaded', () => {
     writeLine('');
   }
 
+  const termHistory = [];
   if (termInput && termOutput) {
     writeLine('Bienvenue dans le terminal interactif !');
-    writeLine('Commandes : ls · cd <section> · whoami · pwd · clear · help');
+    writeLine('Commandes : ls · cd <section> · neofetch · whoami · pwd · clear · help');
     writeLine('');
-    const history = []; let histIdx = -1;
+    let histIdx = -1;
+    const COMPLETIONS = ['ls', 'cd ', 'clear', 'whoami', 'pwd', 'neofetch', 'date', 'echo ', 'history', 'help', 'sudo apt install easteregg'];
     termInput.addEventListener('keydown', e => {
       if (e.key === 'Enter') {
         const val = termInput.value;
-        if (val.trim()) history.unshift(val);
+        if (val.trim()) termHistory.unshift(val);
         histIdx = -1; handleCommand(val); termInput.value = '';
+      } else if (e.key === 'Tab') {
+        e.preventDefault();
+        const val = termInput.value;
+        if (!val) return;
+        /* Complète d'abord les noms de section après "cd ", sinon les commandes */
+        if (val.toLowerCase().startsWith('cd ')) {
+          const part = val.slice(3).toLowerCase();
+          const match = sections.find(s => s.name.toLowerCase().startsWith(part));
+          if (match) termInput.value = 'cd ' + match.name;
+        } else {
+          const match = COMPLETIONS.find(c => c.startsWith(val.toLowerCase()) && c !== val.toLowerCase());
+          if (match) termInput.value = match;
+        }
       } else if (e.key === 'ArrowUp') {
         e.preventDefault();
-        if (histIdx < history.length - 1) { histIdx++; termInput.value = history[histIdx]; }
+        if (histIdx < termHistory.length - 1) { histIdx++; termInput.value = termHistory[histIdx]; }
       } else if (e.key === 'ArrowDown') {
         e.preventDefault();
-        histIdx > 0 ? (histIdx--, termInput.value = history[histIdx]) : (histIdx = -1, termInput.value = '');
+        histIdx > 0 ? (histIdx--, termInput.value = termHistory[histIdx]) : (histIdx = -1, termInput.value = '');
       }
     });
   }
@@ -970,6 +1287,54 @@ document.addEventListener('DOMContentLoaded', () => {
         gsap.to(cursor, { opacity: 0, duration: 0.4, ease: 'power2.out', onComplete: () => cursor.remove() });
       }, 5500);
     }, 1300);
+  })();
+
+  /* ----------------------------------------------------------
+     BACK TO TOP BUTTON
+     ---------------------------------------------------------- */
+  (function initBackToTop() {
+    const btn = document.getElementById('back-to-top');
+    if (!btn) return;
+    window.addEventListener('scroll', () => {
+      btn.classList.toggle('visible', window.scrollY > 600);
+    }, { passive: true });
+    btn.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  })();
+
+  /* ----------------------------------------------------------
+     MOBILE BENTO TOUCH EXPAND
+     ---------------------------------------------------------- */
+  (function initMobileBentoTouch() {
+    if (window.matchMedia('(hover: hover)').matches) return;
+    document.querySelectorAll('.bento-card').forEach(card => {
+      card.addEventListener('click', e => {
+        if (e.target.closest('a')) return;
+        const isActive = card.classList.contains('touch-active');
+        document.querySelectorAll('.bento-card').forEach(c => c.classList.remove('touch-active'));
+        if (!isActive) card.classList.add('touch-active');
+      });
+    });
+    document.addEventListener('click', e => {
+      if (!e.target.closest('.bento-card')) {
+        document.querySelectorAll('.bento-card').forEach(c => c.classList.remove('touch-active'));
+      }
+    });
+  })();
+
+  /* ----------------------------------------------------------
+     BENTO SPOTLIGHT — halo suivant la souris sur les cartes
+     ---------------------------------------------------------- */
+  (function initBentoSpotlight() {
+    if (reduced || !window.matchMedia('(pointer: fine)').matches) return;
+    document.querySelectorAll('.bento-card, .skill-card, .cert-card').forEach(card => {
+      card.addEventListener('mousemove', e => {
+        const r = card.getBoundingClientRect();
+        card.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+        card.style.setProperty('--my', (e.clientY - r.top) + 'px');
+      }, { passive: true });
+    });
   })();
 
   /* ----------------------------------------------------------
