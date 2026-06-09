@@ -217,7 +217,7 @@
       <div class="about-profile reveal">
         <div class="about-avatar-wrap">
           <div class="about-avatar">
-            <span class="about-avatar-initials">LS</span>
+            <img src="img/Miniature1.png" alt="Avatar de Luka Salvo" class="about-photo-img about-avatar-char">
           </div>
           <span class="about-avatar-ring"></span>
         </div>
@@ -238,16 +238,28 @@
       </div>
 
       <div class="about-grid">
-        <!-- Terminal animé -->
-        <div class="terminal reveal">
-          <div class="terminal-header">
-            <div class="terminal-dot red"></div>
-            <div class="terminal-dot yellow"></div>
-            <div class="terminal-dot green"></div>
-            <div class="terminal-window-title">luka@portfolio — zsh</div>
+        <!-- Terminal animé + moniteur htop -->
+        <div class="about-left">
+          <div class="terminal reveal">
+            <div class="terminal-header">
+              <div class="terminal-dot red"></div>
+              <div class="terminal-dot yellow"></div>
+              <div class="terminal-dot green"></div>
+              <div class="terminal-window-title">luka@portfolio — zsh</div>
+            </div>
+            <div class="terminal-body">
+              <div id="terminal-output"></div>
+            </div>
           </div>
-          <div class="terminal-body">
-            <div id="terminal-output"></div>
+
+          <div class="htop-panel reveal reveal-d1" aria-label="Moniteur système — clin d'œil humoristique">
+            <div class="terminal-header">
+              <div class="terminal-dot red"></div>
+              <div class="terminal-dot yellow"></div>
+              <div class="terminal-dot green"></div>
+              <div class="terminal-window-title">htop — luka</div>
+            </div>
+            <div class="htop-body" id="htop-body"></div>
           </div>
         </div>
 
@@ -548,7 +560,7 @@
         <h3 class="section-title reveal" style="font-size:1.8rem;margin-bottom:32px;">Compétences clés BUT DACS</h3>
         <div class="comp-list">
 
-          <div class="comp-row reveal">
+          <div class="comp-row reveal" data-level="75">
             <div class="comp-row-name">
               <div class="competence-ic"><i class="fas fa-globe"></i></div>
               <span>Architectures et protocoles Internet</span>
@@ -559,7 +571,7 @@
             </div>
           </div>
 
-          <div class="comp-row reveal reveal-d1">
+          <div class="comp-row reveal reveal-d1" data-level="85">
             <div class="comp-row-name">
               <div class="competence-ic"><i class="fab fa-linux"></i></div>
               <span>Installation &amp; administration Linux</span>
@@ -570,7 +582,7 @@
             </div>
           </div>
 
-          <div class="comp-row reveal reveal-d2">
+          <div class="comp-row reveal reveal-d2" data-level="70">
             <div class="comp-row-name">
               <div class="competence-ic"><i class="fas fa-network-wired"></i></div>
               <span>Administration réseau</span>
@@ -581,7 +593,7 @@
             </div>
           </div>
 
-          <div class="comp-row reveal reveal-d3">
+          <div class="comp-row reveal reveal-d3" data-level="75">
             <div class="comp-row-name">
               <div class="competence-ic"><i class="fas fa-server"></i></div>
               <span>Administration des serveurs et services</span>
@@ -592,7 +604,7 @@
             </div>
           </div>
 
-          <div class="comp-row reveal">
+          <div class="comp-row reveal" data-level="70">
             <div class="comp-row-name">
               <div class="competence-ic"><i class="fas fa-cloud"></i></div>
               <span>Virtualisation, cloud</span>
@@ -603,7 +615,7 @@
             </div>
           </div>
 
-          <div class="comp-row reveal reveal-d1">
+          <div class="comp-row reveal reveal-d1" data-level="65">
             <div class="comp-row-name">
               <div class="competence-ic"><i class="fas fa-cogs"></i></div>
               <span>Administration d'infrastructure</span>
@@ -614,7 +626,7 @@
             </div>
           </div>
 
-          <div class="comp-row reveal reveal-d2">
+          <div class="comp-row reveal reveal-d2" data-level="85">
             <div class="comp-row-name">
               <div class="competence-ic"><i class="fas fa-tools"></i></div>
               <span>Logiciels libres &amp; open source</span>
@@ -625,7 +637,7 @@
             </div>
           </div>
 
-          <div class="comp-row reveal reveal-d3">
+          <div class="comp-row reveal reveal-d3" data-level="70">
             <div class="comp-row-name">
               <div class="competence-ic"><i class="fas fa-shield-alt"></i></div>
               <span>Sécurité</span>

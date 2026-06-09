@@ -61,7 +61,30 @@ document.addEventListener('DOMContentLoaded', () => {
     gsap.set('.intro-name',    { y: 28 });
     gsap.set('.intro-eyebrow', { y: 12 });
 
-    const tl = gsap.timeline({ delay: 0.15 });
+    /* Boot sequence — lignes systemd avant la révélation */
+    const BOOT_LINES = [
+      ['ok',     'Mounted /home/luka/portfolio'],
+      ['ok',     'Started luka.service — Admin Sys · Cyber · DevOps'],
+      ['ok',     'Loaded modules: linux docker gcp tryhackme'],
+      ['ok',     'Network online — eth0: alternance @ sept. 2026'],
+      ['target', 'Reached target: Portfolio — Luka Salvo'],
+    ];
+    const boot = document.createElement('div');
+    boot.className = 'intro-boot';
+    boot.setAttribute('aria-hidden', 'true');
+    intro.appendChild(boot);
+    BOOT_LINES.forEach(([type, text], i) => {
+      setTimeout(() => {
+        if (dismissed || !boot.isConnected) return;
+        const d = document.createElement('div');
+        d.className = 'intro-boot-line' + (type === 'target' ? ' is-target' : '');
+        d.innerHTML = (type === 'ok' ? '<span class="intro-boot-ok">[&nbsp;&nbsp;OK&nbsp;&nbsp;]</span> ' : '') + text;
+        boot.appendChild(d);
+      }, 120 + i * 210);
+    });
+    gsap.to(boot, { opacity: 0, duration: 0.35, delay: 1.6, onComplete: () => boot.remove() });
+
+    const tl = gsap.timeline({ delay: 1.5 });
     tl.to('.intro-c2', { opacity: 1, y: 0, duration: 0.85, ease: 'expo.out' }, 0.1)
       .to('.intro-c1', { opacity: 1, y: 0, duration: 0.95, ease: 'expo.out' }, 0.28)
       .to('.intro-c3', { opacity: 1, y: 0, duration: 0.85, ease: 'expo.out' }, 0.44)
@@ -98,7 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('keydown', e => {
       if (['ArrowDown', ' ', 'Enter', 'PageDown'].includes(e.key)) { e.preventDefault(); dismiss(); }
     }, { once: true });
-    setTimeout(dismiss, 10000);
+    setTimeout(dismiss, 11500);
   })();
 
   /* ----------------------------------------------------------
@@ -848,6 +871,51 @@ document.addEventListener('DOMContentLoaded', () => {
   })();
 
   /* ----------------------------------------------------------
+     MONITEUR HTOP — jauges qui fluctuent (section À propos)
+     ---------------------------------------------------------- */
+  (function initHtop() {
+    const body = document.getElementById('htop-body');
+    if (!body) return;
+    const CORES = [
+      ['Motivation', 97],
+      ['Curiosité',  93],
+      ['Rigueur',    88],
+      ['Sport',      86],
+    ];
+    const WIDTH = 24;
+    const rows = CORES.map(([label, base]) => {
+      const row = document.createElement('div');
+      row.className = 'htop-row';
+      row.innerHTML = `<span class="htop-label">${label}</span><span class="htop-bar"></span>`;
+      body.appendChild(row);
+      return { bar: row.querySelector('.htop-bar'), base, val: base };
+    });
+    const foot = document.createElement('div');
+    foot.className = 'htop-foot';
+    foot.innerHTML =
+      'Tasks: <b>3 running</b> — alternance.search · ctf.tryhackme · veille.techno<br>' +
+      'Load: alternance 2026 · 0 kernel panic · swap: 0B used';
+    body.appendChild(foot);
+    function render() {
+      rows.forEach(r => {
+        const n = Math.round(r.val / 100 * WIDTH);
+        r.bar.innerHTML =
+          '[<span class="htop-pipes">' + '|'.repeat(n) + '</span>' +
+          ' '.repeat(WIDTH - n) +
+          '<span class="htop-pct">' + String(Math.round(r.val)).padStart(3, ' ') + '%</span>]';
+      });
+    }
+    render();
+    if (reduced) return;
+    setInterval(() => {
+      rows.forEach(r => {
+        r.val = Math.max(55, Math.min(100, r.base + (Math.random() * 8 - 4)));
+      });
+      render();
+    }, 1700);
+  })();
+
+  /* ----------------------------------------------------------
      ABOUT TERMINAL — typing animation
      ---------------------------------------------------------- */
   const terminalAbout = document.getElementById('terminal-output');
@@ -1143,6 +1211,105 @@ document.addEventListener('DOMContentLoaded', () => {
   })();
 
   /* ----------------------------------------------------------
+     JAUGES TERMINAL — auto-évaluation BUT DACS
+     Niveau lu sur data-level (0-100), rendu en [████░░] animé
+     ---------------------------------------------------------- */
+  (function initCompGauges() {
+    const SEG = 12;
+    document.querySelectorAll('.comp-row[data-level]').forEach(row => {
+      const level = Math.max(0, Math.min(100, parseInt(row.dataset.level, 10) || 0));
+      const name = row.querySelector('.comp-row-name');
+      if (!name) return;
+      const g = document.createElement('div');
+      g.className = 'comp-gauge';
+      g.setAttribute('role', 'img');
+      g.setAttribute('aria-label', `Niveau auto-évalué : ${level} %`);
+      const bar = document.createElement('span'); bar.className = 'comp-gauge-bar';
+      const pct = document.createElement('span'); pct.className = 'comp-gauge-pct';
+      g.append(bar, pct);
+      name.appendChild(g);
+      function render(v) {
+        const f = Math.round(v / 100 * SEG);
+        bar.textContent = '[' + '█'.repeat(f) + '░'.repeat(SEG - f) + ']';
+        pct.textContent = Math.round(v) + '%';
+      }
+      if (reduced) { render(level); return; }
+      render(0);
+      ScrollTrigger.create({
+        trigger: row, start: 'top 88%', once: true,
+        onEnter: () => {
+          const obj = { v: 0 };
+          gsap.to(obj, { v: level, duration: 0.9, ease: 'power2.out', onUpdate: () => render(obj.v) });
+        }
+      });
+    });
+  })();
+
+  /* ----------------------------------------------------------
+     STATUSLINE TMUX — barre fixe en bas (desktop)
+     Session · section courante · dispo · horloge live
+     ---------------------------------------------------------- */
+  (function initTmuxBar() {
+    if (window.innerWidth < 768) return;
+    const bar = document.createElement('div');
+    bar.className = 'tmux-bar';
+    bar.setAttribute('aria-hidden', 'true');
+    bar.innerHTML = `
+      <div class="tmux-left">
+        <span class="tmux-session">0:portfolio</span>
+        <span class="tmux-seg">~ luka@portfolio</span>
+      </div>
+      <div class="tmux-right">
+        <span class="tmux-seg tmux-avail"><span class="tmux-dot"></span>dispo · sept. 2026</span>
+        <span class="tmux-seg" id="tmux-section">§ hero</span>
+        <span class="tmux-seg tmux-clock" id="tmux-clock"></span>
+      </div>`;
+    document.body.appendChild(bar);
+    document.body.classList.add('has-tmux');
+
+    const clock = bar.querySelector('#tmux-clock');
+    function tick() {
+      const now = new Date();
+      clock.textContent =
+        now.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' }) +
+        ' ' + now.toLocaleTimeString('fr-FR');
+    }
+    tick();
+    setInterval(tick, 1000);
+
+    const secEl = bar.querySelector('#tmux-section');
+    const tmuxSections = [
+      ['about', 'à-propos'], ['skills', 'compétences'], ['journey', 'parcours'],
+      ['experiences', 'expériences'], ['work', 'projets'], ['contact', 'contact'],
+      ['terminal', 'terminal'],
+    ];
+    function setSection(label) { secEl.textContent = '§ ' + label; }
+    tmuxSections.forEach(([id, label]) => {
+      const s = document.getElementById(id);
+      if (!s) return;
+      ScrollTrigger.create({
+        trigger: s, start: 'top 50%', end: 'bottom 50%',
+        onEnter: () => setSection(label),
+        onEnterBack: () => setSection(label),
+      });
+    });
+    ScrollTrigger.create({
+      trigger: '.hero', start: 'top top', end: 'bottom 50%',
+      onEnter: () => setSection('hero'),
+      onEnterBack: () => setSection('hero'),
+    });
+  })();
+
+  /* ----------------------------------------------------------
+     COMPTEUR DE CERTIFICATIONS — calculé depuis le DOM
+     ---------------------------------------------------------- */
+  (function initCertCount() {
+    const el = document.querySelector('.cert-count');
+    const n = document.querySelectorAll('.cert-details-grid .cert-card').length;
+    if (el && n) el.textContent = `(${n} autres)`;
+  })();
+
+  /* ----------------------------------------------------------
      GLITCH FLASH sur group title hover
      ---------------------------------------------------------- */
   (function initGlitch() {
@@ -1248,26 +1415,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
       item.addEventListener('mouseleave', () => { dot.style.transform = ''; });
-    });
-  })();
-
-  /* ----------------------------------------------------------
-     TERMINAL TILT (about section)
-     ---------------------------------------------------------- */
-  (function initTerminalTilt() {
-    if (reduced || !window.matchMedia('(pointer: fine)').matches) return;
-    const term = document.querySelector('.about-grid .terminal');
-    if (!term) return;
-    term.addEventListener('mousemove', e => {
-      const r = term.getBoundingClientRect();
-      const x = ((e.clientX - r.left) / r.width  - 0.5) * 5;
-      const y = ((e.clientY - r.top)  / r.height - 0.5) * 3;
-      term.style.transform  = `perspective(900px) rotateY(${x}deg) rotateX(${-y}deg) scale(1.01)`;
-      term.style.transition = 'box-shadow 0.2s';
-    });
-    term.addEventListener('mouseleave', () => {
-      term.style.transform  = '';
-      term.style.transition = 'all var(--t)';
     });
   })();
 

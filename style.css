@@ -2341,6 +2341,149 @@ html:not(.dark) .rotary-detail-body .badge-acad {
   #work.view-rotary .bento-grid { display: grid; }
 }
 
+/* ── Avatar pixel-art (carte profil) ── */
+.about-avatar-char {
+  object-fit: contain;
+  object-position: center bottom;
+  padding: 4px 4px 0;
+}
+
+/* ── Jauges terminal — auto-évaluation ── */
+.comp-row-name { flex-wrap: wrap; }
+.comp-gauge {
+  flex-basis: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-left: 38px;
+  margin-top: 8px;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  line-height: 1;
+}
+.comp-gauge-bar { color: var(--accent); letter-spacing: -0.5px; white-space: pre; }
+.comp-gauge-pct { color: var(--text-3); font-weight: 700; font-size: 0.62rem; }
+
+/* ── Statusline tmux ── */
+.tmux-bar {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  z-index: 900;
+  height: 28px;
+  background: #0d1117;
+  border-top: 1px solid rgba(82,183,136,0.18);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 14px;
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #8b949e;
+}
+.tmux-left, .tmux-right { display: flex; align-items: center; gap: 12px; }
+.tmux-session {
+  background: #52B788;
+  color: #0D1A12;
+  font-weight: 700;
+  padding: 2px 8px;
+  letter-spacing: 0.06em;
+}
+.tmux-right .tmux-seg:not(:first-child)::before {
+  content: '│';
+  margin-right: 12px;
+  color: #30363d;
+}
+.tmux-avail { color: #7ee787; }
+.tmux-dot {
+  display: inline-block;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #52B788;
+  margin-right: 6px;
+  animation: availPulse 2s ease-in-out infinite;
+}
+.tmux-clock { color: #7ee787; font-variant-numeric: tabular-nums; }
+body.has-tmux { padding-bottom: 28px; }
+body.has-tmux .hero-stats { bottom: 28px; }
+body.has-tmux .hero { padding-bottom: 148px; }
+body.has-tmux .easter-hint { bottom: 112px; }
+body.has-tmux .hero-scroll { bottom: 124px; }
+@media(max-width: 767px) {
+  .tmux-bar { display: none; }
+  body.has-tmux { padding-bottom: 0; }
+  body.has-tmux .hero-stats { bottom: 0; }
+}
+@media(prefers-reduced-motion: reduce) {
+  .tmux-dot { animation: none; }
+}
+
+/* ── Intro — boot sequence ── */
+.intro-boot {
+  position: absolute;
+  top: 26px; left: 30px;
+  z-index: 6;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  line-height: 2;
+  color: rgba(255,255,255,0.5);
+  text-align: left;
+  pointer-events: none;
+}
+html:not(.dark) #intro-screen .intro-boot { color: rgba(26,32,24,0.55); }
+.intro-boot-ok { color: #52B788; font-weight: 700; }
+.intro-boot-line.is-target { color: #7ee787; margin-top: 4px; font-weight: 600; }
+html:not(.dark) .intro-boot-line.is-target { color: #2D6A4F; }
+@media(max-width: 520px) {
+  .intro-boot { font-size: 0.58rem; top: 16px; left: 16px; line-height: 1.9; }
+}
+
+/* ── Moniteur htop (À propos) ── */
+.about-left {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+.htop-panel {
+  background: #0d1117;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+.htop-body {
+  padding: 16px 20px 18px;
+  font-family: var(--mono);
+  font-size: 0.74rem;
+}
+.htop-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  line-height: 2.1;
+}
+.htop-label {
+  color: #e6edf3;
+  width: 84px;
+  flex-shrink: 0;
+  font-size: 0.7rem;
+}
+.htop-bar {
+  color: #30363d;
+  white-space: pre;
+}
+.htop-pipes { color: #52B788; }
+.htop-pct { color: #7ee787; }
+.htop-foot {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  color: #8b949e;
+  font-size: 0.66rem;
+  line-height: 1.9;
+}
+.htop-foot b { color: #7ee787; font-weight: 600; }
+
 /* ── Transition de thème — révélation circulaire ── */
 ::view-transition-old(root),
 ::view-transition-new(root) {
