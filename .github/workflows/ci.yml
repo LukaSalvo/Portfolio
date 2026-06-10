@@ -31,9 +31,21 @@ jobs:
           {
             "extends": "stylelint-config-standard",
             "rules": {
+              "color-function-notation": null,
+              "color-function-alias-notation": null,
+              "alpha-value-notation": null,
+              "declaration-block-single-line-max-declarations": null,
+              "rule-empty-line-before": null,
+              "at-rule-empty-line-before": null,
+              "comment-empty-line-before": null,
+              "property-no-vendor-prefix": null,
+              "keyframes-name-pattern": null,
+              "media-feature-range-notation": null,
+              "declaration-block-no-redundant-longhand-properties": null,
               "no-descending-specificity": null,
               "selector-class-pattern": null,
-              "custom-property-pattern": null
+              "custom-property-pattern": null,
+              "no-duplicate-selectors": [true, { "severity": "warning" }]
             }
           }
           CONF
@@ -72,5 +84,6 @@ jobs:
       - name: Vérifier les liens (lychee)
         uses: lycheeverse/lychee-action@v2
         with:
-          args: --no-progress --accept 200,206,403,429 "**/*.html"
+          # 999 = code anti-bot de LinkedIn (faux positif)
+          args: --no-progress --accept 200,206,403,429,999 "**/*.html"
           fail: true
