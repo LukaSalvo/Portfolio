@@ -85,5 +85,9 @@ jobs:
         uses: lycheeverse/lychee-action@v2
         with:
           # 999 = code anti-bot de LinkedIn (faux positif)
-          args: --no-progress --accept 200,206,403,429,999 "**/*.html"
+          args: >-
+            --no-progress 
+            --accept 200,206,403,429,999 
+            --exclude "github.com/LukaSalvo/budgette"
+            "**/*.html"
           fail: true
