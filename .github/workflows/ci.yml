@@ -1,0 +1,76 @@
+name: CI — Vérification du code
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint:
+    name: Lint HTML / CSS / JS
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      - name: Installation de Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # ───── HTML ─────
+      - name: Lint HTML (HTMLHint)
+        run: npx --yes htmlhint "**/*.html"
+
+      # ───── CSS ─────
+      - name: Lint CSS (Stylelint)
+        run: |
+          npm install --no-save stylelint stylelint-config-standard
+          cat > .stylelintrc.json << 'CONF'
+          {
+            "extends": "stylelint-config-standard",
+            "rules": {
+              "no-descending-specificity": null,
+              "selector-class-pattern": null,
+              "custom-property-pattern": null
+            }
+          }
+          CONF
+          npx stylelint "**/*.css"
+
+      # ───── JS ─────
+      - name: Lint JS (ESLint)
+        run: |
+          npm install --no-save eslint @eslint/js globals
+          cat > eslint.config.mjs << 'CONF'
+          import js from "@eslint/js";
+          import globals from "globals";
+          export default [
+            js.configs.recommended,
+            {
+              languageOptions: {
+                ecmaVersion: "latest",
+                globals: { ...globals.browser, gsap: "readonly", ScrollTrigger: "readonly" }
+              },
+              rules: {
+                "no-unused-vars": "warn",
+                "no-undef": "warn"
+              }
+            }
+          ];
+          CONF
+          npx eslint "**/*.js"
+
+  links:
+    name: Vérification des liens
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      - name: Vérifier les liens (lychee)
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: --no-progress --accept 200,206,403,429 "**/*.html"
+          fail: true
