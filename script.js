@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.documentElement.style.overflow = 'hidden';
 
     gsap.set('.intro-c1, .intro-c2, .intro-c3', { y: 90 });
-    gsap.set('.intro-name',    { y: 28 });
+    gsap.set('.intro-name',    { y: 34, clipPath: 'inset(100% 0 -12% 0)' });
     gsap.set('.intro-eyebrow', { y: 12 });
 
     /* Boot sequence — lignes systemd avant la révélation */
@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
       .to('.intro-c1', { opacity: 1, y: 0, duration: 0.95, ease: 'expo.out' }, 0.28)
       .to('.intro-c3', { opacity: 1, y: 0, duration: 0.85, ease: 'expo.out' }, 0.44)
       .to('.intro-eyebrow', { opacity: 1, y: 0, duration: 0.55, ease: 'power3.out' }, 0.55)
-      .to('.intro-name',    { opacity: 1, y: 0, duration: 0.80, ease: 'expo.out'   }, 0.66)
+      .to('.intro-name',    { opacity: 1, y: 0, clipPath: 'inset(0% 0 -12% 0)', duration: 0.90, ease: 'expo.out' }, 0.66)
       .to('.intro-role',    { opacity: 1,        duration: 0.50, ease: 'power2.out' }, 0.98)
       .to('.intro-hint',    { opacity: 1,        duration: 0.45, ease: 'power2.out' }, 1.45);
 
@@ -227,9 +227,15 @@ document.addEventListener('DOMContentLoaded', () => {
   if (!reduced) {
     const heroTl = gsap.timeline({ delay: 0.1 });
     heroTl
-      .fromTo('.hero-available', { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' }, 0)
+      /* Tampon encreur — il se "tamponne" sur la page */
+      .fromTo('.hero-available',
+        { opacity: 0, scale: 1.7, rotate: 7 },
+        { opacity: 1, scale: 1, rotate: -2.5, duration: 0.45, ease: 'back.out(2.5)' }, 0.05)
       .fromTo('.hero-eyebrow',  { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6,  ease: 'power3.out' }, 0)
-      .fromTo('.hero-title',    { opacity: 0, y: 48 }, { opacity: 1, y: 0, duration: 0.85, ease: 'expo.out'   }, 0.12)
+      /* Titre — révélation à l'encre, le texte monte hors de la ligne */
+      .fromTo('.hero-title',
+        { opacity: 1, y: 36, clipPath: 'inset(100% 0 -10% 0)' },
+        { y: 0, clipPath: 'inset(0% 0 -10% 0)', duration: 0.95, ease: 'expo.out' }, 0.12)
       .fromTo('.hero-subtitle', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6,  ease: 'power3.out' }, 0.28)
       .fromTo('.hero-desc',     { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.6,  ease: 'power3.out' }, 0.4)
       .fromTo('.hero-tags',     { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.5,  ease: 'power3.out' }, 0.52)
@@ -237,22 +243,6 @@ document.addEventListener('DOMContentLoaded', () => {
       .fromTo('.hero-scroll',   { opacity: 0 },        { opacity: 1, duration: 0.5 },                            0.85)
       .fromTo('.hero-stats',    { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5,  ease: 'power3.out' }, 0.8);
 
-    const heroTitle = document.querySelector('.hero-title');
-    if (heroTitle) {
-      const FINAL = heroTitle.textContent;
-      const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ#@$%&';
-      let frame = 0;
-      heroTl.call(() => {
-        const iv = setInterval(() => {
-          const p = frame / 20;
-          heroTitle.textContent = FINAL.split('').map((ch, i) => {
-            if (ch === ' ') return ' ';
-            return i / FINAL.length < p ? ch : CHARS[Math.floor(Math.random() * CHARS.length)];
-          }).join('');
-          if (++frame > 20) { clearInterval(iv); heroTitle.textContent = FINAL; }
-        }, 42);
-      }, null, 0.12);
-    }
   } else {
     HERO_SEL.forEach(sel => {
       const el = document.querySelector(sel);
@@ -635,6 +625,18 @@ document.addEventListener('DOMContentLoaded', () => {
             delay: del((i % 3) * 0.06)
           })
         });
+        /* Bourgeon — le point éclot quand la tige l'atteint */
+        const dot = el.querySelector('.timeline-dot');
+        if (dot) {
+          gsap.set(dot, { scale: 0 });
+          ScrollTrigger.create({
+            trigger: el, start: 'top 82%', once: true,
+            onEnter: () => gsap.to(dot, {
+              scale: 1, duration: dur(0.55), ease: 'back.out(3.5)',
+              delay: del(0.12)
+            })
+          });
+        }
       }
     });
   });
@@ -707,6 +709,13 @@ document.addEventListener('DOMContentLoaded', () => {
       trigger: section, start: 'top 85%', once: true,
       onEnter: () => gsap.to(div, { opacity: 1, x: 0, duration: dur(0.9), ease: 'power3.out' })
     });
+    /* Dérive parallaxe — le numéro flotte plus lentement que la page */
+    if (!reduced) {
+      gsap.fromTo(div, { y: -40 }, {
+        y: 70, ease: 'none',
+        scrollTrigger: { trigger: section, start: 'top bottom', end: 'bottom top', scrub: 1.2 }
+      });
+    }
   });
 
   /* ----------------------------------------------------------
@@ -1310,20 +1319,6 @@ document.addEventListener('DOMContentLoaded', () => {
   })();
 
   /* ----------------------------------------------------------
-     GLITCH FLASH sur group title hover
-     ---------------------------------------------------------- */
-  (function initGlitch() {
-    if (reduced) return;
-    document.querySelectorAll('.skills-group-title').forEach(el => {
-      el.addEventListener('mouseenter', () => {
-        if (el.classList.contains('glitch-flash')) return;
-        el.classList.add('glitch-flash');
-        el.addEventListener('animationend', () => el.classList.remove('glitch-flash'), { once: true });
-      });
-    });
-  })();
-
-  /* ----------------------------------------------------------
      SIDE NAV DOTS
      ---------------------------------------------------------- */
   (function initSideNav() {
@@ -1419,24 +1414,6 @@ document.addEventListener('DOMContentLoaded', () => {
   })();
 
   /* ----------------------------------------------------------
-     HERO TITLE CURSOR (after scramble)
-     ---------------------------------------------------------- */
-  (function initHeroTitleCursor() {
-    if (reduced) return;
-    const title = document.querySelector('.hero-title');
-    if (!title) return;
-    setTimeout(() => {
-      const cursor = document.createElement('span');
-      cursor.className = 'hero-title-cursor';
-      cursor.setAttribute('aria-hidden', 'true');
-      title.appendChild(cursor);
-      setTimeout(() => {
-        gsap.to(cursor, { opacity: 0, duration: 0.4, ease: 'power2.out', onComplete: () => cursor.remove() });
-      }, 5500);
-    }, 1300);
-  })();
-
-  /* ----------------------------------------------------------
      BACK TO TOP BUTTON
      ---------------------------------------------------------- */
   (function initBackToTop() {
@@ -1481,6 +1458,39 @@ document.addEventListener('DOMContentLoaded', () => {
         card.style.setProperty('--mx', (e.clientX - r.left) + 'px');
         card.style.setProperty('--my', (e.clientY - r.top) + 'px');
       }, { passive: true });
+    });
+  })();
+
+  /* ----------------------------------------------------------
+     PARALLAXE DES PLANCHES — les images des projets glissent
+     doucement pendant le scroll, comme des figures de revue
+     ---------------------------------------------------------- */
+  (function initBentoParallax() {
+    if (reduced) return;
+    document.querySelectorAll('.bento-grid .bento-bg img, .bento-grid .bento-bg video').forEach(media => {
+      const card = media.closest('.bento-card');
+      if (!card) return;
+      /* scale 1.14 pour que la translation ne découvre jamais les bords */
+      gsap.fromTo(media,
+        { yPercent: -5, scale: 1.14 },
+        {
+          yPercent: 5, scale: 1.14, ease: 'none',
+          scrollTrigger: { trigger: card, start: 'top bottom', end: 'bottom top', scrub: 0.8 }
+        });
+    });
+  })();
+
+  /* ----------------------------------------------------------
+     FILETS D'ENCRE — les séparateurs des cartes "À propos"
+     se tracent à l'arrivée dans le viewport
+     ---------------------------------------------------------- */
+  (function initInkRules() {
+    document.querySelectorAll('.info-card').forEach(card => {
+      if (reduced) { card.classList.add('line-drawn'); return; }
+      ScrollTrigger.create({
+        trigger: card, start: 'top 86%', once: true,
+        onEnter: () => card.classList.add('line-drawn')
+      });
     });
   })();
 

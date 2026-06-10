@@ -29,7 +29,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap"
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;600&family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&display=swap"
     rel="stylesheet">
 
   <!-- Icons -->
@@ -80,11 +80,6 @@
 
   <!-- ═══════════ INTRO SCREEN ═══════════ -->
   <div id="intro-screen" role="presentation" aria-hidden="true">
-    <div class="intro-grid"></div>
-    <div class="intro-glow intro-glow-l"></div>
-    <div class="intro-glow intro-glow-r"></div>
-    <div class="intro-glow intro-glow-c"></div>
-
     <div class="intro-text">
       <p class="intro-eyebrow">Portfolio · 2026</p>
       <h2 class="intro-name">Luka<br>Salvo</h2>
@@ -180,7 +175,7 @@
     </div>
 
     <!-- Easter egg hint -->
-    <div class="easter-hint">Un easter egg se cache ici... 🕵️</div>
+    <div class="easter-hint">Une note secrète est glissée entre les pages… 🕵️</div>
 
     <!-- Stats bar -->
     <div class="hero-stats" aria-hidden="true">
@@ -319,7 +314,7 @@
       <!-- Sticky header -->
       <div class="section-header skills-sticky-header">
         <span class="section-label reveal">Compétences</span>
-        <h2 class="section-title reveal">Mon arsenal technique</h2>
+        <h2 class="section-title reveal">Ce que je pratique</h2>
         <p class="section-desc reveal">Administration système, réseaux, virtualisation, cybersécurité et développement.</p>
       </div>
 
@@ -336,7 +331,7 @@
       <div class="skills-cards-grid">
 
         <div class="skill-card">
-          <span class="skill-card-prefix">[sys]</span>
+          <span class="skill-card-prefix">01 · sys</span>
           <h3 class="skill-card-title">Administration</h3>
           <div class="skill-card-tags">
             <span class="skill-tag">Linux</span>
@@ -352,7 +347,7 @@
         </div>
 
         <div class="skill-card">
-          <span class="skill-card-prefix">[net]</span>
+          <span class="skill-card-prefix">02 · net</span>
           <h3 class="skill-card-title">Réseaux</h3>
           <div class="skill-card-tags">
             <span class="skill-tag">Cisco</span>
@@ -366,7 +361,7 @@
         </div>
 
         <div class="skill-card">
-          <span class="skill-card-prefix">[virt]</span>
+          <span class="skill-card-prefix">03 · virt</span>
           <h3 class="skill-card-title">Virtualisation</h3>
           <div class="skill-card-tags">
             <span class="skill-tag">Docker</span>
@@ -379,7 +374,7 @@
         </div>
 
         <div class="skill-card">
-          <span class="skill-card-prefix">[cloud]</span>
+          <span class="skill-card-prefix">04 · cloud</span>
           <h3 class="skill-card-title">Cloud &amp; Observabilité</h3>
           <div class="skill-card-tags">
             <span class="skill-tag">GCP</span>
@@ -392,7 +387,7 @@
         </div>
 
         <div class="skill-card">
-          <span class="skill-card-prefix">[dev]</span>
+          <span class="skill-card-prefix">05 · dev</span>
           <h3 class="skill-card-title">Développement</h3>
           <div class="skill-card-tags">
             <span class="skill-tag">Java</span>
@@ -779,12 +774,13 @@
       <div class="bento-grid">
 
         <!-- 1 · OSINT MAX — wide (2 cols) -->
-        <div class="bento-card bento-wide" style="--bento-grad:linear-gradient(135deg,#1a0533 0%,#4c1d95 100%)">
-          <div class="bento-bg"></div>
+        <div class="bento-card bento-wide">
+          <div class="bento-bg"><img src="img/OSINT_MAX.png" alt="" loading="lazy"></div>
           <div class="bento-face">
             <div class="bento-top">
               <span class="bento-badge badge-perso">Personnel</span>
               <span class="bento-glyph">🕵️</span>
+              <span class="bento-fig">Fig. 01</span>
             </div>
             <div class="bento-bottom">
               <h3 class="bento-title">OSINT MAX</h3>
@@ -812,6 +808,7 @@
             <div class="bento-top">
               <span class="bento-badge badge-perso">Personnel</span>
               <span class="bento-glyph">📊</span>
+              <span class="bento-fig">Fig. 02</span>
             </div>
             <div class="bento-bottom">
               <h3 class="bento-title">MAC Monitor</h3>
@@ -838,6 +835,7 @@
           <div class="bento-face">
             <div class="bento-top">
               <span class="bento-badge badge-stage">Stage</span>
+              <span class="bento-fig">Fig. 03</span>
             </div>
             <div class="bento-bottom">
               <h3 class="bento-title">Tableau de bord GLPI</h3>
@@ -867,6 +865,7 @@
             <div class="bento-top">
               <span class="bento-badge badge-acad">Académique</span>
               <span class="bento-glyph">🎮</span>
+              <span class="bento-fig">Fig. 04</span>
             </div>
             <div class="bento-bottom">
               <h3 class="bento-title">Jeu de Labyrinthe</h3>
@@ -892,6 +891,7 @@
           <div class="bento-face">
             <div class="bento-top">
               <span class="bento-badge badge-acad">Académique</span>
+              <span class="bento-fig">Fig. 05</span>
             </div>
             <div class="bento-bottom">
               <h3 class="bento-title">Site Web Sécurisé</h3>
@@ -918,6 +918,7 @@
           <div class="bento-face">
             <div class="bento-top">
               <span class="bento-badge badge-acad">Académique</span>
+              <span class="bento-fig">Fig. 06</span>
             </div>
             <div class="bento-bottom">
               <h3 class="bento-title">Générateur de diagramme de classe</h3>
@@ -945,6 +946,7 @@
             <div class="bento-top">
               <span class="bento-badge badge-acad">Académique</span>
               <span class="bento-glyph">🖥️</span>
+              <span class="bento-fig">Fig. 07</span>
             </div>
             <div class="bento-bottom">
               <h3 class="bento-title">Shell mbash</h3>
@@ -968,12 +970,13 @@
         </div>
 
 
-        <div class="bento-card" style="--bento-grad:linear-gradient(135deg,#1a0533 0%,#4c1d95 100%)">
+        <div class="bento-card" style="--bento-grad:linear-gradient(135deg,#0D1A12 0%,#2D6A4F 100%)">
           <div class="bento-bg"></div>
           <div class="bento-face">
             <div class="bento-top">
               <span class="bento-badge badge-perso">Personnel</span>
               <span class="bento-glyph">💰</span>
+              <span class="bento-fig">Fig. 08</span>
             </div>
             <div class="bento-bottom">
               <h3 class="bento-title">BUDGETTE</h3>
@@ -999,6 +1002,7 @@
           <div class="bento-face">
             <div class="bento-top">
               <span class="bento-badge badge-perso">Personnel</span>
+              <span class="bento-fig">Fig. 09</span>
             </div>
             <div class="bento-bottom">
               <h3 class="bento-title">Portfolio</h3>
