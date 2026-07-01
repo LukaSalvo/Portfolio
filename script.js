@@ -612,18 +612,13 @@ document.addEventListener('DOMContentLoaded', () => {
         onLeave: () => { line.style.willChange = 'auto'; }
       });
     }
-    /* Entrées des items */
-    timeline.querySelectorAll('.timeline-item').forEach((el, i) => {
+    /* Entrées des items — révélation liée au scroll (scrub réversible) */
+    timeline.querySelectorAll('.timeline-item').forEach(el => {
       if (!reduced) {
-        const xDir = i % 2 === 0 ? -28 : 28;
-        gsap.set(el, { opacity: 0, x: xDir });
-        ScrollTrigger.create({
-          trigger: el, start: 'top 90%', once: true,
-          onEnter: () => gsap.to(el, {
-            opacity: 1, x: 0,
-            duration: dur(0.55), ease: 'power3.out',
-            delay: del((i % 3) * 0.06)
-          })
+        el.style.transition = 'none'; /* la transition CSS de .reveal fausserait le scrub */
+        gsap.fromTo(el, { opacity: 0.12, x: -26 }, {
+          opacity: 1, x: 0, ease: 'none',
+          scrollTrigger: { trigger: el, start: 'top 94%', end: 'top 62%', scrub: 0.5 }
         });
         /* Bourgeon — le point éclot quand la tige l'atteint */
         const dot = el.querySelector('.timeline-dot');
@@ -1516,6 +1511,320 @@ document.addEventListener('DOMContentLoaded', () => {
         ticking = false;
       });
     }, { passive: true });
+  })();
+
+  /* ==========================================================
+     v4.1 — ANIMATIONS DE SCROLL SUPPLÉMENTAIRES
+     ========================================================== */
+
+  /* ----------------------------------------------------------
+     NAV — ombre une fois la page entamée
+     ---------------------------------------------------------- */
+  (function initNavShadow() {
+    const nav = document.querySelector('.nav');
+    if (!nav) return;
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('nav-scrolled', window.scrollY > 20);
+    }, { passive: true });
+  })();
+
+  /* ----------------------------------------------------------
+     SECTION LABELS — le filet s'étire à l'arrivée
+     ---------------------------------------------------------- */
+  document.querySelectorAll('.section-label').forEach(el => {
+    if (el.closest('#skills')) return;
+    if (reduced) { el.classList.add('line-in'); return; }
+    ScrollTrigger.create({
+      trigger: el, start: 'top 92%', once: true,
+      onEnter: () => el.classList.add('line-in')
+    });
+  });
+
+  /* ----------------------------------------------------------
+     HERO — sortie en fondu + le titre remonte (scrub)
+     ---------------------------------------------------------- */
+  (function initHeroExit() {
+    if (reduced) return;
+    const hero = document.querySelector('.hero');
+    if (!hero) return;
+    gsap.to('.hero-content', {
+      opacity: 0.1, ease: 'none',
+      scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom 35%', scrub: true }
+    });
+    gsap.to('.hero-title', {
+      y: -34, ease: 'none',
+      scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom 35%', scrub: true }
+    });
+  })();
+
+  /* ----------------------------------------------------------
+     SKEW DE VITESSE — la page "penche" comme de l'encre
+     entraînée par la plume quand on scrolle vite
+     ---------------------------------------------------------- */
+  (function initVelocitySkew() {
+    if (reduced) return;
+    const targets = gsap.utils.toArray('section:not(#skills) .section-inner');
+    if (!targets.length) return;
+    gsap.set(targets, { transformOrigin: '50% 50%', force3D: true });
+    const setter = gsap.quickSetter(targets, 'skewY', 'deg');
+    const clampSkew = gsap.utils.clamp(-1.1, 1.1);
+    const proxy = { skew: 0 };
+    ScrollTrigger.create({
+      onUpdate(self) {
+        const skew = clampSkew(self.getVelocity() / -500);
+        if (Math.abs(skew) > Math.abs(proxy.skew)) {
+          proxy.skew = skew;
+          gsap.to(proxy, {
+            skew: 0, duration: 0.7, ease: 'power3.out',
+            overwrite: true, onUpdate: () => setter(proxy.skew)
+          });
+        }
+      }
+    });
+  })();
+
+  /* ----------------------------------------------------------
+     MARQUEE RÉACTIF — accélère avec la vitesse de scroll
+     ---------------------------------------------------------- */
+  (function initMarqueeVelocity() {
+    if (reduced) return;
+    const defs = [
+      { el: document.querySelector('.hero-marquee-track.row-1'), from: 0,   to: -50, d: 28 },
+      { el: document.querySelector('.hero-marquee-track.row-2'), from: -50, to: 0,   d: 32 },
+    ];
+    const tweens = [];
+    defs.forEach(({ el, from, to, d }) => {
+      if (!el) return;
+      el.style.animation = 'none';
+      tweens.push(gsap.fromTo(el, { xPercent: from },
+        { xPercent: to, ease: 'none', duration: d, repeat: -1 }));
+    });
+    if (!tweens.length) return;
+    let decay = null;
+    ScrollTrigger.create({
+      onUpdate(self) {
+        const boost = 1 + Math.min(Math.abs(self.getVelocity()) / 800, 3);
+        tweens.forEach(tw => tw.timeScale(boost));
+        if (decay) decay.kill();
+        const obj = { v: boost };
+        decay = gsap.to(obj, {
+          v: 1, duration: 1.2, ease: 'power2.out',
+          onUpdate: () => tweens.forEach(tw => tw.timeScale(obj.v))
+        });
+      }
+    });
+  })();
+
+  /* ----------------------------------------------------------
+     CARTE PROFIL — photo collée dans le carnet (rotation)
+     ---------------------------------------------------------- */
+  (function initProfileCard() {
+    if (reduced) return;
+    const card = document.querySelector('.about-profile');
+    if (!card) return;
+    gsap.set(card, { opacity: 0, y: 34, rotate: -1.6, transformOrigin: '50% 0%' });
+    ScrollTrigger.create({
+      trigger: card, start: 'top 88%', once: true,
+      onEnter: () => gsap.to(card, {
+        opacity: 1, y: 0, rotate: 0,
+        duration: dur(0.9), ease: 'power3.out'
+      })
+    });
+  })();
+
+  /* ----------------------------------------------------------
+     CONTACT — l'encre se dépose caractère par caractère,
+     pilotée par le scroll (scrub)
+     ---------------------------------------------------------- */
+  (function initContactInk() {
+    const el = document.querySelector('.contact-big');
+    if (!el || reduced) return;
+    const text = el.textContent;
+    el.setAttribute('aria-label', text);
+    el.innerHTML = '';
+    text.split('').forEach(ch => {
+      if (ch === ' ') { el.appendChild(document.createTextNode(' ')); return; }
+      const s = document.createElement('span');
+      s.className = 'char';
+      s.textContent = ch;
+      s.setAttribute('aria-hidden', 'true');
+      el.appendChild(s);
+    });
+    gsap.fromTo(el.querySelectorAll('.char'),
+      { opacity: 0.08, y: 8 },
+      {
+        opacity: 1, y: 0, stagger: 0.035, ease: 'none',
+        scrollTrigger: { trigger: el, start: 'top 88%', end: 'top 45%', scrub: 0.6 }
+      });
+  })();
+
+  /* ==========================================================
+     v4.2 — PARCOURS & COMPÉTENCES : animations de scroll modernes
+     ========================================================== */
+
+  /* ----------------------------------------------------------
+     SKILL CARDS — révélation "mise au point" (blur + profondeur)
+     ---------------------------------------------------------- */
+  (function initSkillCardsReveal() {
+    if (reduced) return;
+    const cards = gsap.utils.toArray('.skills-cards-grid .skill-card');
+    if (!cards.length) return;
+    gsap.set(cards, { opacity: 0, y: 46, scale: 0.94, filter: 'blur(8px)' });
+    /* La transition CSS sur transform lisserait l'entrée GSAP — coupée
+       pendant l'animation, restaurée ensuite pour le hover */
+    cards.forEach(c => { c.style.transition = 'none'; });
+    ScrollTrigger.batch(cards, {
+      start: 'top 88%', once: true,
+      onEnter: batch => gsap.to(batch, {
+        opacity: 1, y: 0, scale: 1, filter: 'blur(0px)',
+        duration: dur(0.8), ease: 'power3.out', stagger: stag(0.09),
+        clearProps: 'transform,filter',
+        onComplete: () => batch.forEach(c => { c.style.transition = ''; })
+      })
+    });
+  })();
+
+  /* ----------------------------------------------------------
+     CERT CARDS — bascule 3D à l'entrée
+     ---------------------------------------------------------- */
+  (function initCertCardsReveal() {
+    if (reduced) return;
+    const certs = gsap.utils.toArray('.cert-grid:not(.cert-details-grid) .cert-card');
+    if (!certs.length) return;
+    gsap.set(certs, {
+      opacity: 0, y: 30, rotateX: -12,
+      transformPerspective: 700, transformOrigin: '50% 0%'
+    });
+    ScrollTrigger.batch(certs, {
+      start: 'top 90%', once: true,
+      onEnter: batch => gsap.to(batch, {
+        opacity: 1, y: 0, rotateX: 0,
+        duration: dur(0.7), ease: 'power3.out', stagger: stag(0.07),
+        clearProps: 'transform'
+      })
+    });
+  })();
+
+  /* ----------------------------------------------------------
+     BADGE TRYHACKME — tamponné comme au hero
+     ---------------------------------------------------------- */
+  (function initThmStamp() {
+    if (reduced) return;
+    const badge = document.querySelector('.thm-badge');
+    if (!badge) return;
+    gsap.set(badge, { opacity: 0, scale: 1.5, rotate: 3 });
+    ScrollTrigger.create({
+      trigger: badge, start: 'top 88%', once: true,
+      onEnter: () => gsap.to(badge, {
+        opacity: 1, scale: 1, rotate: -1,
+        duration: 0.5, ease: 'back.out(2.2)'
+      })
+    });
+  })();
+
+  /* ----------------------------------------------------------
+     AUTO-ÉVALUATION — focus de lecture lié au scroll (scrub)
+     ---------------------------------------------------------- */
+  (function initCompRowsScrub() {
+    if (reduced) return;
+    gsap.utils.toArray('.comp-list .comp-row').forEach(row => {
+      gsap.fromTo(row, { opacity: 0.18, x: -22 }, {
+        opacity: 1, x: 0, ease: 'none',
+        scrollTrigger: { trigger: row, start: 'top 94%', end: 'top 62%', scrub: 0.5 }
+      });
+    });
+  })();
+
+  /* ----------------------------------------------------------
+     TICKER COMPÉTENCES — vitesse liée au scroll (pause au survol)
+     ---------------------------------------------------------- */
+  (function initTickerVelocity() {
+    if (reduced) return;
+    const track = document.querySelector('.skills-ticker-track');
+    if (!track) return;
+    track.style.animation = 'none';
+    const tw = gsap.fromTo(track, { xPercent: 0 },
+      { xPercent: -50, ease: 'none', duration: 36, repeat: -1 });
+    let hovered = false, decay = null;
+    const cont = track.parentElement;
+    cont.addEventListener('mouseenter', () => {
+      hovered = true;
+      gsap.to(tw, { timeScale: 0, duration: 0.35, overwrite: true });
+    });
+    cont.addEventListener('mouseleave', () => {
+      hovered = false;
+      gsap.to(tw, { timeScale: 1, duration: 0.35, overwrite: true });
+    });
+    ScrollTrigger.create({
+      onUpdate(self) {
+        if (hovered) return;
+        const boost = 1 + Math.min(Math.abs(self.getVelocity()) / 900, 3);
+        tw.timeScale(boost);
+        if (decay) decay.kill();
+        const obj = { v: boost };
+        decay = gsap.to(obj, {
+          v: 1, duration: 1, ease: 'power2.out',
+          onUpdate: () => { if (!hovered) tw.timeScale(obj.v); }
+        });
+      }
+    });
+  })();
+
+  /* ----------------------------------------------------------
+     ANNÉE GÉANTE STICKY — Parcours & Expériences : l'année en
+     contour d'encre suit le scroll et change à chaque étape
+     ---------------------------------------------------------- */
+  (function initTimelineYears() {
+    if (reduced || window.innerWidth < 1100) return;
+    ['journey', 'experiences'].forEach(id => {
+      const section = document.getElementById(id);
+      const inner = section?.querySelector('.section-inner');
+      const items = section?.querySelectorAll('.timeline-item');
+      if (!inner || !items || !items.length) return;
+      section.classList.add('has-year-rail');
+      const rail = document.createElement('div');
+      rail.className = 'year-rail';
+      rail.setAttribute('aria-hidden', 'true');
+      rail.innerHTML = '<div class="year-rail-num"></div>';
+      inner.insertBefore(rail, inner.firstChild);
+      const num = rail.querySelector('.year-rail-num');
+      let current = '';
+      function setYear(y) {
+        if (!y || y === current) return;
+        current = y;
+        num.textContent = y;
+        gsap.fromTo(num, { opacity: 0, y: 34 },
+          { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out', overwrite: true });
+      }
+      items.forEach(item => {
+        const y = (item.querySelector('.timeline-date')?.textContent.match(/\d{4}/) || [''])[0];
+        if (!y) return;
+        ScrollTrigger.create({
+          trigger: item, start: 'top 60%', end: 'bottom 60%',
+          onEnter: () => setYear(y),
+          onEnterBack: () => setYear(y)
+        });
+      });
+    });
+  })();
+
+  /* ----------------------------------------------------------
+     FOOTER — entrée en fondu
+     ---------------------------------------------------------- */
+  (function initFooterReveal() {
+    if (reduced) return;
+    ['.footer-top', '.footer-bottom'].forEach((sel, i) => {
+      const el = document.querySelector(sel);
+      if (!el) return;
+      gsap.set(el, { opacity: 0, y: 24 });
+      ScrollTrigger.create({
+        trigger: 'footer', start: 'top 94%', once: true,
+        onEnter: () => gsap.to(el, {
+          opacity: 1, y: 0, duration: 0.7,
+          delay: i * 0.12, ease: 'power3.out'
+        })
+      });
+    });
   })();
 
 });

@@ -449,12 +449,6 @@ section { padding: 160px 40px; position: relative; overflow-x: clip; }
 }
 .reveal.visible { opacity:1; transform:translateY(0); }
 
-/* Skills — toujours visible, aucune animation de scroll */
-#skills .reveal {
-  opacity: 1 !important;
-  transform: none !important;
-  transition: none !important;
-}
 .reveal-d1 { transition-delay:0.07s; }
 .reveal-d2 { transition-delay:0.14s; }
 .reveal-d3 { transition-delay:0.21s; }
@@ -2495,3 +2489,81 @@ html:not(.dark) .intro-boot-line.is-target { color: #2D6A4F; }
 }
 ::view-transition-old(root) { z-index: 1; }
 ::view-transition-new(root) { z-index: 9999; }
+
+/* ════════════════════════════════════════════════════════════
+   v4.1 — Polish « Carnet » + animations de scroll
+   ════════════════════════════════════════════════════════════ */
+
+/* Nav — ombre légère une fois la page entamée */
+.nav.nav-scrolled { box-shadow: 0 8px 24px -18px rgba(26,32,24,0.35); }
+html.dark .nav.nav-scrolled { box-shadow: 0 8px 24px -14px rgba(0,0,0,0.65); }
+
+/* Barre de progression — trait d'encre verte → sépia */
+.scroll-progress { background: linear-gradient(90deg, var(--accent), var(--sepia)); }
+
+/* Filet du label de section — s'étire quand la section arrive */
+.section-label::before {
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.1s;
+}
+.section-label.line-in::before { transform: scaleX(1); }
+#skills .section-label::before { transform: scaleX(1); transition: none; }
+
+/* Dates de la timeline — annotations sépia du carnet */
+.timeline-date { color: var(--sepia); }
+
+/* Hero stats — filets verticaux entre colonnes */
+@media(min-width: 768px) {
+  .hero-stats { gap: 0; }
+  .hero-stats .stat { padding: 0 44px; }
+  .hero-stats .stat + .stat { border-left: 1px solid var(--line); }
+}
+
+/* Carte profil — photo collée dans le carnet (ombre papier) */
+.about-profile { box-shadow: 0 16px 36px -24px rgba(26,32,24,0.4); }
+html.dark .about-profile { box-shadow: 0 16px 36px -20px rgba(0,0,0,0.55); }
+
+/* Skill cards — légère élévation au survol */
+.skill-card { transition: border-color var(--t), box-shadow var(--t), transform var(--t); }
+.skill-card:hover { transform: translateY(-2px); }
+
+/* Contact — l'encre se dépose caractère par caractère (scrub JS) */
+.contact-big .char { display: inline-block; }
+
+@media(prefers-reduced-motion: reduce) {
+  .section-label::before { transform: scaleX(1); transition: none; }
+  .contact-big .char { opacity: 1 !important; transform: none !important; }
+  .skill-card:hover { transform: none; }
+}
+
+/* ════════════════════════════════════════════════════════════
+   v4.2 — Parcours & Compétences : animations de scroll modernes
+   ════════════════════════════════════════════════════════════ */
+
+/* Année géante sticky — contour d'encre, change au fil de la timeline */
+.year-rail {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.22;
+}
+html.dark .year-rail { opacity: 0.3; }
+.year-rail-num {
+  position: sticky;
+  top: 36vh;
+  text-align: right;
+  font-family: var(--display);
+  font-size: clamp(5.5rem, 10vw, 8.5rem);
+  font-weight: 560;
+  font-variation-settings: 'opsz' 144;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--accent);
+  user-select: none;
+}
+/* L'année dynamique remplace le numéro statique de section */
+.has-year-rail .section-bg-num { display: none; }
+@media(max-width: 1099px) { .year-rail { display: none; } }
