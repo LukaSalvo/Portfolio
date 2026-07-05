@@ -137,10 +137,21 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   syncThemeIcon();
 
+  function syncThemeColorMeta() {
+    // Les deux <meta theme-color> ont un attribut media (OS) : on force le même
+    // contenu sur les deux pour que le choix manuel prime sur la préférence système.
+    const isDark = html.classList.contains('dark');
+    document.querySelectorAll('meta[name="theme-color"]').forEach(m => {
+      m.content = isDark ? '#0D1A12' : '#F5F0E6';
+    });
+  }
+  syncThemeColorMeta();
+
   function applyTheme() {
     html.classList.toggle('dark');
     localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
     syncThemeIcon();
+    syncThemeColorMeta();
   }
 
   themeToggle?.addEventListener('click', () => {
@@ -166,6 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (localStorage.getItem('theme')) return;
     html.classList.toggle('dark', e.matches);
     syncThemeIcon();
+    syncThemeColorMeta();
   });
 
   /* ----------------------------------------------------------
@@ -1057,7 +1069,59 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (cmd.startsWith('echo ')) { writeLine(raw.trim().slice(5));
     } else if (cmd === 'history') {
       termHistory.slice().reverse().forEach((h, i) => writeLine(`  ${i + 1}  ${h}`));
-    } else if (cmd === 'help')    { writeLine('Commandes : ls · cd <section> · whoami · pwd · neofetch · date · echo · history · clear · help · sudo apt install easteregg  (Tab = autocomplétion)');
+    } else if (cmd === 'help')    { writeLine('Commandes : ls · cd <section> · whoami · pwd · neofetch · date · echo · history · uptime · fortune · cowsay · theme · clear · help · sudo apt install easteregg  (Tab = autocomplétion)');
+    } else if (cmd === 'uptime')  { writeLine('up since mars 2026 · load average: 0.42, 0.38, 0.51 · disponibilité: 99.9%');
+    } else if (cmd === 'fortune') {
+      const quotes = [
+        'Il n\'existe pas de patch pour la curiosité humaine.',
+        '99 little bugs in the code, 99 little bugs... take one down, patch it around, 127 little bugs in the code.',
+        'Un bon admin sys a toujours un plan B. Et un plan de rollback pour le plan B.',
+        'La sécurité, c\'est un chemin, pas une destination.',
+        'chmod 777 : le pire conseil StackOverflow jamais donné.',
+        'Ça marche sur ma machine. ¯\\_(ツ)_/¯'
+      ];
+      writeLine(quotes[Math.floor(Math.random() * quotes.length)]);
+    } else if (cmd === 'sl') {
+      const pre = document.createElement('div');
+      pre.style.cssText = 'font-family:var(--mono);white-space:pre;color:var(--accent);font-size:0.7rem;line-height:1.2;';
+      pre.textContent = [
+        '      ====        ________                ___________ ',
+        '  _D _|  |_______/        \\__I_I_____===__|_________| ',
+        '   |(_)---  |   H\\________/ |   |        =|___ ___|   ',
+        '   /     |  |   H  |  |     |   |         ||_| |_||   ',
+        '  |      |  |   H  |__--------------------| [___] |   ',
+        '  | ________|___H__/__|_____/[][]~\\_______|       |   ',
+        '  |/ |   |-----------I_____I [][] []  D   |=======|__ '
+      ].join('\n');
+      writeEl(pre);
+      writeLine('Erreur : commande "sl" introuvable. Vouliez-vous dire "ls" ?');
+    } else if (cmd === 'vi' || cmd === 'vim') {
+      writeLine('Vous voilà dans vim. Pour quitter : tapez :wq — ou fermez simplement l\'onglet, promis on ne juge pas.');
+    } else if (cmd === 'rm -rf /' || cmd === 'rm -rf /*' || cmd === 'rm -rf *' || cmd === 'rm -rf ~') {
+      writeLine('Permission refusée : ce portfolio tient à sa survie. Belle tentative, cela dit.');
+    } else if (cmd.startsWith('hack')) {
+      writeLine('Accès refusé — je fais du CTF légal uniquement (TryHackMe). Gentil essai 🕵️');
+    } else if (cmd.startsWith('cowsay')) {
+      const msg = raw.trim().slice(6).trim() || 'Moo';
+      const top = ' ' + '_'.repeat(msg.length + 2);
+      const bottom = ' ' + '-'.repeat(msg.length + 2);
+      const pre = document.createElement('div');
+      pre.style.cssText = 'font-family:var(--mono);white-space:pre;color:var(--accent);font-size:0.75rem;line-height:1.3;';
+      pre.textContent = `${top}\n< ${msg} >\n${bottom}\n        \\   ^__^\n         \\  (oo)\\_______\n            (__)\\       )\\/\\\n                ||----w |\n                ||     ||`;
+      writeEl(pre);
+    } else if (cmd === 'theme' || cmd.startsWith('theme ')) {
+      // La bascule passe par le vrai bouton (animation "View Transition" incluse), dont
+      // le callback s'exécute de façon asynchrone : on calcule l'état final à l'avance
+      // plutôt que de relire le DOM juste après .click(), pour éviter une valeur périmée.
+      const arg = cmd.slice(5).trim();
+      const isDark = document.documentElement.classList.contains('dark');
+      let shouldToggle = false;
+      let resultDark = isDark;
+      if (arg === 'dark' && !isDark)      { shouldToggle = true; resultDark = true; }
+      else if (arg === 'light' && isDark) { shouldToggle = true; resultDark = false; }
+      else if (arg === '')                { shouldToggle = true; resultDark = !isDark; }
+      if (shouldToggle) document.getElementById('theme-toggle')?.click();
+      writeLine(`Thème : ${resultDark ? 'sombre' : 'clair'}`);
     } else if (cmd === 'sudo' || cmd === 'sudo ') { writeLine('Pas de droits suffisants — contactez-moi pour en obtenir.');
     } else if (cmd === 'sudo apt install easteregg') { runProgressBar(runHatchAnimation);
     } else if (cmd.startsWith('sudo apt install')) { writeLine('Erreur : paquet introuvable.');
@@ -1078,10 +1142,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const termHistory = [];
   if (termInput && termOutput) {
     writeLine('Bienvenue dans le terminal interactif !');
-    writeLine('Commandes : ls · cd <section> · neofetch · whoami · pwd · clear · help');
+    writeLine('Commandes : ls · cd <section> · neofetch · whoami · pwd · theme · clear · help');
     writeLine('');
     let histIdx = -1;
-    const COMPLETIONS = ['ls', 'cd ', 'clear', 'whoami', 'pwd', 'neofetch', 'date', 'echo ', 'history', 'help', 'sudo apt install easteregg'];
+    const COMPLETIONS = ['ls', 'cd ', 'clear', 'whoami', 'pwd', 'neofetch', 'date', 'echo ', 'history', 'uptime', 'fortune', 'cowsay ', 'theme ', 'help', 'sudo apt install easteregg'];
     termInput.addEventListener('keydown', e => {
       if (e.key === 'Enter') {
         const val = termInput.value;

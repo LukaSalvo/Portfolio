@@ -15,7 +15,7 @@
   <meta property="og:title"       content="Luka Salvo — Portfolio · Alternance 2026">
   <meta property="og:description" content="Futur ingénieur IMT Nord Europe — Admin Système, Cybersécurité, DevOps. En recherche d'alternance 3 ans (2026-2029) au rythme 2 sem. école / 5 sem. entreprise.">
   <meta property="og:site_name"   content="Luka Salvo Portfolio">
-  <!-- og:url  → remplacer par l'URL de déploiement (ex: https://lukasal vo.github.io/Portfolio) -->
+  <!-- og:url  → remplacer par l'URL de déploiement (ex: https://lukasalvo.github.io/Portfolio) -->
   <!-- og:image → exporter img/og-image.svg en PNG 1200×630, puis décommenter :
   <meta property="og:image" content="https://VOTRE_URL/img/og-image.png">
   <meta property="og:image:width"  content="1200">
@@ -29,7 +29,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;600&family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&display=swap"
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;600&amp;family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&amp;display=swap"
     rel="stylesheet">
 
   <!-- Icons -->
@@ -133,6 +133,9 @@
   <!-- ═══════════ HERO ═══════════ -->
   <section class="hero" aria-label="Introduction">
 
+    <!-- Fond étoilé WebGL (Galaxy) — voir galaxy.js -->
+    <div class="hero-galaxy" id="heroGalaxy" aria-hidden="true"></div>
+
     <div class="hero-content">
       <div class="hero-available">
         <span class="avail-dot"></span>
@@ -142,7 +145,19 @@
 
       <h1 class="hero-title">Luka Salvo</h1>
 
-      <p class="hero-subtitle">Admin Système &nbsp;·&nbsp; Cybersécurité &nbsp;·&nbsp; DevOps</p>
+      <p class="hero-subtitle true-focus" id="heroTrueFocus">
+        <span class="tf-word">Admin Système</span>
+        <span class="tf-sep" aria-hidden="true">·</span>
+        <span class="tf-word">Cybersécurité</span>
+        <span class="tf-sep" aria-hidden="true">·</span>
+        <span class="tf-word">DevOps</span>
+        <span class="tf-frame" aria-hidden="true">
+          <span class="tf-corner tf-corner-tl"></span>
+          <span class="tf-corner tf-corner-tr"></span>
+          <span class="tf-corner tf-corner-bl"></span>
+          <span class="tf-corner tf-corner-br"></span>
+        </span>
+      </p>
 
       <p class="hero-desc">
         Admis au cursus ingénieur Informatique &amp; Télécommunications à IMT Nord Europe,
@@ -982,7 +997,7 @@
               <h3 class="bento-title">BUDGETTE</h3>
               <div class="bento-chips">
                 <span class="bento-chip">Python</span><span class="bento-chip">HTML / CSS / JS</span><span
-                  class="bento-chip">IA </span>
+                  class="bento-chip">IA</span>
               </div>
             </div>
           </div>
@@ -1029,6 +1044,8 @@
 
   <!-- ═══════════ CONTACT ═══════════ -->
   <section id="contact" class="bg-alt" aria-label="Contact">
+    <!-- Fond rubans lumineux WebGL — voir strands.js -->
+    <div class="contact-strands" id="contactStrands" aria-hidden="true"></div>
     <div class="section-inner">
       <div class="contact-center">
         <span class="section-label reveal">Contact</span>
@@ -1132,6 +1149,9 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <script src="script.js"></script>
+  <script src="galaxy.js"></script>
+  <script src="strands.js"></script>
+  <script src="truefocus.js"></script>
 </body>
 
 </html>
