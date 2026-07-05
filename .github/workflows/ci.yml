@@ -89,5 +89,7 @@ jobs:
             --no-progress 
             --accept 200,206,403,429,999 
             --exclude "github.com/LukaSalvo/budgette"
+            --exclude "github.com/LukaSalvo/SAE2024" 
+            --exclude "github.com/LukaSalvo/SAESysteme" 
             "**/*.html"
           fail: true
