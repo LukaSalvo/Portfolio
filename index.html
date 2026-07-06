@@ -22,10 +22,17 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
   <meta name="theme-color" content="#101010" />
+  <script>
+    (function () {
+      var t = localStorage.getItem("theme");
+      if (!t) t = window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+      document.documentElement.dataset.theme = t;
+    })();
+  </script>
 
   <!-- Structured data — SEO -->
   <script type="application/ld+json">
@@ -52,24 +59,30 @@
   <!-- Curseur personnalisé -->
   <div class="cursor" id="cursor"><span class="cursor__label" id="cursorLabel">Voir</span></div>
 
-  <!-- Navigation -->
-  <header class="nav">
-    <a href="#top" class="nav__logo">LS<span class="accent">.</span></a>
-    <nav class="nav__links">
-      <a href="#projets" data-hover>Projets</a>
-      <a href="#competences" data-hover>Compétences</a>
-      <a href="#parcours" data-hover>Parcours</a>
-      <a href="#contact" data-hover>Contact</a>
-    </nav>
-  </header>
+  <!-- Navigation — Dynamic Island -->
+  <nav class="island" id="island" aria-label="Navigation principale">
+    <div class="island__pill" id="islandPill">
+      <a href="#top" class="island__logo" data-hover>LS<span class="accent">.</span></a>
+      <span class="island__sep" aria-hidden="true"></span>
+      <span class="island__status" id="islandStatus">Accueil</span>
+      <div class="island__links">
+        <div class="island__row">
+          <a href="#projets" data-hover>Projets</a>
+          <a href="#competences" data-hover>Compétences</a>
+          <a href="#parcours" data-hover>Parcours</a>
+          <a href="#experiences" data-hover>Expériences</a>
+          <a href="#contact" data-hover>Contact</a>
+          <button class="island__theme" id="themeToggle" data-hover aria-label="Basculer entre mode jour et mode nuit"></button>
+        </div>
+      </div>
+    </div>
+  </nav>
 
   <!-- ============ HERO : effet "Hover members" ============ -->
-  <section class="hero" id="top">
+  <section class="hero" id="top" data-island-label="Accueil">
     <p class="hero__eyebrow">Portfolio — Admin Sys · Cybersécurité · DevOps</p>
 
     <div class="hero__stage">
-      <h1 class="hero__title" id="heroTitle" aria-live="polite">Luka Salvo</h1>
-
       <div class="hero__members" id="heroMembers">
         <button class="member" data-name="OSINT MAX" data-cursor="Voir le projet" data-target="#projets" aria-label="Projet OSINT MAX">
           <img src="img/OSINT_MAX.png" alt="" />
@@ -87,32 +100,33 @@
           <img src="img/DiagrammeClasse.png" alt="" />
         </button>
       </div>
+
+      <h1 class="hero__title" id="heroTitle" aria-live="polite">Luka Salvo</h1>
     </div>
 
-    <p class="hero__sub">Apprenti ingénieur Informatique &amp; Télécommunications — IMT Nord Europe · 2026&nbsp;–&nbsp;2029</p>
     <p class="hero__hint">( survolez les images — puis scrollez )</p>
   </section>
 
   <!-- ============ FOCUS : parallax cinématique au scroll ============ -->
-  <section class="showreel" id="focus">
+  <section class="showreel" id="focus" data-island-label="Projet phare">
     <div class="showreel__sticky">
       <div class="showreel__frame" id="showreelFrame">
-        <img src="img/OSINT_MAX.png" alt="OSINT MAX — projet phare" class="showreel__img" id="showreelImg" />
+        <img src="img/mac-Monitor.png" alt="MAC Monitor — projet phare" class="showreel__img" id="showreelImg" />
         <div class="showreel__overlay">
-          <a href="https://github.com/LukaSalvo/OSINT_MAX" target="_blank" rel="noopener" class="showreel__play" data-cursor="GitHub" aria-label="Voir OSINT MAX sur GitHub">
+          <a href="https://github.com/LukaSalvo/mac-monitor" target="_blank" rel="noopener" class="showreel__play" data-cursor="GitHub" aria-label="Voir MAC Monitor sur GitHub">
             <svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true">
               <path d="M5 12h12M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </a>
-          <p class="showreel__caption">Projet phare — OSINT MAX</p>
+          <p class="showreel__caption">Projet phare — MAC Monitor</p>
         </div>
       </div>
-      <h2 class="showreel__title" id="showreelTitle">Construire<br/>&amp; sécuriser</h2>
+      <h2 class="showreel__title" id="showreelTitle">MAC<br/>MONITOR</h2>
     </div>
   </section>
 
   <!-- ============ À PROPOS ============ -->
-  <section class="about" id="apropos">
+  <section class="about" id="apropos" data-island-label="À propos">
     <div class="about__intro reveal">
       <div class="about__photo">
         <img src="img/PP_Luka.jpg" alt="Portrait de Luka Salvo" />
@@ -134,7 +148,7 @@
   </section>
 
   <!-- ============ PROJETS : panneaux verticaux ExpandOnHover ============ -->
-  <section class="projects" id="projets">
+  <section class="projects" id="projets" data-island-label="Projets">
     <h2 class="section__title reveal">Projets<span class="accent"> sélectionnés</span></h2>
 
     <div class="expander reveal" id="expander">
@@ -222,225 +236,324 @@
   </section>
 
   <!-- ============ COMPÉTENCES : blocs extensibles ============ -->
-  <section class="features" id="competences">
+  <section class="features" id="competences" data-island-label="Compétences">
     <h2 class="section__title reveal">Ce que je<span class="accent"> pratique</span></h2>
 
-    <div class="features__grid reveal" id="featuresGrid">
-      <article class="feature" data-cursor="Détails" tabindex="0">
-        <div class="feature__head">
-          <span class="feature__icon">✦</span>
-          <h3 class="feature__title">Administration système</h3>
-          <button class="feature__toggle" aria-label="Voir les détails">+</button>
-        </div>
-        <div class="feature__body"><div class="inner"><p>Installation, configuration et maintenance de serveurs
-          Linux — de la ligne de commande à la mise en production.</p>
-          <ul>
-            <li>Linux · Debian · Ubuntu · macOS</li>
-            <li>Bash · SSH · Nginx · Apache</li>
-            <li>Automatisation des sauvegardes</li>
-          </ul></div>
-        </div>
-      </article>
+    <!-- Feature block façon Apple : scène visuelle + cartes cliquables.
+         La carte active se déplie et l'illustration change en fondu. -->
+    <div class="showcase reveal" id="showcase">
+      <div class="showcase__stage" aria-hidden="true">
 
-      <article class="feature" data-cursor="Détails" tabindex="0">
-        <div class="feature__head">
-          <span class="feature__icon">◎</span>
-          <h3 class="feature__title">Réseaux</h3>
-          <button class="feature__toggle" aria-label="Voir les détails">+</button>
+        <!-- 1. Administration système : terminal -->
+        <div class="showcase__visual is-active" data-for="0">
+          <svg viewBox="0 0 480 360" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="70" y="58" width="340" height="244" rx="16"/>
+            <line x1="70" y1="102" x2="410" y2="102"/>
+            <circle cx="98" cy="80" r="5" class="sv-acc-fill" stroke="none"/>
+            <circle cx="120" cy="80" r="5"/>
+            <circle cx="142" cy="80" r="5"/>
+            <polyline points="100,138 116,150 100,162" class="sv-acc"/>
+            <line x1="130" y1="162" x2="230" y2="162"/>
+            <polyline points="100,190 116,202 100,214" class="sv-acc"/>
+            <line x1="130" y1="214" x2="290" y2="214"/>
+            <line x1="130" y1="240" x2="196" y2="240"/>
+            <rect x="130" y="258" width="26" height="14" class="sv-acc-fill sv-blink" stroke="none"/>
+          </svg>
         </div>
-        <div class="feature__body"><div class="inner"><p>Conception et sécurisation de réseaux : segmentation,
-          routage et pare-feu sur environnements Cisco et virtualisés.</p>
-          <ul>
-            <li>Cisco · VLANs · Routage</li>
-            <li>Firewall &amp; sécurisation</li>
-            <li>Marionnet — réseaux virtuels</li>
-          </ul></div>
-        </div>
-      </article>
 
-      <article class="feature" data-cursor="Détails" tabindex="0">
-        <div class="feature__head">
-          <span class="feature__icon">◈</span>
-          <h3 class="feature__title">Virtualisation &amp; Cloud</h3>
-          <button class="feature__toggle" aria-label="Voir les détails">+</button>
+        <!-- 2. Réseaux : topologie -->
+        <div class="showcase__visual" data-for="1">
+          <svg viewBox="0 0 480 360" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="240" y1="180" x2="120" y2="90"/>
+            <line x1="240" y1="180" x2="360" y2="90"/>
+            <line x1="240" y1="180" x2="96" y2="230"/>
+            <line x1="240" y1="180" x2="384" y2="230"/>
+            <line x1="240" y1="180" x2="240" y2="296"/>
+            <circle cx="240" cy="180" r="28" class="sv-acc"/>
+            <line x1="230" y1="172" x2="250" y2="172" class="sv-acc"/>
+            <line x1="230" y1="180" x2="250" y2="180" class="sv-acc"/>
+            <line x1="230" y1="188" x2="244" y2="188" class="sv-acc"/>
+            <circle cx="120" cy="90" r="17"/>
+            <circle cx="360" cy="90" r="17"/>
+            <circle cx="96" cy="230" r="17"/>
+            <circle cx="384" cy="230" r="17"/>
+            <circle cx="240" cy="296" r="17"/>
+            <circle cx="180" cy="135" r="5" class="sv-acc-fill sv-pulse" stroke="none"/>
+            <circle cx="312" cy="205" r="5" class="sv-acc-fill sv-pulse sv-pulse--late" stroke="none"/>
+          </svg>
         </div>
-        <div class="feature__body"><div class="inner"><p>Environnements isolés et reproductibles, du conteneur au
-          cloud public, avec observabilité.</p>
-          <ul>
-            <li>Docker · Compose · Kubernetes</li>
-            <li>Vagrant · VirtualBox</li>
-            <li>GCP · Grafana · Prometheus</li>
-          </ul></div>
-        </div>
-      </article>
 
-      <article class="feature" data-cursor="Détails" tabindex="0">
-        <div class="feature__head">
-          <span class="feature__icon">◍</span>
-          <h3 class="feature__title">Cybersécurité</h3>
-          <button class="feature__toggle" aria-label="Voir les détails">+</button>
+        <!-- 3. Virtualisation & Cloud : nuage + conteneurs -->
+        <div class="showcase__visual" data-for="2">
+          <svg viewBox="0 0 480 360" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M150 148 a38 38 0 0 1 8 -75 a52 52 0 0 1 100 -14 a44 44 0 0 1 62 40 a34 34 0 0 1 -6 49"/>
+            <line x1="240" y1="120" x2="240" y2="176" class="sv-acc" stroke-dasharray="4 8"/>
+            <polyline points="228,164 240,176 252,164" class="sv-acc"/>
+            <rect x="130" y="196" width="64" height="48" rx="8"/>
+            <rect x="208" y="196" width="64" height="48" rx="8" class="sv-acc"/>
+            <rect x="286" y="196" width="64" height="48" rx="8"/>
+            <rect x="169" y="258" width="64" height="48" rx="8"/>
+            <rect x="247" y="258" width="64" height="48" rx="8"/>
+          </svg>
         </div>
-        <div class="feature__body"><div class="inner"><p>Pratique offensive et défensive régulière : CTF,
-          reconnaissance, exploitation, forensics et OSINT.</p>
-          <ul>
-            <li>TryHackMe — pratique CTF active</li>
-            <li>OSINT · reconnaissance</li>
-            <li>Durcissement &amp; bonnes pratiques OWASP</li>
-          </ul></div>
-        </div>
-      </article>
 
-      <article class="feature" data-cursor="Détails" tabindex="0">
-        <div class="feature__head">
-          <span class="feature__icon">✚</span>
-          <h3 class="feature__title">Développement</h3>
-          <button class="feature__toggle" aria-label="Voir les détails">+</button>
+        <!-- 4. Cybersécurité : bouclier + radar -->
+        <div class="showcase__visual" data-for="3">
+          <svg viewBox="0 0 480 360" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M240 62 L336 96 v92 c0 66 -52 100 -96 116 c-44 -16 -96 -50 -96 -116 v-92 Z"/>
+            <circle cx="240" cy="168" r="20" class="sv-acc"/>
+            <path d="M240 184 v34" class="sv-acc"/>
+            <path d="M368 300 a80 80 0 0 0 44 -72" stroke-dasharray="3 9"/>
+            <path d="M352 322 a110 110 0 0 0 72 -96" stroke-dasharray="3 9"/>
+            <circle cx="410" cy="252" r="5" class="sv-acc-fill sv-pulse" stroke="none"/>
+          </svg>
         </div>
-        <div class="feature__body"><div class="inner"><p>Des scripts d'automatisation aux applications complètes,
-          avec versionnement et intégration continue.</p>
-          <ul>
-            <li>Python · Java · PHP · Ruby · C</li>
-            <li>HTML / CSS / JS · LaTeX · VBA</li>
-            <li>Git · GitHub Actions</li>
-          </ul></div>
-        </div>
-      </article>
 
-      <article class="feature" data-cursor="Détails" tabindex="0">
-        <div class="feature__head">
-          <span class="feature__icon">❋</span>
-          <h3 class="feature__title">IA &amp; LLM</h3>
-          <button class="feature__toggle" aria-label="Voir les détails">+</button>
+        <!-- 5. Développement : code -->
+        <div class="showcase__visual" data-for="4">
+          <svg viewBox="0 0 480 360" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="170,110 105,180 170,250" stroke-width="3"/>
+            <polyline points="310,110 375,180 310,250" stroke-width="3"/>
+            <line x1="262" y1="96" x2="218" y2="264" class="sv-acc" stroke-width="3"/>
+            <line x1="120" y1="308" x2="200" y2="308"/>
+            <line x1="220" y1="308" x2="280" y2="308" class="sv-acc"/>
+            <line x1="300" y1="308" x2="360" y2="308"/>
+            <line x1="150" y1="52" x2="230" y2="52"/>
+            <line x1="250" y1="52" x2="330" y2="52"/>
+          </svg>
         </div>
-        <div class="feature__body"><div class="inner"><p>Auto-formation continue sur les outils Anthropic, Google
-          et Cisco — de l'usage des agents à l'API.</p>
-          <ul>
-            <li>Claude Code · MCP · Subagents</li>
-            <li>Certifications Anthropic &amp; Google AI</li>
-            <li>Serveur Linux dédié IA (stage ATE)</li>
-          </ul></div>
+
+        <!-- 6. IA & LLM : réseau de neurones -->
+        <div class="showcase__visual" data-for="5">
+          <svg viewBox="0 0 480 360" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="120" y1="110" x2="240" y2="80"/><line x1="120" y1="110" x2="240" y2="180"/>
+            <line x1="120" y1="180" x2="240" y2="80"/><line x1="120" y1="180" x2="240" y2="180"/><line x1="120" y1="180" x2="240" y2="280"/>
+            <line x1="120" y1="250" x2="240" y2="180"/><line x1="120" y1="250" x2="240" y2="280"/>
+            <line x1="240" y1="80" x2="360" y2="140"/><line x1="240" y1="180" x2="360" y2="140"/>
+            <line x1="240" y1="180" x2="360" y2="220"/><line x1="240" y1="280" x2="360" y2="220"/>
+            <circle cx="120" cy="110" r="14"/><circle cx="120" cy="180" r="14"/><circle cx="120" cy="250" r="14"/>
+            <circle cx="240" cy="80" r="14"/><circle cx="240" cy="180" r="17" class="sv-acc"/><circle cx="240" cy="280" r="14"/>
+            <circle cx="360" cy="140" r="14"/><circle cx="360" cy="220" r="14"/>
+            <path d="M404 84 l6 16 16 6 -16 6 -6 16 -6 -16 -16 -6 16 -6 Z" class="sv-acc-fill sv-pulse" stroke="none"/>
+          </svg>
         </div>
-      </article>
+      </div>
+
+      <div class="showcase__list">
+        <article class="feat is-open" data-idx="0" data-cursor="Détails">
+          <button class="feat__head" aria-expanded="true">
+            <span class="feat__icon">✦</span>
+            <h3 class="feat__title">Administration système</h3>
+            <span class="feat__toggle" aria-hidden="true">+</span>
+          </button>
+          <div class="feat__body"><div class="inner"><p>Installation, configuration et maintenance de serveurs
+            Linux — de la ligne de commande à la mise en production.</p>
+            <ul>
+              <li>Linux · Debian · Ubuntu · macOS</li>
+              <li>Bash · SSH · Nginx · Apache</li>
+              <li>Automatisation des sauvegardes</li>
+            </ul></div>
+          </div>
+        </article>
+
+        <article class="feat" data-idx="1" data-cursor="Détails">
+          <button class="feat__head" aria-expanded="false">
+            <span class="feat__icon">◎</span>
+            <h3 class="feat__title">Réseaux</h3>
+            <span class="feat__toggle" aria-hidden="true">+</span>
+          </button>
+          <div class="feat__body"><div class="inner"><p>Conception et sécurisation de réseaux : segmentation,
+            routage et pare-feu sur environnements Cisco et virtualisés.</p>
+            <ul>
+              <li>Cisco · VLANs · Routage</li>
+              <li>Firewall &amp; sécurisation</li>
+              <li>Marionnet — réseaux virtuels</li>
+            </ul></div>
+          </div>
+        </article>
+
+        <article class="feat" data-idx="2" data-cursor="Détails">
+          <button class="feat__head" aria-expanded="false">
+            <span class="feat__icon">◈</span>
+            <h3 class="feat__title">Virtualisation &amp; Cloud</h3>
+            <span class="feat__toggle" aria-hidden="true">+</span>
+          </button>
+          <div class="feat__body"><div class="inner"><p>Environnements isolés et reproductibles, du conteneur au
+            cloud public, avec observabilité.</p>
+            <ul>
+              <li>Docker · Compose · Kubernetes</li>
+              <li>Vagrant · VirtualBox</li>
+              <li>GCP · Grafana · Prometheus</li>
+            </ul></div>
+          </div>
+        </article>
+
+        <article class="feat" data-idx="3" data-cursor="Détails">
+          <button class="feat__head" aria-expanded="false">
+            <span class="feat__icon">◍</span>
+            <h3 class="feat__title">Cybersécurité</h3>
+            <span class="feat__toggle" aria-hidden="true">+</span>
+          </button>
+          <div class="feat__body"><div class="inner"><p>Pratique offensive et défensive régulière : CTF,
+            reconnaissance, exploitation, forensics et OSINT.</p>
+            <ul>
+              <li>TryHackMe — pratique CTF active</li>
+              <li>OSINT · reconnaissance</li>
+              <li>Durcissement &amp; bonnes pratiques OWASP</li>
+            </ul></div>
+          </div>
+        </article>
+
+        <article class="feat" data-idx="4" data-cursor="Détails">
+          <button class="feat__head" aria-expanded="false">
+            <span class="feat__icon">✚</span>
+            <h3 class="feat__title">Développement</h3>
+            <span class="feat__toggle" aria-hidden="true">+</span>
+          </button>
+          <div class="feat__body"><div class="inner"><p>Des scripts d'automatisation aux applications complètes,
+            avec versionnement et intégration continue.</p>
+            <ul>
+              <li>Python · Java · PHP · Ruby · C</li>
+              <li>HTML / CSS / JS · LaTeX · VBA</li>
+              <li>Git · GitHub Actions</li>
+            </ul></div>
+          </div>
+        </article>
+
+        <article class="feat" data-idx="5" data-cursor="Détails">
+          <button class="feat__head" aria-expanded="false">
+            <span class="feat__icon">❋</span>
+            <h3 class="feat__title">IA &amp; LLM</h3>
+            <span class="feat__toggle" aria-hidden="true">+</span>
+          </button>
+          <div class="feat__body"><div class="inner"><p>Auto-formation continue sur les outils Anthropic, Google
+            et Cisco — de l'usage des agents à l'API.</p>
+            <ul>
+              <li>Claude Code · MCP · Subagents</li>
+              <li>Certifications Anthropic &amp; Google AI</li>
+              <li>Serveur Linux dédié IA (stage ATE)</li>
+            </ul></div>
+          </div>
+        </article>
+      </div>
     </div>
   </section>
 
-  <!-- ============ PARCOURS ============ -->
-  <section class="journey" id="parcours">
+  <!-- ============ PARCOURS — pile de cartes au scroll (card stack) ============ -->
+  <section class="journey" id="parcours" data-island-label="Parcours">
     <h2 class="section__title reveal">Parcours<span class="accent"> &amp; formation</span></h2>
 
-    <div class="rows reveal">
-      <div class="row">
-        <span class="row__date">2026 – 2029</span>
-        <div class="row__body">
-          <h3 class="row__title">Ingénieur Informatique &amp; Télécommunications</h3>
-          <p class="row__desc">IMT Nord Europe — en alternance, rythme 2 semaines école / 5 semaines entreprise.</p>
-        </div>
+    <div class="stack" id="stack">
+      <div class="stack__item" style="--i:0">
+        <article class="stack__card">
+          <span class="stack__index">01 / 04</span>
+          <span class="stack__date">2020</span>
+          <h3 class="stack__title">Brevet — Mention Très Bien</h3>
+          <p class="stack__desc">Collège Himmelsberg, Sarreguemines.</p>
+        </article>
       </div>
-      <div class="row">
-        <span class="row__date">2023 – 2026</span>
-        <div class="row__body">
-          <h3 class="row__title">BUT Informatique — Parcours DACS</h3>
-          <p class="row__desc">IUT Nancy-Charlemagne. Déploiement et administration de systèmes et réseaux communicants.</p>
-        </div>
+      <div class="stack__item" style="--i:1">
+        <article class="stack__card">
+          <span class="stack__index">02 / 04</span>
+          <span class="stack__date">2023</span>
+          <h3 class="stack__title">Baccalauréat — Mention Bien</h3>
+          <p class="stack__desc">Spécialités NSI &amp; Mathématiques, section européenne allemand. Lycée Jean de Pange, Sarreguemines.</p>
+        </article>
       </div>
-      <div class="row">
-        <span class="row__date">2023</span>
-        <div class="row__body">
-          <h3 class="row__title">Baccalauréat — Mention Bien</h3>
-          <p class="row__desc">Spécialités NSI &amp; Mathématiques, section européenne allemand. Lycée Jean de Pange, Sarreguemines.</p>
-        </div>
+      <div class="stack__item" style="--i:2">
+        <article class="stack__card">
+          <span class="stack__index">03 / 04</span>
+          <span class="stack__date">2023 – 2026</span>
+          <h3 class="stack__title">BUT Informatique — Parcours DACS</h3>
+          <p class="stack__desc">IUT Nancy-Charlemagne. Déploiement et administration de systèmes et réseaux communicants.</p>
+        </article>
       </div>
-      <div class="row">
-        <span class="row__date">2020</span>
-        <div class="row__body">
-          <h3 class="row__title">Brevet — Mention Très Bien</h3>
-          <p class="row__desc">Collège Himmelsberg, Sarreguemines.</p>
-        </div>
+      <div class="stack__item" style="--i:3">
+        <article class="stack__card stack__card--accent">
+          <span class="stack__index">04 / 04</span>
+          <span class="stack__date">2026 – 2029</span>
+          <h3 class="stack__title">Ingénieur Informatique &amp; Télécommunications</h3>
+          <p class="stack__desc">IMT Nord Europe — en alternance, rythme 2 semaines école / 5 semaines entreprise.</p>
+        </article>
       </div>
     </div>
   </section>
 
-  <!-- ============ EXPÉRIENCES ============ -->
-  <section class="experiences" id="experiences">
+  <!-- ============ EXPÉRIENCES — words preloader au scroll ============
+       Section épinglée : chaque expérience défile comme les mots d'un
+       préloader (point accent + grand titre), pilotée par le scroll,
+       avec compteur et barre de progression. -->
+  <section class="experiences" id="experiences" data-island-label="Expériences">
     <h2 class="section__title reveal">Expériences<span class="accent"> pro</span></h2>
 
-    <div class="rows reveal">
-      <div class="row">
-        <span class="row__date">Avr. – Juil. 2026</span>
-        <div class="row__body">
-          <h3 class="row__title">Stage — ATE, Val-de-Moder</h3>
-          <p class="row__desc">Déploiement automatisé de postes Windows 11 et mise en production d'un serveur Linux dédié à l'Intelligence Artificielle.</p>
+    <div class="exp" id="exp">
+      <div class="exp__sticky">
+        <p class="exp__counter"><span id="expIndex">01</span> / 05</p>
+
+        <div class="exp__items">
+          <article class="exp__item is-active">
+            <p class="exp__meta"><span class="exp__tag">Stage</span><span class="exp__date">Avr. – Juil. 2026</span></p>
+            <h3 class="exp__title"><span class="exp__dot" aria-hidden="true"></span>ATE, Val-de-Moder</h3>
+            <p class="exp__desc">Déploiement automatisé de postes Windows 11 et mise en production d'un serveur Linux dédié à l'Intelligence Artificielle.</p>
+          </article>
+          <article class="exp__item">
+            <p class="exp__meta"><span class="exp__tag">Saisonnier</span><span class="exp__date">Été 2025</span></p>
+            <h3 class="exp__title"><span class="exp__dot" aria-hidden="true"></span>CA Sarreguemines Confluence</h3>
+            <p class="exp__desc">Mission au sein du service informatique de la communauté d'agglomération.</p>
+          </article>
+          <article class="exp__item">
+            <p class="exp__meta"><span class="exp__tag">Stage</span><span class="exp__date">Fév. – Avr. 2025</span></p>
+            <h3 class="exp__title"><span class="exp__dot" aria-hidden="true"></span>CASC, Sarreguemines</h3>
+            <p class="exp__desc">Tableau de bord GLPI avec Microsoft Access et SQL — automatisation des rapports de tickets IT.
+              <a href="pdf/main.pdf" target="_blank" rel="noopener" data-hover>Rapport ↗</a></p>
+          </article>
+          <article class="exp__item">
+            <p class="exp__meta"><span class="exp__tag">Intérim</span><span class="exp__date">Été 2024</span></p>
+            <h3 class="exp__title"><span class="exp__dot" aria-hidden="true"></span>HR Pro Interim</h3>
+            <p class="exp__desc">Missions industrielles — rigueur, discipline et gestion du stress.</p>
+          </article>
+          <article class="exp__item">
+            <p class="exp__meta"><span class="exp__tag">Saisonnier</span><span class="exp__date">Étés 2022 &amp; 2023</span></p>
+            <h3 class="exp__title"><span class="exp__dot" aria-hidden="true"></span>TSG Baut, Allemagne</h3>
+            <p class="exp__desc">Réparation de routes — travail d'équipe et communication interculturelle en allemand.</p>
+          </article>
         </div>
-      </div>
-      <div class="row">
-        <span class="row__date">Été 2025</span>
-        <div class="row__body">
-          <h3 class="row__title">Saisonnier — CA Sarreguemines Confluence</h3>
-          <p class="row__desc">Mission au sein du service informatique de la communauté d'agglomération.</p>
-        </div>
-      </div>
-      <div class="row">
-        <span class="row__date">Fév. – Avr. 2025</span>
-        <div class="row__body">
-          <h3 class="row__title">Stage — CASC, Sarreguemines</h3>
-          <p class="row__desc">Tableau de bord GLPI avec Microsoft Access et SQL — automatisation des rapports de tickets IT.
-            <a href="pdf/main.pdf" target="_blank" rel="noopener" data-hover>Rapport ↗</a></p>
-        </div>
-      </div>
-      <div class="row">
-        <span class="row__date">Été 2024</span>
-        <div class="row__body">
-          <h3 class="row__title">Ouvrier d'usine — HR Pro Interim</h3>
-          <p class="row__desc">Missions industrielles — rigueur, discipline et gestion du stress.</p>
-        </div>
-      </div>
-      <div class="row">
-        <span class="row__date">Étés 2022 &amp; 2023</span>
-        <div class="row__body">
-          <h3 class="row__title">Ouvrier spécialisé — TSG Baut, Allemagne</h3>
-          <p class="row__desc">Réparation de routes en Allemagne — travail d'équipe et communication interculturelle en allemand.</p>
+
+        <div class="exp__footer">
+          <div class="exp__bar" aria-hidden="true"><span id="expBar"></span></div>
+          <p class="exp__hint">( scrollez )</p>
         </div>
       </div>
     </div>
   </section>
 
   <!-- ============ CERTIFICATIONS ============ -->
-  <section class="certs" id="certifications">
+  <section class="certs" id="certifications" data-island-label="Certifications">
     <h2 class="section__title reveal">Certifications<span class="accent"> &amp; badges</span></h2>
 
-    <div class="rows reveal">
-      <div class="row row--cert">
-        <span class="row__date">Obtenu</span>
-        <div class="row__body">
-          <h3 class="row__title">Claude Code 101 — Anthropic</h3>
-          <p class="row__desc"><a href="pdf/certificat-claude-code101.pdf" target="_blank" rel="noopener" data-hover>Certificat ↗</a></p>
-        </div>
+    <div class="certlist reveal">
+      <a class="certline" href="pdf/certificat-claude-code101.pdf" target="_blank" rel="noopener" data-cursor="Certificat">
+        <span class="certline__status">Obtenu</span>
+        <span class="certline__text" data-textroll>Claude Code 101 — Anthropic</span>
+        <span class="certline__arrow" aria-hidden="true">↗</span>
+      </a>
+      <a class="certline" href="pdf/certificate_MCP.pdf" target="_blank" rel="noopener" data-cursor="Certificat">
+        <span class="certline__status">Obtenu</span>
+        <span class="certline__text" data-textroll>Model Context Protocol — Anthropic</span>
+        <span class="certline__arrow" aria-hidden="true">↗</span>
+      </a>
+      <a class="certline" href="pdf/certificate_subagents.pdf" target="_blank" rel="noopener" data-cursor="Certificat">
+        <span class="certline__status">Obtenu</span>
+        <span class="certline__text" data-textroll>Introduction to Subagents — Anthropic</span>
+        <span class="certline__arrow" aria-hidden="true">↗</span>
+      </a>
+      <div class="certline certline--static">
+        <span class="certline__status">Obtenu</span>
+        <span class="certline__text" data-textroll>Python Essentials 1 — Cisco</span>
       </div>
-      <div class="row row--cert">
-        <span class="row__date">Obtenu</span>
-        <div class="row__body">
-          <h3 class="row__title">Introduction to Model Context Protocol — Anthropic</h3>
-          <p class="row__desc"><a href="pdf/certificate_MCP.pdf" target="_blank" rel="noopener" data-hover>Certificat ↗</a></p>
-        </div>
-      </div>
-      <div class="row row--cert">
-        <span class="row__date">Obtenu</span>
-        <div class="row__body">
-          <h3 class="row__title">Introduction to Subagents — Anthropic</h3>
-          <p class="row__desc"><a href="pdf/certificate_subagents.pdf" target="_blank" rel="noopener" data-hover>Certificat ↗</a></p>
-        </div>
-      </div>
-      <div class="row row--cert">
-        <span class="row__date">Obtenu</span>
-        <div class="row__body">
-          <h3 class="row__title">Python Essentials 1 — Cisco</h3>
-        </div>
-      </div>
-      <div class="row row--cert">
-        <span class="row__date">En cours</span>
-        <div class="row__body">
-          <h3 class="row__title">Building with the Claude API — Anthropic</h3>
-        </div>
+      <div class="certline certline--static">
+        <span class="certline__status certline__status--wip">En cours</span>
+        <span class="certline__text" data-textroll>Building with the Claude API — Anthropic</span>
       </div>
     </div>
 
@@ -471,7 +584,7 @@
   </section>
 
   <!-- ============ CONTACT ============ -->
-  <footer class="contact" id="contact">
+  <footer class="contact" id="contact" data-island-label="Contact">
     <p class="contact__eyebrow reveal">Un projet, une question ?</p>
     <a href="mailto:luka.salvo23@gmail.com" class="contact__mail" id="contactMail" data-cursor="Écrire">
       <span class="contact__mailtext">luka.salvo23<br class="contact__break" />@gmail.com</span>

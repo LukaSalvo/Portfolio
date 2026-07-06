@@ -6,6 +6,10 @@
    4. Projets ExpandOnHover vertical
    5. Compétences extensibles (accordéon)
    6. Apparition des sections au scroll
+   7. Dynamic Island : navigation + section courante
+   8. Parcours : pile de cartes au scroll (card stack)
+   9. Expériences : words preloader piloté au scroll
+   10. Certifications : text roll au survol
    ============================================================ */
 
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -67,6 +71,23 @@ document.querySelectorAll(".member").forEach((member) => {
     const target = document.querySelector(member.dataset.target || "#projets");
     if (target) target.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth" });
   });
+});
+
+/* ---------- Bascule mode jour / nuit ----------
+   Le thème initial est posé sur <html> par un script inline dans le
+   <head> (localStorage puis prefers-color-scheme) pour éviter le flash. */
+const themeToggle = document.getElementById("themeToggle");
+const themeMeta = document.querySelector('meta[name="theme-color"]');
+
+function applyTheme(theme) {
+  document.documentElement.dataset.theme = theme;
+  localStorage.setItem("theme", theme);
+  if (themeMeta) themeMeta.content = theme === "light" ? "#f1ead6" : "#101010";
+}
+
+applyTheme(document.documentElement.dataset.theme || "dark");
+themeToggle.addEventListener("click", () => {
+  applyTheme(document.documentElement.dataset.theme === "light" ? "dark" : "light");
 });
 
 /* ---------- 2. Curseur personnalisé ---------- */
@@ -192,22 +213,183 @@ panels.forEach((panel) => {
   });
 });
 
-/* ---------- 5. Compétences : blocs extensibles ----------
-   Clic sur une carte : elle s'ouvre (accordéon fluide), une seule
-   carte ouverte à la fois.                                       */
-const features = document.querySelectorAll(".feature");
+/* ---------- 5. Compétences : feature block façon Apple ----------
+   Clic sur une carte : elle se déplie (une seule ouverte à la fois)
+   et l'illustration de la scène change en fondu. */
+const feats = document.querySelectorAll(".feat");
+const showcaseVisuals = document.querySelectorAll(".showcase__visual");
 
-features.forEach((feature) => {
-  const toggle = () => {
-    const isOpen = feature.classList.contains("is-open");
-    features.forEach((f) => f.classList.remove("is-open"));
-    if (!isOpen) feature.classList.add("is-open");
-  };
-  feature.addEventListener("click", toggle);
-  feature.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      toggle();
+function openFeat(feat) {
+  feats.forEach((f) => {
+    const open = f === feat;
+    f.classList.toggle("is-open", open);
+    f.querySelector(".feat__head").setAttribute("aria-expanded", open);
+  });
+  showcaseVisuals.forEach((v) =>
+    v.classList.toggle("is-active", v.dataset.for === feat.dataset.idx)
+  );
+}
+
+feats.forEach((feat) => {
+  feat.querySelector(".feat__head").addEventListener("click", () => openFeat(feat));
+});
+
+/* ---------- 7. Dynamic Island ----------
+   La pastille affiche la section courante ; au survol (desktop) ou
+   au tap (mobile) elle se déploie et révèle les liens. Un rebond
+   accompagne chaque changement de section. */
+const island = document.getElementById("island");
+const islandStatus = document.getElementById("islandStatus");
+
+if (island) {
+  if (finePointer) {
+    island.addEventListener("mouseenter", () => island.classList.add("is-open"));
+    island.addEventListener("mouseleave", () => island.classList.remove("is-open"));
+  }
+  // Tap sur la pastille (mobile) : bascule ouvert / fermé
+  island.addEventListener("click", (e) => {
+    if (e.target.closest("a, button")) return;
+    island.classList.toggle("is-open");
+  });
+  // Navigation clavier : l'île s'ouvre au focus
+  island.addEventListener("focusin", () => island.classList.add("is-open"));
+  island.addEventListener("focusout", (e) => {
+    if (!island.contains(e.relatedTarget)) island.classList.remove("is-open");
+  });
+  // Clic sur un lien : on referme
+  const islandLinks = island.querySelectorAll(".island__row a");
+  islandLinks.forEach((a) =>
+    a.addEventListener("click", () => island.classList.remove("is-open"))
+  );
+
+  // Scrollspy : la section qui traverse le centre de l'écran
+  const spy = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const label = entry.target.dataset.islandLabel;
+        if (islandStatus.textContent !== label) {
+          islandStatus.textContent = label;
+          if (!prefersReducedMotion) {
+            island.classList.remove("bounce");
+            void island.offsetWidth; // relance l'animation
+            island.classList.add("bounce");
+          }
+        }
+        islandLinks.forEach((a) =>
+          a.classList.toggle("is-active", a.getAttribute("href") === "#" + entry.target.id)
+        );
+      });
+    },
+    { rootMargin: "-45% 0px -45% 0px", threshold: 0 }
+  );
+  document.querySelectorAll("[data-island-label]").forEach((s) => spy.observe(s));
+}
+
+/* ---------- 8. Parcours : pile de cartes au scroll ----------
+   Chaque carte qui monte recouvre la précédente ; les cartes déjà
+   posées rétrécissent proportionnellement (effet card stack). */
+const stackItems = [...document.querySelectorAll(".stack__item")];
+
+if (stackItems.length && !prefersReducedMotion) {
+  const stackCards = stackItems.map((item) => item.querySelector(".stack__card"));
+
+  function updateStack() {
+    const vh = window.innerHeight;
+    const progress = stackItems.map((item) =>
+      clamp01(1 - item.getBoundingClientRect().top / vh)
+    );
+    stackCards.forEach((card, i) => {
+      let cover = 0;
+      for (let j = i + 1; j < progress.length; j++) cover += progress[j];
+      card.style.setProperty("--s", (1 - Math.min(cover * 0.05, 0.18)).toFixed(4));
+    });
+  }
+
+  let stackTicking = false;
+  window.addEventListener("scroll", () => {
+    if (!stackTicking) {
+      requestAnimationFrame(() => {
+        updateStack();
+        stackTicking = false;
+      });
+      stackTicking = true;
+    }
+  }, { passive: true });
+  updateStack();
+}
+
+/* ---------- 9. Expériences : words preloader au scroll ----------
+   La section est épinglée ; la progression du scroll choisit
+   l'expérience affichée (le CSS anime l'entrée par le bas et la
+   sortie par le haut — l'effet est réversible). */
+const exp = document.getElementById("exp");
+
+if (exp && !prefersReducedMotion) {
+  const expItems = [...exp.querySelectorAll(".exp__item")];
+  const expIndex = document.getElementById("expIndex");
+  const expBar = document.getElementById("expBar");
+  let expCurrent = 0;
+
+  function updateExp() {
+    const rect = exp.getBoundingClientRect();
+    const total = rect.height - window.innerHeight;
+    const p = clamp01(-rect.top / total);
+    expBar.style.transform = `scaleX(${p})`;
+
+    const idx = Math.min(expItems.length - 1, Math.floor(p * expItems.length));
+    if (idx !== expCurrent) {
+      expCurrent = idx;
+      expItems.forEach((item, i) => {
+        item.classList.toggle("is-active", i === idx);
+        item.classList.toggle("is-past", i < idx);
+      });
+      expIndex.textContent = String(idx + 1).padStart(2, "0");
+    }
+  }
+
+  let expTicking = false;
+  window.addEventListener("scroll", () => {
+    if (!expTicking) {
+      requestAnimationFrame(() => {
+        updateExp();
+        expTicking = false;
+      });
+      expTicking = true;
+    }
+  }, { passive: true });
+  updateExp();
+}
+
+/* ---------- 10. Certifications : text roll au survol ----------
+   Chaque lettre est doublée : la copie du dessous (teintée accent)
+   remonte en cascade au survol de la ligne. */
+document.querySelectorAll("[data-textroll]").forEach((el) => {
+  const text = el.textContent.trim();
+  el.setAttribute("aria-label", text);
+  el.textContent = "";
+  let index = 0;
+
+  text.split(" ").forEach((word, w, words) => {
+    const wordSpan = document.createElement("span");
+    wordSpan.className = "trword";
+    wordSpan.setAttribute("aria-hidden", "true");
+    [...word].forEach((ch) => {
+      const charSpan = document.createElement("span");
+      charSpan.className = "trchar";
+      charSpan.style.setProperty("--j", index);
+      const top = document.createElement("span");
+      top.textContent = ch;
+      const bottom = document.createElement("span");
+      bottom.textContent = ch;
+      charSpan.append(top, bottom);
+      wordSpan.appendChild(charSpan);
+      index++;
+    });
+    el.appendChild(wordSpan);
+    if (w < words.length - 1) {
+      el.appendChild(document.createTextNode(" "));
+      index++;
     }
   });
 });
