@@ -10,7 +10,7 @@ administration système, cybersécurité et DevOps.
 
 ## ✨ Fonctionnalités
 
-- 🖤 Design éditorial sombre — typographie **Anton** / **Space Grotesk**
+- 🌿 Design éditorial beige &amp; vert — typographie **Anton** / **Space Grotesk**
 - 🎯 Hero interactif : les projets survolés réécrivent le titre lettre à lettre
 - 🎬 Section *focus* en parallax cinématique au scroll (clip-path animé)
 - 🗂️ Projets en panneaux verticaux extensibles au survol
