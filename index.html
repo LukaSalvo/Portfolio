@@ -1,48 +1,31 @@
 <!DOCTYPE html>
-<html lang="fr" class="dark">
-
+<html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description"
-    content="Portfolio de Luka Salvo — futur apprenti ingénieur IMT Nord Europe, spécialisé en administration système, cybersécurité et DevOps.">
+    content="Portfolio de Luka Salvo — apprenti ingénieur IMT Nord Europe, spécialisé en administration système, cybersécurité et DevOps." />
   <meta name="keywords"
-    content="Luka Salvo, alternance, administration système, réseau, cybersécurité, DevOps, IMT Nord Europe">
-  <title>Luka Salvo — Portfolio · Alternance 2026</title>
+    content="Luka Salvo, administration système, réseau, cybersécurité, DevOps, IMT Nord Europe" />
+  <title>Luka Salvo — Portfolio</title>
 
   <!-- Open Graph / Social sharing -->
-  <meta property="og:type"        content="website">
-  <meta property="og:title"       content="Luka Salvo — Portfolio · Alternance 2026">
-  <meta property="og:description" content="Futur ingénieur IMT Nord Europe — Admin Système, Cybersécurité, DevOps. En recherche d'alternance 3 ans (2026-2029) au rythme 2 sem. école / 5 sem. entreprise.">
-  <meta property="og:site_name"   content="Luka Salvo Portfolio">
-  <!-- og:url  → remplacer par l'URL de déploiement (ex: https://lukasalvo.github.io/Portfolio) -->
-  <!-- og:image → exporter img/og-image.svg en PNG 1200×630, puis décommenter :
-  <meta property="og:image" content="https://VOTRE_URL/img/og-image.png">
-  <meta property="og:image:width"  content="1200">
-  <meta property="og:image:height" content="630">
-  -->
-  <meta name="twitter:card"        content="summary_large_image">
-  <meta name="twitter:title"       content="Luka Salvo — Portfolio">
-  <meta name="twitter:description" content="Futur ingénieur IMT Nord Europe · Admin Sys · Cybersécurité · DevOps · Alternance 2026.">
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Luka Salvo — Portfolio" />
+  <meta property="og:description"
+    content="Apprenti ingénieur IMT Nord Europe — Admin Système, Cybersécurité, DevOps." />
+  <meta property="og:site_name" content="Luka Salvo Portfolio" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Luka Salvo — Portfolio" />
+  <meta name="twitter:description"
+    content="Apprenti ingénieur IMT Nord Europe · Admin Sys · Cybersécurité · DevOps." />
 
-  <!-- Fonts test -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;600&amp;family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&amp;display=swap"
-    rel="stylesheet">
-
-  <!-- Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
-    crossorigin="anonymous" referrerpolicy="no-referrer">
-
-  <!-- Styles -->
-  <link rel="stylesheet" href="style.css">
-  <link rel="icon" type="image/svg+xml" href="favicon.svg">
-
-  <!-- Browser UI color (light/dark) -->
-  <meta name="theme-color" content="#F5F0E6" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#0D1A12" media="(prefers-color-scheme: dark)">
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <meta name="theme-color" content="#101010" />
 
   <!-- Structured data — SEO -->
   <script type="application/ld+json">
@@ -51,7 +34,7 @@
     "@type": "Person",
     "name": "Luka Salvo",
     "email": "mailto:luka.salvo23@gmail.com",
-    "jobTitle": "Étudiant BUT Informatique — futur apprenti ingénieur IMT Nord Europe",
+    "jobTitle": "Apprenti ingénieur Informatique & Télécommunications — IMT Nord Europe",
     "knowsAbout": ["Administration système", "Cybersécurité", "DevOps", "Linux", "Docker", "Réseaux", "OSINT"],
     "knowsLanguage": ["fr", "de", "en"],
     "sameAs": [
@@ -61,1097 +44,449 @@
     ]
   }
   </script>
-
-  <!-- Inline theme script: prevents dark→light flash -->
-  <script>
-    (function () {
-      var s = localStorage.getItem('theme');
-      var d = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      if (s === 'light' || (!s && !d)) {
-        document.documentElement.classList.remove('dark');
-      }
-    })();
-  </script>
 </head>
-
 <body>
 
-  <a href="#about" class="skip-link">Aller au contenu</a>
+  <a href="#apropos" class="skip-link">Aller au contenu</a>
 
-  <!-- ═══════════ INTRO SCREEN ═══════════ -->
-  <div id="intro-screen" role="presentation" aria-hidden="true">
-    <div class="intro-text">
-      <p class="intro-eyebrow">Portfolio · 2026</p>
-      <h2 class="intro-name">Luka<br>Salvo</h2>
-      <p class="intro-role">Admin Sys · Cybersécurité · DevOps</p>
+  <!-- Curseur personnalisé -->
+  <div class="cursor" id="cursor"><span class="cursor__label" id="cursorLabel">Voir</span></div>
+
+  <!-- Navigation -->
+  <header class="nav">
+    <a href="#top" class="nav__logo">LS<span class="accent">.</span></a>
+    <nav class="nav__links">
+      <a href="#projets" data-hover>Projets</a>
+      <a href="#competences" data-hover>Compétences</a>
+      <a href="#parcours" data-hover>Parcours</a>
+      <a href="#contact" data-hover>Contact</a>
+    </nav>
+  </header>
+
+  <!-- ============ HERO : effet "Hover members" ============ -->
+  <section class="hero" id="top">
+    <p class="hero__eyebrow">Portfolio — Admin Sys · Cybersécurité · DevOps</p>
+
+    <div class="hero__stage">
+      <h1 class="hero__title" id="heroTitle" aria-live="polite">Luka Salvo</h1>
+
+      <div class="hero__members" id="heroMembers">
+        <button class="member" data-name="OSINT MAX" data-cursor="Voir le projet" data-target="#projets" aria-label="Projet OSINT MAX">
+          <img src="img/OSINT_MAX.png" alt="" />
+        </button>
+        <button class="member" data-name="Monitor" data-cursor="Voir le projet" data-target="#projets" aria-label="Projet MAC Monitor">
+          <img src="img/mac-Monitor.png" alt="" />
+        </button>
+        <button class="member" data-name="mbash" data-cursor="Voir le projet" data-target="#projets" aria-label="Projet Shell mbash">
+          <img src="img/mbash.png" alt="" />
+        </button>
+        <button class="member" data-name="Sécurité" data-cursor="Voir le projet" data-target="#projets" aria-label="Projet Site Web Sécurisé">
+          <img src="img/NRVProject.png" alt="" />
+        </button>
+        <button class="member" data-name="UML" data-cursor="Voir le projet" data-target="#projets" aria-label="Projet Générateur UML">
+          <img src="img/DiagrammeClasse.png" alt="" />
+        </button>
+      </div>
     </div>
 
-    <div class="intro-chars">
-      <img class="intro-char intro-c2" src="img/Miniature2.png" alt="" draggable="false">
-      <img class="intro-char intro-c1" src="img/Miniature1.png" alt="" draggable="false">
-      <img class="intro-char intro-c3" src="img/Miniature3.png" alt="" draggable="false">
+    <p class="hero__sub">Apprenti ingénieur Informatique &amp; Télécommunications — IMT Nord Europe · 2026&nbsp;–&nbsp;2029</p>
+    <p class="hero__hint">( survolez les images — puis scrollez )</p>
+  </section>
+
+  <!-- ============ FOCUS : parallax cinématique au scroll ============ -->
+  <section class="showreel" id="focus">
+    <div class="showreel__sticky">
+      <div class="showreel__frame" id="showreelFrame">
+        <img src="img/OSINT_MAX.png" alt="OSINT MAX — projet phare" class="showreel__img" id="showreelImg" />
+        <div class="showreel__overlay">
+          <a href="https://github.com/LukaSalvo/OSINT_MAX" target="_blank" rel="noopener" class="showreel__play" data-cursor="GitHub" aria-label="Voir OSINT MAX sur GitHub">
+            <svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true">
+              <path d="M5 12h12M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+          <p class="showreel__caption">Projet phare — OSINT MAX</p>
+        </div>
+      </div>
+      <h2 class="showreel__title" id="showreelTitle">Construire<br/>&amp; sécuriser</h2>
+    </div>
+  </section>
+
+  <!-- ============ À PROPOS ============ -->
+  <section class="about" id="apropos">
+    <div class="about__intro reveal">
+      <div class="about__photo">
+        <img src="img/PP_Luka.jpg" alt="Portrait de Luka Salvo" />
+      </div>
+      <p class="about__text">
+        J'administre des <em>systèmes Unix</em>, je sécurise des infrastructures
+        et j'automatise tout ce qui peut l'être. Étudiant en BUT Informatique
+        (parcours DACS) puis apprenti ingénieur à l'IMT Nord Europe, je pratique
+        la cybersécurité au quotidien — CTF, TryHackMe, OSINT.
+      </p>
+    </div>
+    <div class="about__meta reveal">
+      <div><span class="meta__label">Rôle</span>Admin Système · Cybersécurité · DevOps</div>
+      <div><span class="meta__label">Stack</span>Linux · Docker · Bash · Réseaux · GCP</div>
+      <div><span class="meta__label">Localisation</span>Lille · Nancy · Sarreguemines</div>
+      <div><span class="meta__label">Langues</span>Français · Allemand (B2) · Anglais (B1)</div>
+      <div><span class="meta__label">Mobilité</span>Permis B</div>
+    </div>
+  </section>
+
+  <!-- ============ PROJETS : panneaux verticaux ExpandOnHover ============ -->
+  <section class="projects" id="projets">
+    <h2 class="section__title reveal">Projets<span class="accent"> sélectionnés</span></h2>
+
+    <div class="expander reveal" id="expander">
+      <article class="panel is-open" data-cursor="Ouvrir" tabindex="0">
+        <img src="img/OSINT_MAX.png" alt="" class="panel__img" />
+        <span class="panel__index">01</span>
+        <div class="panel__label"><span>OSINT MAX</span></div>
+        <div class="panel__details">
+          <h3>OSINT MAX</h3>
+          <p>Application web centralisant des dizaines d'outils OSINT — IP, WHOIS, réseaux sociaux, géolocalisation · Ruby · HTML/CSS</p>
+          <div class="panel__links">
+            <a href="https://github.com/LukaSalvo/OSINT_MAX" target="_blank" rel="noopener" data-hover>GitHub ↗</a>
+          </div>
+        </div>
+      </article>
+      <article class="panel" data-cursor="Ouvrir" tabindex="0">
+        <img src="img/mac-Monitor.png" alt="" class="panel__img" />
+        <span class="panel__index">02</span>
+        <div class="panel__label"><span>MAC Monitor</span></div>
+        <div class="panel__details">
+          <h3>MAC Monitor</h3>
+          <p>Monitoring système macOS &amp; Linux — CPU, RAM, disque, réseau · Ruby · CI/CD GitHub Actions</p>
+          <div class="panel__links">
+            <a href="https://github.com/LukaSalvo/mac-monitor" target="_blank" rel="noopener" data-hover>GitHub ↗</a>
+          </div>
+        </div>
+      </article>
+      <article class="panel" data-cursor="Ouvrir" tabindex="0">
+        <img src="img/tableaudeBord1.png" alt="" class="panel__img" />
+        <span class="panel__index">03</span>
+        <div class="panel__label"><span>Tableau de bord GLPI</span></div>
+        <div class="panel__details">
+          <h3>Tableau de bord GLPI</h3>
+          <p>Automatisation des rapports de tickets IT — stage CASC, Sarreguemines · SQL · Access</p>
+          <div class="panel__links">
+            <a href="pdf/main.pdf" target="_blank" rel="noopener" data-hover>Rapport de stage ↗</a>
+          </div>
+        </div>
+      </article>
+      <article class="panel" data-cursor="Ouvrir" tabindex="0">
+        <img src="img/mbash.png" alt="" class="panel__img" />
+        <span class="panel__index">04</span>
+        <div class="panel__label"><span>Shell mbash</span></div>
+        <div class="panel__details">
+          <h3>Shell mbash</h3>
+          <p>Shell Unix développé en C — commandes de base, projet SAE · C · Système</p>
+          <div class="panel__links">
+            <a href="https://github.com/LukaSalvo/SAESysteme" target="_blank" rel="noopener" data-hover>GitHub ↗</a>
+            <a href="pdf/Rapport SAE 3.03 Carette Salvo.pdf" target="_blank" rel="noopener" data-hover>Rapport ↗</a>
+          </div>
+        </div>
+      </article>
+      <article class="panel" data-cursor="Ouvrir" tabindex="0">
+        <img src="img/NRVProject.png" alt="" class="panel__img" />
+        <span class="panel__index">05</span>
+        <div class="panel__label"><span>Site Web Sécurisé</span></div>
+        <div class="panel__details">
+          <h3>Site Web Sécurisé</h3>
+          <p>Chiffrement, validation des entrées, protection XSS / SQLi · PHP · HTML/CSS</p>
+          <div class="panel__links">
+            <a href="https://github.com/LukaSalvo/NRVProjet" target="_blank" rel="noopener" data-hover>GitHub ↗</a>
+          </div>
+        </div>
+      </article>
+      <article class="panel" data-cursor="Ouvrir" tabindex="0">
+        <img src="img/DiagrammeClasse.png" alt="" class="panel__img" />
+        <span class="panel__index">06</span>
+        <div class="panel__label"><span>Générateur UML</span></div>
+        <div class="panel__details">
+          <h3>Générateur UML</h3>
+          <p>Diagrammes de classe générés depuis des fichiers .class · Java · JavaFX</p>
+          <div class="panel__links">
+            <a href="https://github.com/NathanEyer/SAE_3.01_DiagrammesClasse" target="_blank" rel="noopener" data-hover>GitHub ↗</a>
+          </div>
+        </div>
+      </article>
     </div>
 
-    <div class="intro-hint">
-      <span class="intro-hint-label">Scroll pour entrer</span>
-      <div class="intro-hint-line"></div>
+    <div class="projects__more reveal">
+      <span class="projects__more-label">Également</span>
+      <a href="https://github.com/LukaSalvo/budgette" target="_blank" rel="noopener" data-hover>BUDGETTE — gestion de budget, Python / JS ↗</a>
+      <a href="https://github.com/LukaSalvo/SAE2024" target="_blank" rel="noopener" data-hover>Jeu de Labyrinthe — Java / JavaFX ↗</a>
+      <a href="https://github.com/LukaSalvo/Portfolio" target="_blank" rel="noopener" data-hover>Ce portfolio — HTML / CSS / JS ↗</a>
     </div>
-  </div>
+  </section>
 
-  <!-- Custom cursor -->
-  <div class="cursor-dot" id="cursor-dot"></div>
-  <div class="cursor-ring" id="cursor-ring"></div>
+  <!-- ============ COMPÉTENCES : blocs extensibles ============ -->
+  <section class="features" id="competences">
+    <h2 class="section__title reveal">Ce que je<span class="accent"> pratique</span></h2>
 
-  <!-- Scroll progress indicator -->
-  <div class="scroll-progress" id="scroll-progress"></div>
+    <div class="features__grid reveal" id="featuresGrid">
+      <article class="feature" data-cursor="Détails" tabindex="0">
+        <div class="feature__head">
+          <span class="feature__icon">✦</span>
+          <h3 class="feature__title">Administration système</h3>
+          <button class="feature__toggle" aria-label="Voir les détails">+</button>
+        </div>
+        <div class="feature__body"><div class="inner"><p>Installation, configuration et maintenance de serveurs
+          Linux — de la ligne de commande à la mise en production.</p>
+          <ul>
+            <li>Linux · Debian · Ubuntu · macOS</li>
+            <li>Bash · SSH · Nginx · Apache</li>
+            <li>Automatisation des sauvegardes</li>
+          </ul></div>
+        </div>
+      </article>
 
-  <!-- ═══════════ NAVIGATION ═══════════ -->
-  <nav class="nav" aria-label="Navigation principale">
-    <div class="nav-inner">
-      <a href="#" class="nav-logo">Luka <span>Salvo</span></a>
+      <article class="feature" data-cursor="Détails" tabindex="0">
+        <div class="feature__head">
+          <span class="feature__icon">◎</span>
+          <h3 class="feature__title">Réseaux</h3>
+          <button class="feature__toggle" aria-label="Voir les détails">+</button>
+        </div>
+        <div class="feature__body"><div class="inner"><p>Conception et sécurisation de réseaux : segmentation,
+          routage et pare-feu sur environnements Cisco et virtualisés.</p>
+          <ul>
+            <li>Cisco · VLANs · Routage</li>
+            <li>Firewall &amp; sécurisation</li>
+            <li>Marionnet — réseaux virtuels</li>
+          </ul></div>
+        </div>
+      </article>
 
-      <ul class="nav-links" id="nav-links">
-        <li><a href="#about">À propos</a></li>
-        <li><a href="#skills">Compétences</a></li>
-        <li><a href="#journey">Parcours</a></li>
-        <li><a href="#experiences">Expériences</a></li>
-        <li><a href="#work">Projets</a></li>
-        <li><a href="#contact">Contact</a></li>
+      <article class="feature" data-cursor="Détails" tabindex="0">
+        <div class="feature__head">
+          <span class="feature__icon">◈</span>
+          <h3 class="feature__title">Virtualisation &amp; Cloud</h3>
+          <button class="feature__toggle" aria-label="Voir les détails">+</button>
+        </div>
+        <div class="feature__body"><div class="inner"><p>Environnements isolés et reproductibles, du conteneur au
+          cloud public, avec observabilité.</p>
+          <ul>
+            <li>Docker · Compose · Kubernetes</li>
+            <li>Vagrant · VirtualBox</li>
+            <li>GCP · Grafana · Prometheus</li>
+          </ul></div>
+        </div>
+      </article>
+
+      <article class="feature" data-cursor="Détails" tabindex="0">
+        <div class="feature__head">
+          <span class="feature__icon">◍</span>
+          <h3 class="feature__title">Cybersécurité</h3>
+          <button class="feature__toggle" aria-label="Voir les détails">+</button>
+        </div>
+        <div class="feature__body"><div class="inner"><p>Pratique offensive et défensive régulière : CTF,
+          reconnaissance, exploitation, forensics et OSINT.</p>
+          <ul>
+            <li>TryHackMe — pratique CTF active</li>
+            <li>OSINT · reconnaissance</li>
+            <li>Durcissement &amp; bonnes pratiques OWASP</li>
+          </ul></div>
+        </div>
+      </article>
+
+      <article class="feature" data-cursor="Détails" tabindex="0">
+        <div class="feature__head">
+          <span class="feature__icon">✚</span>
+          <h3 class="feature__title">Développement</h3>
+          <button class="feature__toggle" aria-label="Voir les détails">+</button>
+        </div>
+        <div class="feature__body"><div class="inner"><p>Des scripts d'automatisation aux applications complètes,
+          avec versionnement et intégration continue.</p>
+          <ul>
+            <li>Python · Java · PHP · Ruby · C</li>
+            <li>HTML / CSS / JS · LaTeX · VBA</li>
+            <li>Git · GitHub Actions</li>
+          </ul></div>
+        </div>
+      </article>
+
+      <article class="feature" data-cursor="Détails" tabindex="0">
+        <div class="feature__head">
+          <span class="feature__icon">❋</span>
+          <h3 class="feature__title">IA &amp; LLM</h3>
+          <button class="feature__toggle" aria-label="Voir les détails">+</button>
+        </div>
+        <div class="feature__body"><div class="inner"><p>Auto-formation continue sur les outils Anthropic, Google
+          et Cisco — de l'usage des agents à l'API.</p>
+          <ul>
+            <li>Claude Code · MCP · Subagents</li>
+            <li>Certifications Anthropic &amp; Google AI</li>
+            <li>Serveur Linux dédié IA (stage ATE)</li>
+          </ul></div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ============ PARCOURS ============ -->
+  <section class="journey" id="parcours">
+    <h2 class="section__title reveal">Parcours<span class="accent"> &amp; formation</span></h2>
+
+    <div class="rows reveal">
+      <div class="row">
+        <span class="row__date">2026 – 2029</span>
+        <div class="row__body">
+          <h3 class="row__title">Ingénieur Informatique &amp; Télécommunications</h3>
+          <p class="row__desc">IMT Nord Europe — en alternance, rythme 2 semaines école / 5 semaines entreprise.</p>
+        </div>
+      </div>
+      <div class="row">
+        <span class="row__date">2023 – 2026</span>
+        <div class="row__body">
+          <h3 class="row__title">BUT Informatique — Parcours DACS</h3>
+          <p class="row__desc">IUT Nancy-Charlemagne. Déploiement et administration de systèmes et réseaux communicants.</p>
+        </div>
+      </div>
+      <div class="row">
+        <span class="row__date">2023</span>
+        <div class="row__body">
+          <h3 class="row__title">Baccalauréat — Mention Bien</h3>
+          <p class="row__desc">Spécialités NSI &amp; Mathématiques, section européenne allemand. Lycée Jean de Pange, Sarreguemines.</p>
+        </div>
+      </div>
+      <div class="row">
+        <span class="row__date">2020</span>
+        <div class="row__body">
+          <h3 class="row__title">Brevet — Mention Très Bien</h3>
+          <p class="row__desc">Collège Himmelsberg, Sarreguemines.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ EXPÉRIENCES ============ -->
+  <section class="experiences" id="experiences">
+    <h2 class="section__title reveal">Expériences<span class="accent"> pro</span></h2>
+
+    <div class="rows reveal">
+      <div class="row">
+        <span class="row__date">Avr. – Juil. 2026</span>
+        <div class="row__body">
+          <h3 class="row__title">Stage — ATE, Val-de-Moder</h3>
+          <p class="row__desc">Déploiement automatisé de postes Windows 11 et mise en production d'un serveur Linux dédié à l'Intelligence Artificielle.</p>
+        </div>
+      </div>
+      <div class="row">
+        <span class="row__date">Été 2025</span>
+        <div class="row__body">
+          <h3 class="row__title">Saisonnier — CA Sarreguemines Confluence</h3>
+          <p class="row__desc">Mission au sein du service informatique de la communauté d'agglomération.</p>
+        </div>
+      </div>
+      <div class="row">
+        <span class="row__date">Fév. – Avr. 2025</span>
+        <div class="row__body">
+          <h3 class="row__title">Stage — CASC, Sarreguemines</h3>
+          <p class="row__desc">Tableau de bord GLPI avec Microsoft Access et SQL — automatisation des rapports de tickets IT.
+            <a href="pdf/main.pdf" target="_blank" rel="noopener" data-hover>Rapport ↗</a></p>
+        </div>
+      </div>
+      <div class="row">
+        <span class="row__date">Été 2024</span>
+        <div class="row__body">
+          <h3 class="row__title">Ouvrier d'usine — HR Pro Interim</h3>
+          <p class="row__desc">Missions industrielles — rigueur, discipline et gestion du stress.</p>
+        </div>
+      </div>
+      <div class="row">
+        <span class="row__date">Étés 2022 &amp; 2023</span>
+        <div class="row__body">
+          <h3 class="row__title">Ouvrier spécialisé — TSG Baut, Allemagne</h3>
+          <p class="row__desc">Réparation de routes en Allemagne — travail d'équipe et communication interculturelle en allemand.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CERTIFICATIONS ============ -->
+  <section class="certs" id="certifications">
+    <h2 class="section__title reveal">Certifications<span class="accent"> &amp; badges</span></h2>
+
+    <div class="rows reveal">
+      <div class="row row--cert">
+        <span class="row__date">Obtenu</span>
+        <div class="row__body">
+          <h3 class="row__title">Claude Code 101 — Anthropic</h3>
+          <p class="row__desc"><a href="pdf/certificat-claude-code101.pdf" target="_blank" rel="noopener" data-hover>Certificat ↗</a></p>
+        </div>
+      </div>
+      <div class="row row--cert">
+        <span class="row__date">Obtenu</span>
+        <div class="row__body">
+          <h3 class="row__title">Introduction to Model Context Protocol — Anthropic</h3>
+          <p class="row__desc"><a href="pdf/certificate_MCP.pdf" target="_blank" rel="noopener" data-hover>Certificat ↗</a></p>
+        </div>
+      </div>
+      <div class="row row--cert">
+        <span class="row__date">Obtenu</span>
+        <div class="row__body">
+          <h3 class="row__title">Introduction to Subagents — Anthropic</h3>
+          <p class="row__desc"><a href="pdf/certificate_subagents.pdf" target="_blank" rel="noopener" data-hover>Certificat ↗</a></p>
+        </div>
+      </div>
+      <div class="row row--cert">
+        <span class="row__date">Obtenu</span>
+        <div class="row__body">
+          <h3 class="row__title">Python Essentials 1 — Cisco</h3>
+        </div>
+      </div>
+      <div class="row row--cert">
+        <span class="row__date">En cours</span>
+        <div class="row__body">
+          <h3 class="row__title">Building with the Claude API — Anthropic</h3>
+        </div>
+      </div>
+    </div>
+
+    <details class="certs__more reveal">
+      <summary data-cursor="Déplier">Toutes les certifications <span class="accent">(15 autres)</span></summary>
+      <ul class="certs__list">
+        <li>AI Capabilities and Limitations — Anthropic <a href="pdf/certificate_limitations.pdf" target="_blank" rel="noopener" data-hover>↗</a></li>
+        <li>AI Fluency for Students — Anthropic <a href="pdf/certificate-aiForStudent.pdf" target="_blank" rel="noopener" data-hover>↗</a></li>
+        <li>Claude 101 — Anthropic</li>
+        <li>Teaching AI Fluency — Anthropic <a href="pdf/certificate-teaching-AI-FluencyFramework.pdf" target="_blank" rel="noopener" data-hover>↗</a></li>
+        <li>Introduction à Claude Cowork — Anthropic</li>
+        <li>Introduction à la cybersécurité — Cisco Networking Academy</li>
+        <li>Greenhouse Gas Accounting for IT — Cisco Networking Academy</li>
+        <li>Google AI Fundamentals — Coursera</li>
+        <li>Google AI Professional Certificate — Coursera</li>
+        <li>Google AI for Data Analysis — Coursera</li>
+        <li>Google AI for App Building — Coursera</li>
+        <li>Linux Unhatched — Cisco <span class="certs__wip">en cours</span></li>
+        <li>Défense du Réseau — Cisco <span class="certs__wip">en cours</span></li>
+        <li>Introduction à l'IA moderne — Cisco <span class="certs__wip">en cours</span></li>
+        <li>Appliquer l'IA : analyser les avis clients — Cisco <span class="certs__wip">en cours</span></li>
       </ul>
+    </details>
 
-      <div class="nav-actions">
-        <button class="theme-btn" id="theme-toggle" aria-label="Changer le thème">
-          <i class="fas fa-moon" id="theme-icon"></i>
-        </button>
-        <button class="hamburger-btn" id="hamburger" aria-label="Menu mobile">
-          <i class="fas fa-bars" id="hamburger-icon"></i>
-        </button>
-      </div>
-    </div>
-  </nav>
-
-  <!-- ═══════════ HERO ═══════════ -->
-  <section class="hero" aria-label="Introduction">
-
-    <!-- Fond étoilé WebGL (Galaxy) — voir galaxy.js -->
-    <div class="hero-galaxy" id="heroGalaxy" aria-hidden="true"></div>
-
-    <div class="hero-content">
-      <div class="hero-available">
-        <span class="avail-dot"></span>
-        Disponible · Alternance Sept. 2026
-      </div>
-      <div class="hero-eyebrow">Futur apprenti ingénieur · IMT Nord Europe 2026</div>
-
-      <h1 class="hero-title">Luka Salvo</h1>
-
-      <p class="hero-subtitle true-focus" id="heroTrueFocus">
-        <span class="tf-word">Admin Système</span>
-        <span class="tf-sep" aria-hidden="true">·</span>
-        <span class="tf-word">Cybersécurité</span>
-        <span class="tf-sep" aria-hidden="true">·</span>
-        <span class="tf-word">DevOps</span>
-        <span class="tf-frame" aria-hidden="true">
-          <span class="tf-corner tf-corner-tl"></span>
-          <span class="tf-corner tf-corner-tr"></span>
-          <span class="tf-corner tf-corner-bl"></span>
-          <span class="tf-corner tf-corner-br"></span>
-        </span>
-      </p>
-
-      <p class="hero-desc">
-        Admis au cursus ingénieur Informatique &amp; Télécommunications à IMT Nord Europe,
-        je recherche une <strong>alternance 3 ans (2026-2029)</strong> au rythme
-        2 semaines école / 5 semaines entreprise.
-      </p>
-
-      <div class="hero-tags">
-        <span class="tag">Linux</span>
-        <span class="tag">Cybersécurité</span>
-        <span class="tag">Docker</span>
-        <span class="tag">DevOps</span>
-        <span class="tag">OSINT</span>
-        <span class="tag">Réseaux</span>
-      </div>
-
-      <div class="hero-cta">
-        <a href="#contact" class="btn-primary">
-          <i class="fas fa-envelope"></i> Me contacter
-        </a>
-        <a href="pdf/CV_Luka_Salvo.pdf" download class="btn-secondary">
-          <i class="fas fa-download"></i> Mon CV
-        </a>
-      </div>
-    </div>
-
-    <!-- Scroll indicator -->
-    <div class="hero-scroll" aria-hidden="true">
-      <div class="scroll-line"></div>
-    </div>
-
-    <!-- Easter egg hint -->
-    <div class="easter-hint">Une note secrète est glissée entre les pages… 🕵️</div>
-
-    <!-- Stats bar -->
-    <div class="hero-stats" aria-hidden="true">
-      <div class="stat">
-        <span class="stat-number" data-target="5">5</span>
-        <span class="stat-label">Stages / Emplois</span>
-      </div>
-      <div class="stat">
-        <span class="stat-number">∞</span>
-        <span class="stat-label">Projets — un de plus en cours</span>
-      </div>
-      <div class="stat">
-        <span class="stat-number" data-target="3">3</span>
-        <span class="stat-label">Langues</span>
-      </div>
-      <div class="stat">
-        <span class="stat-number">2029</span>
-        <span class="stat-label">Promo Ingénieur</span>
-      </div>
-    </div>
+    <a class="certs__credly reveal" href="https://www.credly.com/users/luka-salvo" target="_blank" rel="noopener" data-cursor="Credly">
+      Voir mes badges sur Credly ↗
+    </a>
   </section>
 
-  <!-- ═══════════ ABOUT ═══════════ -->
-  <section id="about" aria-label="À propos de moi">
-    <div class="section-inner">
-      <div class="section-header">
-        <span class="section-label reveal">À propos</span>
-        <h2 class="section-title reveal">Qui suis-je ?</h2>
-        <p class="section-desc reveal">Étudiant passionné par les systèmes Unix, la sécurité et les
-          infrastructures modernes.</p>
-      </div>
-
-      <!-- Profil — remplacer l'avatar par <img src="img/votre-photo.jpg" alt="Luka Salvo" class="about-photo-img"> -->
-      <div class="about-profile">
-        <div class="about-avatar-wrap">
-          <div class="about-avatar">
-            <img src="img/PP_Luka.jpg" alt="Avatar de Luka Salvo" class="about-photo-img about-avatar-char">
-          </div>
-          <span class="about-avatar-ring"></span>
-        </div>
-        <div class="about-profile-body">
-          <p class="about-profile-name">Luka Salvo</p>
-          <p class="about-profile-title">Étudiant BUT Informatique DACS → Ingénieur IMT Nord Europe</p>
-          <p class="about-profile-bio">Passionné par les systèmes Unix, la cybersécurité et l'automatisation d'infrastructure. Je construis des outils, et j'explore de nouvelles technologies en permanence.</p>
-          <div class="about-profile-tags">
-            <span class="about-tag"><i class="fas fa-map-marker-alt"></i> Lille (prochainement) / Nancy / Sarreguemines</span>
-            <span class="about-tag"><i class="fas fa-flag"></i> TryHackMe · CTF · Cisco · Anthropic Courses · Google</span>
-            <span class="about-tag"><i class="fab fa-linux"></i> Linux</span>
-            <span class="about-tag"><i class="fab fa-docker"></i> Virtualisation</span>
-            <span class="about-tag"><i class="fas fa-code"></i> LLM </span>
-            
-
-          </div>
-        </div>
-      </div>
-
-      <div class="about-grid">
-        <!-- Terminal animé + moniteur htop -->
-        <div class="about-left">
-          <div class="terminal reveal">
-            <div class="terminal-header">
-              <div class="terminal-dot red"></div>
-              <div class="terminal-dot yellow"></div>
-              <div class="terminal-dot green"></div>
-              <div class="terminal-window-title">luka@portfolio — zsh</div>
-            </div>
-            <div class="terminal-body">
-              <div id="terminal-output"></div>
-            </div>
-          </div>
-
-          <div class="htop-panel reveal reveal-d1" aria-label="Moniteur système — clin d'œil humoristique">
-            <div class="terminal-header">
-              <div class="terminal-dot red"></div>
-              <div class="terminal-dot yellow"></div>
-              <div class="terminal-dot green"></div>
-              <div class="terminal-window-title">htop — luka</div>
-            </div>
-            <div class="htop-body" id="htop-body"></div>
-          </div>
-        </div>
-
-        <!-- Info cards -->
-        <div class="about-info">
-          <div class="info-card reveal reveal-d1">
-            <div class="info-icon"><i class="fas fa-user"></i></div>
-            <div class="info-title">Profil</div>
-            <ul class="info-list">
-              <li><i class="fas fa-check"></i>Rigoureux et enthousiaste</li>
-              <li><i class="fas fa-check"></i>Passionné de nouvelles technologies</li>
-              <li><i class="fas fa-check"></i>Gestion du stress</li>
-              <li><i class="fas fa-check"></i>Travail d'équipe</li>
-            </ul>
-          </div>
-
-          <div class="info-card reveal reveal-d2">
-            <div class="info-icon"><i class="fas fa-map-marker-alt"></i></div>
-            <div class="info-title">Contact &amp; Mobilité</div>
-            <ul class="info-list">
-              <li><i class="fas fa-envelope"></i>luka.salvo23@gmail.com</li>
-              <li><i class="fas fa-map-marker-alt"></i>Sarreguemines / Nancy</li>
-              <li><i class="fas fa-car"></i>Permis B</li>
-              <li><i class="fas fa-route"></i>Lille et sa périphérie, Metz, Sarreguemines, Saint-Avold…</li>
-            </ul>
-          </div>
-
-          <div class="info-card reveal reveal-d3">
-            <div class="info-icon"><i class="fas fa-language"></i></div>
-            <div class="info-title">Langues</div>
-            <ul class="info-list">
-              <li><i class="fas fa-circle"></i>Français — Natif</li>
-              <li><i class="fas fa-circle"></i>Allemand — B2 (section européenne)</li>
-              <li><i class="fas fa-circle"></i>Anglais — B1 (technique)</li>
-            </ul>
-          </div>
-
-          <div class="info-card reveal reveal-d4">
-            <div class="info-icon"><i class="fas fa-star"></i></div>
-            <div class="info-title">Centres d'intérêt</div>
-            <ul class="info-list">
-              <li><i class="fas fa-terminal"></i>Veille technologique</li>
-              <li><i class="fas fa-fist-raised"></i>Sports de combat</li>
-              <li><i class="fas fa-running"></i>Course à pied</li>
-              <li><i class="fas fa-flag"></i>CTF / TryHackMe</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══════════ SKILLS ═══════════ -->
-  <section id="skills" class="bg-alt" aria-label="Compétences">
-    <div class="section-inner">
-
-      <!-- Sticky header -->
-      <div class="section-header skills-sticky-header">
-        <span class="section-label reveal">Compétences</span>
-        <h2 class="section-title reveal">Ce que je pratique</h2>
-        <p class="section-desc reveal">Administration système, réseaux, virtualisation, cybersécurité et développement.</p>
-      </div>
-
-      <!-- TryHackMe badge -->
-      <div class="thm-badge reveal">
-        <div class="thm-icon"><i class="fas fa-flag"></i></div>
-        <div class="thm-text">
-          <strong>TryHackMe — Pratique CTF active</strong>
-          <span>Rooms offensives &amp; défensives · Reconnaissance · Exploitation · Forensics</span>
-        </div>
-      </div>
-
-      <!-- 5 catégories — grille de cartes -->
-      <div class="skills-cards-grid">
-
-        <div class="skill-card">
-          <span class="skill-card-prefix">01 · sys</span>
-          <h3 class="skill-card-title">Administration</h3>
-          <div class="skill-card-tags">
-            <span class="skill-tag">Linux</span>
-            <span class="skill-tag">Debian</span>
-            <span class="skill-tag">Ubuntu</span>
-            <span class="skill-tag">Bash</span>
-            <span class="skill-tag">SSH</span>
-            <span class="skill-tag">Nginx</span>
-            <span class="skill-tag">Apache</span>
-            <span class="skill-tag">MacOS</span>
-          </div>
-          <div class="skill-card-level">Opérationnel</div>
-        </div>
-
-        <div class="skill-card">
-          <span class="skill-card-prefix">02 · net</span>
-          <h3 class="skill-card-title">Réseaux</h3>
-          <div class="skill-card-tags">
-            <span class="skill-tag">Cisco</span>
-            <span class="skill-tag">VLANs</span>
-            <span class="skill-tag">Routage</span>
-            <span class="skill-tag">Marionnet</span>
-            <span class="skill-tag">Sécurisation</span>
-            <span class="skill-tag">Firewall</span>
-          </div>
-          <div class="skill-card-level">Opérationnel</div>
-        </div>
-
-        <div class="skill-card">
-          <span class="skill-card-prefix">03 · virt</span>
-          <h3 class="skill-card-title">Virtualisation</h3>
-          <div class="skill-card-tags">
-            <span class="skill-tag">Docker</span>
-            <span class="skill-tag">Vagrant</span>
-            <span class="skill-tag">VirtualBox</span>
-            <span class="skill-tag">Kubernetes</span>
-            <span class="skill-tag">Compose</span>
-          </div>
-          <div class="skill-card-level">Opérationnel</div>
-        </div>
-
-        <div class="skill-card">
-          <span class="skill-card-prefix">04 · cloud</span>
-          <h3 class="skill-card-title">Cloud &amp; Observabilité</h3>
-          <div class="skill-card-tags">
-            <span class="skill-tag">GCP</span>
-            <span class="skill-tag">Compute Engine</span>
-            <span class="skill-tag">Cloud Storage</span>
-            <span class="skill-tag">Grafana</span>
-            <span class="skill-tag">Prometheus</span>
-          </div>
-          <div class="skill-card-level">Notions</div>
-        </div>
-
-        <div class="skill-card">
-          <span class="skill-card-prefix">05 · dev</span>
-          <h3 class="skill-card-title">Développement</h3>
-          <div class="skill-card-tags">
-            <span class="skill-tag">Java</span>
-            <span class="skill-tag">PHP</span>
-            <span class="skill-tag">Python</span>
-            <span class="skill-tag">Ruby</span>
-            <span class="skill-tag">HTML/CSS</span>
-            <span class="skill-tag">LaTeX</span>
-            <span class="skill-tag">C</span>
-            <span class="skill-tag">VBA</span>
-          </div>
-          <div class="skill-card-level">Opérationnel</div>
-        </div>
-
-      </div><!-- /skills-cards-grid -->
-
-      <!-- IA & Auto-formation -->
-      <div class="skills-group">
-        <h3 class="skills-group-title reveal">IA &amp; Auto-formation Claude / Anthropic</h3>
-
-        <!-- Certifications vedettes -->
-        <p class="skills-subgroup-label reveal">Certifications — sélection admin sys / DevOps / cyber</p>
-        <div class="cert-grid">
-          <div class="cert-card reveal reveal-d1">
-            <div class="cert-status cert-done"><i class="fas fa-check-circle"></i> Obtenu</div>
-            <div class="cert-name">Claude Code 101</div>
-            <div class="cert-org">Anthropic · Cours en ligne</div>
-            <a href="pdf/certificat-claude-code101.pdf" class="timeline-link"><i class="fas fa-file-pdf"></i> Voir le certificat</a>
-          </div>
-          <div class="cert-card reveal reveal-d2">
-            <div class="cert-status cert-done"><i class="fas fa-check-circle"></i> Obtenu</div>
-            <div class="cert-name">Introduction to Model Context Protocol</div>
-            <div class="cert-org">Anthropic · Cours en ligne</div>
-            <a href="pdf/certificate_MCP.pdf" class="timeline-link"><i class="fas fa-file-pdf"></i> Voir le certificat</a>
-          </div>
-          <div class="cert-card reveal reveal-d3">
-            <div class="cert-status cert-done"><i class="fas fa-check-circle"></i> Obtenu</div>
-            <div class="cert-name">Introduction to Subagents</div>
-            <div class="cert-org">Anthropic · Cours en ligne</div>
-            <a href="pdf/certificate_subagents.pdf" class="timeline-link"><i class="fas fa-file-pdf"></i> Voir le certificat</a>
-          </div>
-          
-          <div class="cert-card reveal reveal-d4">
-             <div class="cert-status cert-done"><i class="fas fa-check-circle"></i> Obtenu</div>
-            <div class="cert-name">Python Essentials 1</div>
-            <div class="cert-org">Cisco</div>
-          </div>
-          <div class="cert-card cert-wip reveal reveal-d5">
-            <div class="cert-status cert-progress"><i class="fas fa-spinner"></i> En cours</div>
-            <div class="cert-name">Building with the Claude API</div>
-            <div class="cert-org">Anthropic · Cours en ligne</div>
-          </div>
-        </div>
-
-        <!-- Toutes les certifications (repliable) -->
-        <details class="cert-details reveal">
-          <summary class="cert-summary">
-            Voir toutes les certifications <span class="cert-count">(15 autres)</span>
-          </summary>
-          <div class="cert-grid cert-details-grid">
-            <div class="cert-card">
-              <div class="cert-status cert-done"><i class="fas fa-check-circle"></i> Obtenu</div>
-              <div class="cert-name">AI Capabilities and Limitations</div>
-              <div class="cert-org">Anthropic · Cours en ligne</div>
-              <a href="pdf/certificate_limitations.pdf" class="timeline-link"><i class="fas fa-file-pdf"></i> Voir le certificat</a>
-            </div>
-            <div class="cert-card">
-              <div class="cert-status cert-done"><i class="fas fa-check-circle"></i> Obtenu</div>
-              <div class="cert-name">AI Fluency for Students</div>
-              <div class="cert-org">Anthropic · Cours en ligne</div>
-              <a href="pdf/certificate-aiForStudent.pdf" class="timeline-link"><i class="fas fa-file-pdf"></i> Voir le certificat</a>
-            </div>
-            <div class="cert-card">
-              <div class="cert-status cert-done"><i class="fas fa-check-circle"></i> Obtenu</div>
-              <div class="cert-name">Claude 101</div>
-              <div class="cert-org">Anthropic · Cours en ligne</div>
-            </div>
-            <div class="cert-card">
-              <div class="cert-status cert-done"><i class="fas fa-check-circle"></i> Obtenu</div>
-              <div class="cert-name">Teaching AI Fluency</div>
-              <div class="cert-org">Anthropic · Cours en ligne</div>
-              <a href="pdf/certificate-teaching-AI-FluencyFramework.pdf" class="timeline-link"><i class="fas fa-file-pdf"></i> Voir le certificat</a>
-            </div>
-            <div class="cert-card">
-              <div class="cert-status cert-done"><i class="fas fa-check-circle"></i> Obtenu</div>
-              <div class="cert-name">Introduction à Claude Cowork</div>
-              <div class="cert-org">Anthropic · Cours en ligne</div>
-            </div>
-            <div class="cert-card">
-              <div class="cert-status cert-done"><i class="fas fa-check-circle"></i> Obtenu</div>
-              <div class="cert-name">Introduction à la cybersécurité</div>
-              <div class="cert-org">Cisco Networking Academy</div>
-            </div>
-            <div class="cert-card">
-              <div class="cert-status cert-done"><i class="fas fa-check-circle"></i> Obtenu</div>
-              <div class="cert-name">Introduction to Greenhouse Gas Accounting for IT</div>
-              <div class="cert-org">Cisco Networking Academy</div>
-            </div>
-            <div class="cert-card">
-              <div class="cert-status cert-done"><i class="fas fa-check-circle"></i> Obtenu</div>
-              <div class="cert-name">Google AI Fundamentals</div>
-              <div class="cert-org">Coursera Google Courses</div>
-            </div>
-            <div class="cert-card">
-              <div class="cert-status cert-done"><i class="fas fa-check-circle"></i> Obtenu</div>
-              <div class="cert-name">Google AI Professional Certificate</div>
-              <div class="cert-org">Coursera Google Courses</div>
-            </div>
-            <div class="cert-card">
-              <div class="cert-status cert-done"><i class="fas fa-check-circle"></i> Obtenu</div>
-              <div class="cert-name">Google AI for Data Analysis</div>
-              <div class="cert-org">Coursera Google Courses</div>
-            </div>
-            <div class="cert-card">
-              <div class="cert-status cert-done"><i class="fas fa-check-circle"></i> Obtenu</div>
-              <div class="cert-name">Google AI for App Building</div>
-              <div class="cert-org">Coursera Google Courses</div>
-            </div>
-            <div class="cert-card cert-wip">
-              <div class="cert-status cert-progress"><i class="fas fa-spinner"></i> En cours</div>
-              <div class="cert-name">Linux Unhatched</div>
-              <div class="cert-org">Cisco Networking Academy</div>
-            </div>
-            <div class="cert-card cert-wip">
-              <div class="cert-status cert-progress"><i class="fas fa-spinner"></i> En cours</div>
-              <div class="cert-name">Défense du Réseau</div>
-              <div class="cert-org">Cisco Networking Academy</div>
-            </div>
-            <div class="cert-card cert-wip">
-              <div class="cert-status cert-progress"><i class="fas fa-spinner"></i> En cours</div>
-              <div class="cert-name">Introduction à l'IA moderne</div>
-              <div class="cert-org">Cisco Networking Academy</div>
-            </div>
-            <div class="cert-card cert-wip">
-              <div class="cert-status cert-progress"><i class="fas fa-spinner"></i> En cours</div>
-              <div class="cert-name">Appliquer l'IA : analyser les avis des clients</div>
-              <div class="cert-org">Cisco Networking Academy</div>
-            </div>
-          </div>
-        </details>
-      </div>
-
-      <p class="skills-subgroup-label reveal" style="margin-top:20px;">Mes badges</p>
-      <a href="https://www.credly.com/users/luka-salvo" target="_blank" rel="noopener" class="credly-link-btn">
-        <i class="fas fa-award"></i> Voir mon profil Credly
-      </a>
-      <div class="badges-row">
-        <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="efb11d6d-10c1-446e-8ad4-65a1ee15174c" data-share-badge-host="https://www.credly.com"></div>
-        <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="d2e9bc6f-d3bb-407d-9ff9-f7d6b444d109" data-share-badge-host="https://www.credly.com"></div>
-        <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="66027680-6cca-4250-a29d-6267ae702269" data-share-badge-host="https://www.credly.com"></div>
-        <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="1f5f8901-502d-4acc-8052-6165c776e456" data-share-badge-host="https://www.credly.com"></div>
-        <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="78331096-ba12-4123-912d-55123b8dc19b" data-share-badge-host="https://www.credly.com"></div>
-        <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="ca468245-1a2a-425a-b82c-5972887afa4b" data-share-badge-host="https://www.credly.com"></div>
-        <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="3c7b5deb-27af-4980-8694-601c8b319a21" data-share-badge-host="https://www.credly.com"></div>
-        <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="816c2782-f058-4fac-8395-eddcb8e7c49e" data-share-badge-host="https://www.credly.com"></div>
-        <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="43b3ca16-5a68-4cca-a889-bb7def557ed5" data-share-badge-host="https://www.credly.com"></div>
-        <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="a379e0bb-059a-4902-8e41-21fb59fac5d9" data-share-badge-host="https://www.credly.com"></div>
-        <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="e6cc4639-2d01-454d-a063-22e9576ac011" data-share-badge-host="https://www.credly.com"></div>
-      </div>
-      <script async src="https://cdn.credly.com/assets/utilities/embed.js"></script>
-
-      <!-- Auto-évaluation BUT DACS — 2 colonnes, sans étoiles -->
-      <div>
-        <span class="section-label reveal">Auto-évaluation</span>
-        <h3 class="section-title reveal" style="font-size:1.8rem;margin-bottom:32px;">Compétences clés BUT DACS</h3>
-        <div class="comp-list">
-
-          <div class="comp-row reveal" data-level="75">
-            <div class="comp-row-name">
-              <div class="competence-ic"><i class="fas fa-globe"></i></div>
-              <span>Architectures et protocoles Internet</span>
-            </div>
-            <div class="comp-row-detail">
-              <p class="comp-text">Administration de serveurs Debian, mise en place de Nginx, scripts Bash pour l'automatisation des sauvegardes.</p>
-              <p class="comp-text"><span class="comp-axe-label">Amélioration —</span> Approfondir l'orchestration avec Kubernetes et Docker Swarm.</p>
-            </div>
-          </div>
-
-          <div class="comp-row reveal reveal-d1" data-level="85">
-            <div class="comp-row-name">
-              <div class="competence-ic"><i class="fab fa-linux"></i></div>
-              <span>Installation &amp; administration Linux</span>
-            </div>
-            <div class="comp-row-detail">
-              <p class="comp-text">Installation et administration de Debian/Ubuntu, configuration SSH, Apache sur des projets académiques.</p>
-              <p class="comp-text"><span class="comp-axe-label">Amélioration —</span> VPN avancés, protocoles IPsec.</p>
-            </div>
-          </div>
-
-          <div class="comp-row reveal reveal-d2" data-level="70">
-            <div class="comp-row-name">
-              <div class="competence-ic"><i class="fas fa-network-wired"></i></div>
-              <span>Administration réseau</span>
-            </div>
-            <div class="comp-row-detail">
-              <p class="comp-text">Configuration de routeurs virtuels et VLANs pour segmenter le trafic via Marionnet.</p>
-              <p class="comp-text"><span class="comp-axe-label">Amélioration —</span> Protocoles de routage dynamique (OSPF, BGP).</p>
-            </div>
-          </div>
-
-          <div class="comp-row reveal reveal-d3" data-level="75">
-            <div class="comp-row-name">
-              <div class="competence-ic"><i class="fas fa-server"></i></div>
-              <span>Administration des serveurs et services</span>
-            </div>
-            <div class="comp-row-detail">
-              <p class="comp-text">Gestion de serveurs Debian (petits projets perso), optimisation et maintenance.</p>
-              <p class="comp-text"><span class="comp-axe-label">Amélioration —</span> Cloud AWS / Azure.</p>
-            </div>
-          </div>
-
-          <div class="comp-row reveal" data-level="70">
-            <div class="comp-row-name">
-              <div class="competence-ic"><i class="fas fa-cloud"></i></div>
-              <span>Virtualisation, cloud</span>
-            </div>
-            <div class="comp-row-detail">
-              <p class="comp-text">Docker, Vagrant et VirtualBox pour des environnements isolés. Cours Google Cloud Platform : déploiement de VMs, stockage objet, tests de montée en charge. Notions Kubernetes.</p>
-              <p class="comp-text"><span class="comp-axe-label">Amélioration —</span> Kubernetes en production, infrastructure as code (Terraform).</p>
-            </div>
-          </div>
-
-          <div class="comp-row reveal reveal-d1" data-level="65">
-            <div class="comp-row-name">
-              <div class="competence-ic"><i class="fas fa-cogs"></i></div>
-              <span>Administration d'infrastructure</span>
-            </div>
-            <div class="comp-row-detail">
-              <p class="comp-text">Conception et déploiement d'une infrastructure complète avec serveurs virtuels et réseaux interconnectés.</p>
-              <p class="comp-text"><span class="comp-axe-label">Amélioration —</span> Infrastructures hybrides (Terraform).</p>
-            </div>
-          </div>
-
-          <div class="comp-row reveal reveal-d2" data-level="85">
-            <div class="comp-row-name">
-              <div class="competence-ic"><i class="fas fa-tools"></i></div>
-              <span>Logiciels libres &amp; open source</span>
-            </div>
-            <div class="comp-row-detail">
-              <p class="comp-text">Git, Docker, Vagrant, VirtualBox en formation et en démarche personnelle. Configuration Unix sur Debian 12.</p>
-              <p class="comp-text"><span class="comp-axe-label">Amélioration —</span> Explorer de nouvelles distributions Linux.</p>
-            </div>
-          </div>
-
-          <div class="comp-row reveal reveal-d3" data-level="70">
-            <div class="comp-row-name">
-              <div class="competence-ic"><i class="fas fa-shield-alt"></i></div>
-              <span>Sécurité</span>
-            </div>
-            <div class="comp-row-detail">
-              <p class="comp-text">Sécurisation d'un site web (chiffrement, validation des entrées) (NRV Projet). CTF réguliers sur TryHackMe.</p>
-              <p class="comp-text"><span class="comp-axe-label">Amélioration —</span> Pentesting avancé, normes OWASP.</p>
-            </div>
-          </div>
-
-        </div><!-- /comp-list -->
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ═══════════ JOURNEY ═══════════ -->
-  <section id="journey" aria-label="Parcours">
-    <div class="section-inner">
-      <div class="section-header">
-        <span class="section-label reveal">Formation</span>
-        <h2 class="section-title reveal">Mon parcours</h2>
-        <p class="section-desc reveal">Du baccalauréat au cursus ingénieur, une progression constante vers les systèmes
-          et la cybersécurité.</p>
-      </div>
-
-      <div class="timeline">
-        <div class="timeline-item reveal">
-          <div class="timeline-dot"></div>
-          <div class="timeline-date">2026 – 2029</div>
-          <div class="timeline-title">Ingénieur Informatique &amp; Télécommunications — IMT Nord Europe</div>
-          <p class="timeline-desc">Admis au cursus ingénieur. Alternance 3 ans au rythme 2 semaines école / 5 semaines
-            entreprise. <strong>Recherche active d'une entreprise d'accueil.</strong></p>
-        </div>
-
-        <div class="timeline-item reveal reveal-d1">
-          <div class="timeline-dot"></div>
-          <div class="timeline-date">2023 – 2026</div>
-          <div class="timeline-title">BUT Informatique — Parcours DACS</div>
-          <p class="timeline-desc">IUT Nancy-Charlemagne. Spécialisation en déploiement et administration de systèmes et
-            réseaux communicants.</p>
-        </div>
-
-        <div class="timeline-item reveal reveal-d2">
-          <div class="timeline-dot"></div>
-          <div class="timeline-date">2023</div>
-          <div class="timeline-title">Baccalauréat — Mention Bien</div>
-          <p class="timeline-desc">Spécialités NSI, Mathématiques, section européenne allemand. Lycée Jean de Pange,
-            Sarreguemines.</p>
-        </div>
-
-        <div class="timeline-item reveal reveal-d3">
-          <div class="timeline-dot"></div>
-          <div class="timeline-date">2020</div>
-          <div class="timeline-title">Brevet — Mention Très Bien</div>
-          <p class="timeline-desc">Collège Himmelsberg, Sarreguemines.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══════════ EXPERIENCES ═══════════ -->
-  <section id="experiences" class="bg-alt" aria-label="Expériences professionnelles">
-    <div class="section-inner">
-      <div class="section-header">
-        <span class="section-label reveal">Expériences</span>
-        <h2 class="section-title reveal">Terrain &amp; professionnel</h2>
-        <p class="section-desc reveal">Stages, missions estivales et projets en conditions réelles.</p>
-      </div>
-
-      <div class="timeline">
-        <div class="timeline-item reveal">
-          <div class="timeline-dot"></div>
-          <div class="timeline-date">Avril 2026 — Juillet 2026</div>
-          <div class="timeline-title">Stage — ATE Val-de-Moder</div>
-          <p class="timeline-desc">Déploiement automatisé de postes Windows 11 et mise en production d'un serveur Linux
-            dédié à l'Intelligence Artificielle.</p>
-        </div>
-
-        <div class="timeline-item reveal reveal-d1">
-          <div class="timeline-dot"></div>
-          <div class="timeline-date">Juillet 2025 — Août 2025</div>
-          <div class="timeline-title">Saisonnier — CA Sarreguemines Confluence</div>
-          <p class="timeline-desc">Mission dans le service informatique de la communauté d'agglomération.</p>
-        </div>
-
-        <div class="timeline-item reveal reveal-d2">
-          <div class="timeline-dot"></div>
-          <div class="timeline-date">Février 2025 — Avril 2025</div>
-          <div class="timeline-title">Stage — CASC, Sarreguemines</div>
-          <p class="timeline-desc">Développement d'un tableau de bord pour GLPI avec Microsoft Access et SQL.
-            Automatisation des rapports de tickets IT.</p>
-          <a href="pdf/main.pdf" class="timeline-link"><i class="fas fa-file-pdf"></i> Voir le rapport de stage</a>
-        </div>
-
-        <div class="timeline-item reveal reveal-d3">
-          <div class="timeline-dot"></div>
-          <div class="timeline-date">Juillet 2024 — Août 2024</div>
-          <div class="timeline-title">Ouvrier d'usine — HR Pro Interim</div>
-          <p class="timeline-desc">Missions industrielles renforçant la rigueur, la discipline et la gestion du stress.
-          </p>
-        </div>
-
-        <div class="timeline-item reveal reveal-d4">
-          <div class="timeline-dot"></div>
-          <div class="timeline-date">Juillet 2023 — Août 2023</div>
-          <div class="timeline-title">Ouvrier spécialisé — TSG Baut, Allemagne</div>
-          <p class="timeline-desc">Projets de réparation de routes en Allemagne, développant le travail d'équipe et la
-            communication interculturelle en allemand.</p>
-        </div>
-
-        <div class="timeline-item reveal reveal-d4">
-          <div class="timeline-dot"></div>
-          <div class="timeline-date">Juillet 2022 — Août 2022</div>
-          <div class="timeline-title">Ouvrier spécialisé — TSG Baut, Allemagne</div>
-          <p class="timeline-desc">Projets de réparation de routes en Allemagne, développant le travail d'équipe et la
-            communication interculturelle en allemand.</p>
-        </div>
-      </div>
-
-      <div style="text-align:center;margin-top:52px;">
-        <a href="https://www.linkedin.com/in/luka-salvo-289b10291/" target="_blank" rel="noopener" class="btn-primary">
-          <i class="fab fa-linkedin"></i> Voir mon LinkedIn
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══════════ PROJECTS ═══════════ -->
-  <section id="work" aria-label="Projets">
-    <div class="section-inner">
-      <div class="section-header">
-        <span class="section-label reveal">Projets</span>
-        <h2 class="section-title reveal">Ce que j'ai construit</h2>
-        <p class="section-desc reveal">Des outils concrets, du code open source, et des projets académiques qui
-          reflètent mes passions.</p>
-      </div>
-
-      <div class="bento-grid">
-
-        <!-- 1 · OSINT MAX — wide (2 cols) -->
-        <div class="bento-card bento-wide">
-          <div class="bento-bg"><img src="img/OSINT_MAX.png" alt="" loading="lazy"></div>
-          <div class="bento-face">
-            <div class="bento-top">
-              <span class="bento-badge badge-perso">Personnel</span>
-              <span class="bento-glyph">🕵️</span>
-              <span class="bento-fig">Fig. 01</span>
-            </div>
-            <div class="bento-bottom">
-              <h3 class="bento-title">OSINT MAX</h3>
-              <div class="bento-chips">
-                <span class="bento-chip">HTML</span><span class="bento-chip">CSS</span><span
-                  class="bento-chip">Ruby</span><span class="bento-chip">OSINT</span>
-              </div>
-            </div>
-          </div>
-          <div class="bento-hover">
-            <div class="bento-hover-title">OSINT MAX</div>
-            <p class="bento-desc">Application web centralisant des dizaines d'outils OSINT en une interface unifiée :
-              recherche d'IP, WHOIS, réseaux sociaux, géolocalisation…</p>
-            <div class="bento-links">
-              <a href="https://github.com/LukaSalvo/OSINT_MAX" target="_blank" rel="noopener" class="bento-link"><i
-                  class="fab fa-github"></i> GitHub</a>
-            </div>
-          </div>
-        </div>
-
-        <!-- 2 · MAC Monitor -->
-        <div class="bento-card">
-          <div class="bento-bg"><img src="img/mac-Monitor.png" alt="" loading="lazy"></div>
-          <div class="bento-face">
-            <div class="bento-top">
-              <span class="bento-badge badge-perso">Personnel</span>
-              <span class="bento-glyph">📊</span>
-              <span class="bento-fig">Fig. 02</span>
-            </div>
-            <div class="bento-bottom">
-              <h3 class="bento-title">MAC Monitor</h3>
-              <div class="bento-chips">
-                <span class="bento-chip">Ruby</span><span class="bento-chip">GitHub Actions</span><span
-                  class="bento-chip">CI/CD</span>
-              </div>
-            </div>
-          </div>
-          <div class="bento-hover">
-            <div class="bento-hover-title">MAC Monitor</div>
-            <p class="bento-desc">Outil de monitoring système pour macOS &amp; Linux supervisant CPU, RAM, disque et
-              réseau avec pipeline CI/CD complet via GitHub Actions.</p>
-            <div class="bento-links">
-              <a href="https://github.com/LukaSalvo/mac-monitor" target="_blank" rel="noopener" class="bento-link"><i
-                  class="fab fa-github"></i> GitHub</a>
-            </div>
-          </div>
-        </div>
-
-        <!-- 3 · Tableau de bord GLPI -->
-        <div class="bento-card">
-          <div class="bento-bg"><img src="img/tableaudeBord1.png" alt="" loading="lazy"></div>
-          <div class="bento-face">
-            <div class="bento-top">
-              <span class="bento-badge badge-stage">Stage</span>
-              <span class="bento-fig">Fig. 03</span>
-            </div>
-            <div class="bento-bottom">
-              <h3 class="bento-title">Tableau de bord GLPI</h3>
-              <div class="bento-chips">
-                <span class="bento-chip">SQL</span><span class="bento-chip">Access</span>
-              </div>
-            </div>
-          </div>
-          <div class="bento-hover">
-            <div class="bento-hover-title">Tableau de bord GLPI</div>
-            <p class="bento-desc">Interface automatisée pour la gestion des tickets IT. Rapports et statistiques générés
-              depuis GLPI pour l'équipe informatique de la CASC.</p>
-            <div class="bento-links">
-              <a href="pdf/main.pdf" class="bento-link"><i class="fas fa-file-pdf"></i> Rapport</a>
-            </div>
-          </div>
-        </div>
-
-        <!-- 4 · Jeu de Labyrinthe -->
-        <div class="bento-card" style="--bento-grad:linear-gradient(135deg,#431407 0%,#9a3412 100%)">
-          <div class="bento-bg">
-            <video autoplay muted loop playsinline>
-              <source src="video/videoJeu.mp4" type="video/mp4">
-            </video>
-          </div>
-          <div class="bento-face">
-            <div class="bento-top">
-              <span class="bento-badge badge-acad">Académique</span>
-              <span class="bento-glyph">🎮</span>
-              <span class="bento-fig">Fig. 04</span>
-            </div>
-            <div class="bento-bottom">
-              <h3 class="bento-title">Jeu de Labyrinthe</h3>
-              <div class="bento-chips">
-                <span class="bento-chip">Java</span><span class="bento-chip">JavaFX</span>
-              </div>
-            </div>
-          </div>
-          <div class="bento-hover">
-            <div class="bento-hover-title">Jeu de Labyrinthe</div>
-            <p class="bento-desc">Application interactive développée en Java/JavaFX pour un projet académique SAE 2024.
-              Interface graphique intuitive avec génération de labyrinthes.</p>
-            <div class="bento-links">
-              <a href="https://github.com/LukaSalvo/SAE2024" target="_blank" rel="noopener" class="bento-link"><i
-                  class="fab fa-github"></i> GitHub</a>
-            </div>
-          </div>
-        </div>
-
-        <!-- 5 · Site Web Sécurisé -->
-        <div class="bento-card">
-          <div class="bento-bg"><img src="img/NRVProject.png" alt="" loading="lazy"></div>
-          <div class="bento-face">
-            <div class="bento-top">
-              <span class="bento-badge badge-acad">Académique</span>
-              <span class="bento-fig">Fig. 05</span>
-            </div>
-            <div class="bento-bottom">
-              <h3 class="bento-title">Site Web Sécurisé</h3>
-              <div class="bento-chips">
-                <span class="bento-chip">PHP</span><span class="bento-chip">HTML/CSS</span><span
-                  class="bento-chip">Sécurité</span>
-              </div>
-            </div>
-          </div>
-          <div class="bento-hover">
-            <div class="bento-hover-title">Site Web Sécurisé</div>
-            <p class="bento-desc">Site web intégrant des pratiques de sécurité avancées : chiffrement, validation des
-              entrées, protection contre les attaques courantes (XSS, SQLi…).</p>
-            <div class="bento-links">
-              <a href="https://github.com/LukaSalvo/NRVProjet" target="_blank" rel="noopener" class="bento-link"><i
-                  class="fab fa-github"></i> GitHub</a>
-            </div>
-          </div>
-        </div>
-
-        <!-- 6 · Générateur de diagramme de classe — wide -->
-        <div class="bento-card bento-wide">
-          <div class="bento-bg"><img src="img/DiagrammeClasse.png" alt="" loading="lazy"></div>
-          <div class="bento-face">
-            <div class="bento-top">
-              <span class="bento-badge badge-acad">Académique</span>
-              <span class="bento-fig">Fig. 06</span>
-            </div>
-            <div class="bento-bottom">
-              <h3 class="bento-title">Générateur de diagramme de classe</h3>
-              <div class="bento-chips">
-                <span class="bento-chip">Java</span><span class="bento-chip">JavaFX</span><span
-                  class="bento-chip">UML</span>
-              </div>
-            </div>
-          </div>
-          <div class="bento-hover">
-            <div class="bento-hover-title">Générateur de diagramme de classe</div>
-            <p class="bento-desc">Application Java/JavaFX qui génère automatiquement des diagrammes de classe UML à
-              partir de fichiers .class compilés.</p>
-            <div class="bento-links">
-              <a href="https://github.com/NathanEyer/SAE_3.01_DiagrammesClasse" target="_blank" rel="noopener"
-                class="bento-link"><i class="fab fa-github"></i> GitHub</a>
-            </div>
-          </div>
-        </div>
-
-        <!-- 7 · Shell mbash — wide -->
-        <div class="bento-card bento-wide">
-          <div class="bento-bg"><img src="img/mbash.png" alt="" loading="lazy"></div>
-          <div class="bento-face">
-            <div class="bento-top">
-              <span class="bento-badge badge-acad">Académique</span>
-              <span class="bento-glyph">🖥️</span>
-              <span class="bento-fig">Fig. 07</span>
-            </div>
-            <div class="bento-bottom">
-              <h3 class="bento-title">Shell mbash</h3>
-              <div class="bento-chips">
-                <span class="bento-chip">C</span><span class="bento-chip">Unix</span><span
-                  class="bento-chip">Système</span>
-              </div>
-            </div>
-          </div>
-          <div class="bento-hover">
-            <div class="bento-hover-title">Shell mbash</div>
-            <p class="bento-desc">Terminal de commande personnalisé développé en C dans le cadre d'une SAE, avec les
-              commandes de base d'un shell Unix.</p>
-            <div class="bento-links">
-              <a href="https://github.com/LukaSalvo/SAESysteme" target="_blank" rel="noopener" class="bento-link"><i
-                  class="fab fa-github"></i> GitHub</a>
-              <a href="pdf/Rapport SAE 3.03 Carette Salvo.pdf" class="bento-link"><i class="fas fa-file-pdf"></i>
-                Rapport</a>
-            </div>
-          </div>
-        </div>
-
-
-        <div class="bento-card" style="--bento-grad:linear-gradient(135deg,#0D1A12 0%,#2D6A4F 100%)">
-          <div class="bento-bg"></div>
-          <div class="bento-face">
-            <div class="bento-top">
-              <span class="bento-badge badge-perso">Personnel</span>
-              <span class="bento-glyph">💰</span>
-              <span class="bento-fig">Fig. 08</span>
-            </div>
-            <div class="bento-bottom">
-              <h3 class="bento-title">BUDGETTE</h3>
-              <div class="bento-chips">
-                <span class="bento-chip">Python</span><span class="bento-chip">HTML / CSS / JS</span><span
-                  class="bento-chip">IA</span>
-              </div>
-            </div>
-          </div>
-          <div class="bento-hover">
-            <div class="bento-hover-title">BUDGETTE</div>
-            <p class="bento-desc">Application web de projection et de gestion de budget avec des simulations en cours de développement</p>
-            <div class="bento-links">
-              <a href="https://github.com/LukaSalvo/budgette" target="_blank" rel="noopener" class="bento-link"><i
-                  class="fab fa-github"></i> GitHub</a>
-            </div>
-          </div>
-        </div>
-
-        <!-- 8 · Portfolio -->
-        <div class="bento-card">
-          <div class="bento-bg"><img src="img/SiteWeb.png" alt="" loading="lazy"></div>
-          <div class="bento-face">
-            <div class="bento-top">
-              <span class="bento-badge badge-perso">Personnel</span>
-              <span class="bento-fig">Fig. 09</span>
-            </div>
-            <div class="bento-bottom">
-              <h3 class="bento-title">Portfolio</h3>
-              <div class="bento-chips">
-                <span class="bento-chip">HTML</span><span class="bento-chip">CSS</span><span
-                  class="bento-chip">JS</span>
-              </div>
-            </div>
-          </div>
-          <div class="bento-hover">
-            <div class="bento-hover-title">Portfolio</div>
-            <p class="bento-desc">Ce portfolio — site web vitrine avec animations GSAP, terminal interactif, thème
-              sombre/clair et easter egg caché.</p>
-            <div class="bento-links">
-              <a href="https://github.com/LukaSalvo/Portfolio" target="_blank" rel="noopener" class="bento-link"><i
-                  class="fab fa-github"></i> GitHub</a>
-            </div>
-          </div>
-        </div>
-
-      </div><!-- /bento-grid -->
-    </div>
-  </section>
-
-  <!-- ═══════════ CONTACT ═══════════ -->
-  <section id="contact" class="bg-alt" aria-label="Contact">
-    <!-- Fond rubans lumineux WebGL — voir strands.js -->
-    <div class="contact-strands" id="contactStrands" aria-hidden="true"></div>
-    <div class="section-inner">
-      <div class="contact-center">
-        <span class="section-label reveal">Contact</span>
-        <h2 class="contact-big">Travaillons ensemble.</h2>
-        <p class="contact-sub reveal">
-          Disponible pour une <strong>alternance 3 ans à partir de septembre 2026</strong>
-          (IMT Nord Europe, rythme 2 sem. école / 5 sem. entreprise).
-          N'hésitez pas à me contacter !
-        </p>
-
-        <div class="contact-links reveal">
-          <a href="https://www.linkedin.com/in/luka-salvo-289b10291/" target="_blank" rel="noopener"
-            class="contact-link">
-            <i class="fab fa-linkedin"></i> LinkedIn
-          </a>
-          <a href="https://github.com/LukaSalvo" target="_blank" rel="noopener" class="contact-link">
-            <i class="fab fa-github"></i> GitHub
-          </a>
-          <a href="mailto:luka.salvo23@gmail.com" class="contact-link">
-            <i class="fas fa-envelope"></i> Email
-          </a>
-        </div>
-
-        <a href="pdf/CV_Luka_Salvo.pdf" download class="btn-primary reveal">
-          <i class="fas fa-download"></i> Télécharger mon CV
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══════════ TERMINAL INTERACTIF ═══════════ -->
-  <section id="terminal" class="terminal-section" aria-label="Terminal interactif">
-    <div class="section-inner">
-      <div class="section-header" style="text-align:center">
-        <span class="section-label reveal" style="display:block;text-align:center">Fun</span>
-        <h2 class="section-title reveal" style="text-align:center">Terminal interactif</h2>
-        <p class="section-desc reveal" style="margin:0 auto;text-align:center">
-          Tape <code style="color:var(--accent);font-family:monospace">ls</code> pour lister les sections,
-          <code style="color:var(--accent);font-family:monospace">cd A propos</code> pour naviguer,
-          ou <code style="color:var(--accent);font-family:monospace">help</code> pour la liste des commandes.
-        </p>
-      </div>
-
-      <div class="interactive-terminal reveal">
-        <div class="terminal-header">
-          <div class="terminal-dot red"></div>
-          <div class="terminal-dot yellow"></div>
-          <div class="terminal-dot green"></div>
-          <div class="terminal-window-title">luka@portfolio — terminal interactif</div>
-        </div>
-        <div class="terminal-body-interactive" id="terminal-interactive-output"></div>
-        <div class="terminal-input-row">
-          <span class="terminal-ps">$</span>
-          <input id="terminal-input" type="text" placeholder="Tapez une commande..." autocomplete="off"
-            spellcheck="false">
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══════════ FOOTER ═══════════ TEST -->
-  <footer aria-label="Pied de page">
-    <div class="footer-inner">
-      <div class="footer-top">
-        <div class="footer-brand">
-          <a href="#" class="footer-logo-link">Luka <span>Salvo</span></a>
-          <p class="footer-tagline">Admin Sys · Cybersécurité · DevOps</p>
-        </div>
-        <div class="footer-right">
-          <nav class="footer-nav" aria-label="Navigation footer">
-            <a href="#about" class="footer-nav-link">À propos</a>
-            <a href="#skills" class="footer-nav-link">Compétences</a>
-            <a href="#work" class="footer-nav-link">Projets</a>
-            <a href="#contact" class="footer-nav-link">Contact</a>
-          </nav>
-          <div class="footer-socials">
-            <a href="https://www.linkedin.com/in/luka-salvo-289b10291/" target="_blank" rel="noopener" class="footer-icon-btn" aria-label="LinkedIn">
-              <i class="fab fa-linkedin"></i>
-            </a>
-            <a href="https://github.com/LukaSalvo" target="_blank" rel="noopener" class="footer-icon-btn" aria-label="GitHub">
-              <i class="fab fa-github"></i>
-            </a>
-            <a href="mailto:luka.salvo23@gmail.com" class="footer-icon-btn" aria-label="Email">
-              <i class="fas fa-envelope"></i>
-            </a>
-            <a href="pdf/CV_Luka_Salvo.pdf" download class="footer-icon-btn" aria-label="Télécharger le CV">
-              <i class="fas fa-download"></i>
-            </a>
-          </div>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <p class="footer-copy">© 2026 Luka Salvo — Tous droits réservés.</p>
-        <button class="back-to-top" id="back-to-top" aria-label="Retour en haut de page">
-          <i class="fas fa-arrow-up"></i>
-        </button>
+  <!-- ============ CONTACT ============ -->
+  <footer class="contact" id="contact">
+    <p class="contact__eyebrow reveal">Un projet, une question ?</p>
+    <a href="mailto:luka.salvo23@gmail.com" class="contact__mail" id="contactMail" data-cursor="Écrire">
+      <span class="contact__mailtext">luka.salvo23<br class="contact__break" />@gmail.com</span>
+    </a>
+    <a href="pdf/CV_Luka_Salvo.pdf" download class="contact__cv" data-cursor="CV">Télécharger mon CV ↓</a>
+    <div class="contact__bottom">
+      <span>© 2026 Luka Salvo</span>
+      <div class="contact__socials">
+        <a href="https://github.com/LukaSalvo" target="_blank" rel="noopener" data-hover>GitHub</a>
+        <a href="https://www.linkedin.com/in/luka-salvo-289b10291/" target="_blank" rel="noopener" data-hover>LinkedIn</a>
+        <a href="https://www.credly.com/users/luka-salvo" target="_blank" rel="noopener" data-hover>Credly</a>
       </div>
     </div>
   </footer>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <script src="script.js"></script>
-  <script src="galaxy.js"></script>
-  <script src="strands.js"></script>
-  <script src="truefocus.js"></script>
 </body>
-
 </html>

@@ -1,1894 +1,227 @@
 /* ============================================================
-   THEME
+   Portfolio Luka Salvo — interactions
+   1. Hero "Hover members" : texte animé lettre à lettre
+   2. Curseur personnalisé avec label
+   3. Focus parallax au scroll
+   4. Projets ExpandOnHover vertical
+   5. Compétences extensibles (accordéon)
+   6. Apparition des sections au scroll
    ============================================================ */
-(function () {
-  const saved = localStorage.getItem('theme');
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  if (saved === 'light') {
-    document.documentElement.classList.remove('dark');
-  } else if (!saved && !prefersDark) {
-    document.documentElement.classList.remove('dark');
-  }
-})();
 
-document.addEventListener('DOMContentLoaded', () => {
+const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
 
-  gsap.registerPlugin(ScrollTrigger);
+/* ---------- 1. Hero : texte animé lettre par lettre ---------- */
+const heroTitle = document.getElementById("heroTitle");
+const defaultName = heroTitle.textContent.trim();
+let currentName = defaultName;
+let swapTimeout = null;
 
-  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+function renderChars(text) {
+  heroTitle.innerHTML = "";
+  [...text].forEach((ch, i) => {
+    const span = document.createElement("span");
+    span.className = "char";
+    span.style.setProperty("--i", i);
+    span.textContent = ch === " " ? " " : ch;
+    heroTitle.appendChild(span);
+  });
+}
 
-  /* ----------------------------------------------------------
-     ADAPTIVE VELOCITY
-     ---------------------------------------------------------- */
-  let _vel = 0;
-  let _lastY = window.scrollY;
-  let _lastT = Date.now();
-  window.addEventListener('scroll', () => {
-    const now = Date.now();
-    const dt  = now - _lastT;
-    if (dt > 0) _vel = Math.abs(window.scrollY - _lastY) / dt * 1000;
-    _lastY = window.scrollY;
-    _lastT = now;
-  }, { passive: true });
+function swapName(newName) {
+  if (newName === currentName) return;
+  currentName = newName;
 
-  function getVel() { return _vel; }
-  function dur(normal) {
-    const v = getVel();
-    if (v > 1200) return 0.08;
-    if (v >  500) return Math.max(0.08, normal * 0.45);
-    return normal;
-  }
-  function del(normal) {
-    return getVel() > 500 ? 0 : normal;
-  }
-  function stag(normal) {
-    const v = getVel();
-    if (v > 1200) return 0;
-    if (v >  500) return normal * 0.3;
-    return normal;
+  if (prefersReducedMotion) {
+    renderChars(newName);
+    return;
   }
 
-  /* ----------------------------------------------------------
-     INTRO SCREEN
-     ---------------------------------------------------------- */
-  (function initIntro() {
-    const intro = document.getElementById('intro-screen');
-    if (!intro) return;
-    if (reduced) { intro.remove(); return; }
-    document.documentElement.style.overflow = 'hidden';
+  const chars = heroTitle.querySelectorAll(".char");
+  chars.forEach((c) => c.classList.add("out"));
 
-    gsap.set('.intro-c1, .intro-c2, .intro-c3', { y: 90 });
-    gsap.set('.intro-name',    { y: 34, clipPath: 'inset(100% 0 -12% 0)' });
-    gsap.set('.intro-eyebrow', { y: 12 });
+  clearTimeout(swapTimeout);
+  const outDuration = 350 + chars.length * 18;
+  swapTimeout = setTimeout(() => {
+    renderChars(currentName);
+  }, Math.min(outDuration, 500));
+}
 
-    /* Boot sequence — lignes systemd avant la révélation */
-    const BOOT_LINES = [
-      ['ok',     'Mounted /home/luka/portfolio'],
-      ['ok',     'Started luka.service — Admin Sys · Cyber · DevOps'],
-      ['ok',     'Loaded modules: linux docker gcp tryhackme'],
-      ['ok',     'Network online — eth0: alternance @ sept. 2026'],
-      ['target', 'Reached target: Portfolio — Luka Salvo'],
-    ];
-    const boot = document.createElement('div');
-    boot.className = 'intro-boot';
-    boot.setAttribute('aria-hidden', 'true');
-    intro.appendChild(boot);
-    BOOT_LINES.forEach(([type, text], i) => {
-      setTimeout(() => {
-        if (dismissed || !boot.isConnected) return;
-        const d = document.createElement('div');
-        d.className = 'intro-boot-line' + (type === 'target' ? ' is-target' : '');
-        d.innerHTML = (type === 'ok' ? '<span class="intro-boot-ok">[&nbsp;&nbsp;OK&nbsp;&nbsp;]</span> ' : '') + text;
-        boot.appendChild(d);
-      }, 120 + i * 210);
+renderChars(defaultName);
+
+document.querySelectorAll(".member").forEach((member) => {
+  const show = () => {
+    heroTitle.classList.add("is-hovering");
+    swapName(member.dataset.name);
+  };
+  const hide = () => {
+    heroTitle.classList.remove("is-hovering");
+    swapName(defaultName);
+  };
+  member.addEventListener("mouseenter", show);
+  member.addEventListener("focus", show);
+  member.addEventListener("mouseleave", hide);
+  member.addEventListener("blur", hide);
+  // Clic : navigation vers la section projets
+  member.addEventListener("click", () => {
+    const target = document.querySelector(member.dataset.target || "#projets");
+    if (target) target.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth" });
+  });
+});
+
+/* ---------- 2. Curseur personnalisé ---------- */
+const cursor = document.getElementById("cursor");
+const cursorLabel = document.getElementById("cursorLabel");
+
+function bindCursorTargets() {
+  document.querySelectorAll("[data-cursor]").forEach((el) => {
+    if (el.dataset.cursorBound) return;
+    el.dataset.cursorBound = "1";
+    el.addEventListener("mouseenter", () => {
+      cursorLabel.textContent = el.dataset.cursor;
+      cursor.classList.add("is-active");
     });
-    gsap.to(boot, { opacity: 0, duration: 0.35, delay: 1.6, onComplete: () => boot.remove() });
+    el.addEventListener("mouseleave", () => cursor.classList.remove("is-active"));
+  });
+  document.querySelectorAll("[data-hover]").forEach((el) => {
+    if (el.dataset.cursorBound) return;
+    el.dataset.cursorBound = "1";
+    el.addEventListener("mouseenter", () => {
+      cursorLabel.textContent = "";
+      cursor.classList.add("is-active");
+      cursor.style.width = "40px";
+      cursor.style.height = "40px";
+    });
+    el.addEventListener("mouseleave", () => {
+      cursor.classList.remove("is-active");
+      cursor.style.width = "";
+      cursor.style.height = "";
+    });
+  });
+}
 
-    const tl = gsap.timeline({ delay: 1.5 });
-    tl.to('.intro-c2', { opacity: 1, y: 0, duration: 0.85, ease: 'expo.out' }, 0.1)
-      .to('.intro-c1', { opacity: 1, y: 0, duration: 0.95, ease: 'expo.out' }, 0.28)
-      .to('.intro-c3', { opacity: 1, y: 0, duration: 0.85, ease: 'expo.out' }, 0.44)
-      .to('.intro-eyebrow', { opacity: 1, y: 0, duration: 0.55, ease: 'power3.out' }, 0.55)
-      .to('.intro-name',    { opacity: 1, y: 0, clipPath: 'inset(0% 0 -12% 0)', duration: 0.90, ease: 'expo.out' }, 0.66)
-      .to('.intro-role',    { opacity: 1,        duration: 0.50, ease: 'power2.out' }, 0.98)
-      .to('.intro-hint',    { opacity: 1,        duration: 0.45, ease: 'power2.out' }, 1.45);
-
-    tl.call(() => {
-      gsap.to('.intro-c1', { y: -14, duration: 2.5, ease: 'sine.inOut', repeat: -1, yoyo: true });
-      gsap.to('.intro-c2', { y: -9,  duration: 3.1, ease: 'sine.inOut', repeat: -1, yoyo: true, delay: 0.5 });
-      gsap.to('.intro-c3', { y: -11, duration: 2.8, ease: 'sine.inOut', repeat: -1, yoyo: true, delay: 1.0 });
-    }, null, 1.6);
-
-    let dismissed = false;
-    function dismiss() {
-      if (dismissed) return;
-      dismissed = true;
-      gsap.killTweensOf('.intro-c1, .intro-c2, .intro-c3');
-      gsap.to('.intro-c2', { x: -160, y: 380, rotate: -22, opacity: 0, duration: 0.55, ease: 'power3.in' });
-      gsap.to('.intro-c1', { y: 280, scale: 0.88, opacity: 0, duration: 0.48, ease: 'power3.in', delay: 0.07 });
-      gsap.to('.intro-c3', { x: 160, y: 340, rotate: 20, opacity: 0, duration: 0.55, ease: 'power3.in', delay: 0.12 });
-      gsap.to('.intro-text, .intro-hint', { opacity: 0, y: -18, duration: 0.32, ease: 'power2.in' });
-      gsap.to('#intro-screen', {
-        y: '-100%', duration: 0.88, ease: 'power3.inOut', delay: 0.30,
-        onStart: () => { document.documentElement.style.overflow = ''; },
-        onComplete: () => { intro.remove(); }
-      });
-    }
-
-    intro.addEventListener('click',      dismiss, { once: true });
-    intro.addEventListener('touchstart', dismiss, { once: true, passive: true });
-    window.addEventListener('wheel',     () => { if (!dismissed) dismiss(); }, { once: true, passive: true });
-    document.addEventListener('keydown', e => {
-      if (['ArrowDown', ' ', 'Enter', 'PageDown'].includes(e.key)) { e.preventDefault(); dismiss(); }
-    }, { once: true });
-    setTimeout(dismiss, 11500);
+if (finePointer) {
+  let mouseX = 0, mouseY = 0, curX = 0, curY = 0;
+  window.addEventListener("mousemove", (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+  });
+  (function animateCursor() {
+    curX += (mouseX - curX) * 0.18;
+    curY += (mouseY - curY) * 0.18;
+    cursor.style.transform = `translate(${curX}px, ${curY}px) translate(-50%, -50%)`;
+    requestAnimationFrame(animateCursor);
   })();
+  bindCursorTargets();
+}
 
-  /* ----------------------------------------------------------
-     THEME TOGGLE
-     ---------------------------------------------------------- */
-  const themeToggle = document.getElementById('theme-toggle');
-  const themeIcon   = document.getElementById('theme-icon');
-  const html        = document.documentElement;
+/* ---------- 3. Focus : parallax cinématique au scroll ----------
+   Progression 0 → 1 sur la hauteur de la section :
+   - le clip-path passe d'un petit cadre arrondi à plein écran
+   - l'image dé-zoome (1.4 → 1)
+   - le titre s'éloigne et disparaît                             */
+const showreel = document.querySelector(".showreel");
+const showreelFrame = document.getElementById("showreelFrame");
+const showreelImg = document.getElementById("showreelImg");
+const showreelTitle = document.getElementById("showreelTitle");
 
-  function syncThemeIcon() {
-    if (!themeIcon) return;
-    themeIcon.className = html.classList.contains('dark') ? 'fas fa-sun' : 'fas fa-moon';
-  }
-  syncThemeIcon();
+const lerp = (a, b, t) => a + (b - a) * t;
+const clamp01 = (v) => Math.min(1, Math.max(0, v));
+// Easing douce pour un rendu cinématique
+const easeInOut = (t) => t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
 
-  function syncThemeColorMeta() {
-    // Les deux <meta theme-color> ont un attribut media (OS) : on force le même
-    // contenu sur les deux pour que le choix manuel prime sur la préférence système.
-    const isDark = html.classList.contains('dark');
-    document.querySelectorAll('meta[name="theme-color"]').forEach(m => {
-      m.content = isDark ? '#0D1A12' : '#F5F0E6';
-    });
-  }
-  syncThemeColorMeta();
+function updateShowreel() {
+  const rect = showreel.getBoundingClientRect();
+  const total = rect.height - window.innerHeight;
+  const raw = clamp01(-rect.top / total);
+  const p = easeInOut(raw);
 
-  function applyTheme() {
-    html.classList.toggle('dark');
-    localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
-    syncThemeIcon();
-    syncThemeColorMeta();
-  }
+  // Cadre : inset 38% -> 0%, rayon 24px -> 0
+  showreelFrame.style.setProperty("--clip-x", lerp(38, 0, p) + "%");
+  showreelFrame.style.setProperty("--clip-y", lerp(38, 0, p) + "%");
+  showreelFrame.style.setProperty("--clip-r", lerp(24, 0, p) + "px");
 
-  themeToggle?.addEventListener('click', () => {
-    /* Révélation circulaire depuis le bouton (View Transitions API, fallback direct) */
-    if (!document.startViewTransition || reduced) { applyTheme(); return; }
-    const r = themeToggle.getBoundingClientRect();
-    const cx = r.left + r.width / 2;
-    const cy = r.top + r.height / 2;
-    const radius = Math.hypot(
-      Math.max(cx, window.innerWidth - cx),
-      Math.max(cy, window.innerHeight - cy)
-    );
-    document.startViewTransition(applyTheme).ready.then(() => {
-      document.documentElement.animate(
-        { clipPath: [`circle(0px at ${cx}px ${cy}px)`, `circle(${radius}px at ${cx}px ${cy}px)`] },
-        { duration: 480, easing: 'cubic-bezier(0.4,0,0.2,1)', pseudoElement: '::view-transition-new(root)' }
-      );
-    });
-  });
+  // Image : dé-zoom progressif
+  showreelImg.style.setProperty("--img-scale", lerp(1.4, 1, p));
 
-  /* Suit le thème système tant que l'utilisateur n'a pas choisi manuellement */
-  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-    if (localStorage.getItem('theme')) return;
-    html.classList.toggle('dark', e.matches);
-    syncThemeIcon();
-    syncThemeColorMeta();
-  });
+  // Titre : monte, rétrécit et s'efface sur la première moitié
+  const t = clamp01(raw * 2);
+  showreelTitle.style.setProperty("--title-o", 1 - t);
+  showreelTitle.style.setProperty("--title-y", -t * 120 + "px");
+  showreelTitle.style.setProperty("--title-s", lerp(1, 0.85, t));
+}
 
-  /* ----------------------------------------------------------
-     HAMBURGER
-     ---------------------------------------------------------- */
-  const hamburger     = document.getElementById('hamburger');
-  const hamburgerIcon = document.getElementById('hamburger-icon');
-  const navLinks      = document.getElementById('nav-links');
-
-  hamburger?.addEventListener('click', () => {
-    navLinks.classList.toggle('active');
-    if (hamburgerIcon) {
-      hamburgerIcon.className = navLinks.classList.contains('active') ? 'fas fa-times' : 'fas fa-bars';
-    }
-  });
-  navLinks?.querySelectorAll('a').forEach(a => {
-    a.addEventListener('click', () => {
-      navLinks.classList.remove('active');
-      if (hamburgerIcon) hamburgerIcon.className = 'fas fa-bars';
-    });
-  });
-
-  /* ----------------------------------------------------------
-     ANCHOR SMOOTH SCROLL
-     ---------------------------------------------------------- */
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', e => {
-      const href = anchor.getAttribute('href');
-      if (href === '#') { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
-      const target = document.querySelector(href);
-      if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
-    });
-  });
-
-  /* ----------------------------------------------------------
-     SCROLL PROGRESS BAR
-     ---------------------------------------------------------- */
-  const scrollBar = document.getElementById('scroll-progress');
-  window.addEventListener('scroll', () => {
-    if (!scrollBar) return;
-    const pct = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight) * 100;
-    scrollBar.style.width = pct + '%';
-  }, { passive: true });
-
-  /* ----------------------------------------------------------
-     HERO — GSAP entrance
-     ---------------------------------------------------------- */
-  const HERO_SEL = [
-    '.hero-available',
-    '.hero-eyebrow', '.hero-title', '.hero-subtitle',
-    '.hero-desc', '.hero-tags', '.hero-cta',
-    '.hero-scroll', '.hero-stats'
-  ];
-  HERO_SEL.forEach(sel => {
-    const el = document.querySelector(sel);
-    if (el) { el.style.animation = 'none'; el.style.opacity = '0'; }
-  });
-
-  if (!reduced) {
-    const heroTl = gsap.timeline({ delay: 0.1 });
-    heroTl
-      /* Tampon encreur — il se "tamponne" sur la page */
-      .fromTo('.hero-available',
-        { opacity: 0, scale: 1.7, rotate: 7 },
-        { opacity: 1, scale: 1, rotate: -2.5, duration: 0.45, ease: 'back.out(2.5)' }, 0.05)
-      .fromTo('.hero-eyebrow',  { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6,  ease: 'power3.out' }, 0)
-      /* Titre — révélation à l'encre, le texte monte hors de la ligne */
-      .fromTo('.hero-title',
-        { opacity: 1, y: 36, clipPath: 'inset(100% 0 -10% 0)' },
-        { y: 0, clipPath: 'inset(0% 0 -10% 0)', duration: 0.95, ease: 'expo.out' }, 0.12)
-      .fromTo('.hero-subtitle', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6,  ease: 'power3.out' }, 0.28)
-      .fromTo('.hero-desc',     { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.6,  ease: 'power3.out' }, 0.4)
-      .fromTo('.hero-tags',     { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.5,  ease: 'power3.out' }, 0.52)
-      .fromTo('.hero-cta',      { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.5,  ease: 'power3.out' }, 0.62)
-      .fromTo('.hero-scroll',   { opacity: 0 },        { opacity: 1, duration: 0.5 },                            0.85)
-      .fromTo('.hero-stats',    { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5,  ease: 'power3.out' }, 0.8);
-
-  } else {
-    HERO_SEL.forEach(sel => {
-      const el = document.querySelector(sel);
-      if (el) { el.style.opacity = '1'; el.style.transform = 'none'; }
-    });
-  }
-
-  /* ----------------------------------------------------------
-     WORD SPLIT REVEAL — section titles
-     ---------------------------------------------------------- */
-  function initWordReveal() {
-    document.querySelectorAll('.section-title').forEach(el => {
-      if (el.dataset.split) return;
-      if (el.closest('#skills')) {
-        el.style.opacity = '1'; el.style.transform = 'none'; return;
-      }
-      el.dataset.split = '1';
-      el.classList.remove('reveal');
-      el.style.opacity = '1';
-      el.style.transform = 'none';
-      const words = el.textContent.trim().split(' ');
-      el.innerHTML = words.map(w => `<span class="word-wrap"><span class="word">${w}</span></span>`).join(' ');
-      const wordSpans = el.querySelectorAll('.word');
-      gsap.set(wordSpans, { y: '110%', rotate: 2 });
-      ScrollTrigger.create({
-        trigger: el, start: 'top 90%', once: true,
-        onEnter: () => {
-          gsap.to(wordSpans, {
-            y: 0, rotate: 0,
-            duration: dur(0.55), ease: 'expo.out', stagger: stag(0.05),
-            onComplete: () => el.classList.add('words-revealed')
-          });
-        }
-      });
-    });
-  }
-  initWordReveal();
-
-  /* ----------------------------------------------------------
-     SECTION LABEL SCRAMBLE
-     ---------------------------------------------------------- */
-  const SCRAMBLE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ•·—';
-  function scrambleEl(el) {
-    const final = el.dataset.original || el.textContent;
-    el.dataset.original = final;
-    let frame = 0;
-    const TOTAL = 16;
-    const iv = setInterval(() => {
-      const p = frame / TOTAL;
-      el.textContent = final.split('').map((ch, i) =>
-        i / final.length < p ? ch : SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)]
-      ).join('');
-      if (++frame > TOTAL) { clearInterval(iv); el.textContent = final; }
-    }, 38);
-  }
-  document.querySelectorAll('.section-label').forEach(el => {
-    if (el.closest('#skills')) return;
-    ScrollTrigger.create({
-      trigger: el, start: 'top 92%', once: true,
-      onEnter: () => setTimeout(() => scrambleEl(el), getVel() > 500 ? 0 : 80)
-    });
-  });
-
-  /* Skill cards — pas d'animation de scroll, visibles directement */
-
-  /* ----------------------------------------------------------
-     PROJETS — CADRAN ROTATIF façon téléphone fixe
-     Construit depuis les cartes bento existantes (zéro duplication).
-     Desktop uniquement ; la grille reste le fallback mobile/reduced.
-     ---------------------------------------------------------- */
-  let rotaryIsDefault = false;
-  (function initRotaryProjects() {
-    const work = document.getElementById('work');
-    const grid = work?.querySelector('.bento-grid');
-    if (!work || !grid || reduced || window.innerWidth < 900) return;
-
-    const srcCards = [...grid.querySelectorAll('.bento-card')];
-    if (srcCards.length < 3) return;
-    const projects = srcCards.map(card => ({
-      title: (card.querySelector('.bento-hover-title') || card.querySelector('.bento-title'))?.textContent.trim() || '',
-      desc:  card.querySelector('.bento-desc')?.textContent.trim() || '',
-      chips: [...card.querySelectorAll('.bento-chip')].map(c => c.textContent.trim()),
-      badge: card.querySelector('.bento-badge'),
-      glyph: card.querySelector('.bento-glyph')?.textContent.trim() || '',
-      links: [...card.querySelectorAll('.bento-link')],
-      media: card.querySelector('.bento-bg img, .bento-bg video'),
-      grad:  card.style.getPropertyValue('--bento-grad').trim()
-    }));
-    const N = projects.length;
-    const STEP = 360 / N;
-
-    /* — DOM — */
-    const wrap = document.createElement('div');
-    wrap.className = 'rotary-wrap reveal';
-    wrap.innerHTML = `
-      <div class="rotary-col">
-        <div class="rotary-stage" tabindex="0" role="group"
-          aria-label="Cadran de navigation des projets — utilisez les flèches pour tourner">
-          <div class="rotary-dial"></div>
-          <div class="rotary-center">
-            <div class="rotary-center-glyph"></div>
-            <div class="rotary-center-index"></div>
-            <div class="rotary-center-label">Projets</div>
-          </div>
-          <div class="rotary-marker" aria-hidden="true"></div>
-        </div>
-        <p class="rotary-hint">⟲ Glisse pour composer · molette · flèches · clique un numéro</p>
-      </div>
-      <div class="rotary-detail">
-        <div class="terminal-header">
-          <div class="terminal-dot red"></div>
-          <div class="terminal-dot yellow"></div>
-          <div class="terminal-dot green"></div>
-          <div class="terminal-window-title rotary-detail-path"></div>
-        </div>
-        <div class="rotary-detail-media"></div>
-        <div class="rotary-detail-body" aria-live="polite"></div>
-      </div>`;
-    grid.parentNode.insertBefore(wrap, grid);
-
-    const stage       = wrap.querySelector('.rotary-stage');
-    const dial        = wrap.querySelector('.rotary-dial');
-    const centerGlyph = wrap.querySelector('.rotary-center-glyph');
-    const centerIndex = wrap.querySelector('.rotary-center-index');
-    const detailPath  = wrap.querySelector('.rotary-detail-path');
-    const detailMedia = wrap.querySelector('.rotary-detail-media');
-    const detailBody  = wrap.querySelector('.rotary-detail-body');
-
-    const holes = projects.map((p, i) => {
-      const b = document.createElement('button');
-      b.type = 'button';
-      b.className = 'rotary-hole';
-      b.setAttribute('aria-label', `Projet ${i + 1} : ${p.title}`);
-      b.innerHTML = `<span>${String(i + 1).padStart(2, '0')}</span>`;
-      dial.appendChild(b);
-      return b;
-    });
-    const labels = holes.map(h => h.firstChild);
-
-    /* — Rotation : le cadran tourne, les numéros restent droits — */
-    const state = { v: 0 };
-    let R = 0;
-    function applyRotation(v) {
-      state.v = v;
-      dial.style.transform = `rotate(${v}deg)`;
-      labels.forEach((s, i) => { s.style.transform = `rotate(${-(i * STEP + v)}deg)`; });
-    }
-    function layout() {
-      R = dial.offsetWidth / 2 - holes[0].offsetWidth / 2 - 14;
-      holes.forEach((h, i) => { h.style.transform = `rotate(${i * STEP}deg) translate(0, ${-R}px)`; });
-      applyRotation(state.v);
-    }
-
-    function slugify(s) {
-      return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-        .replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-    }
-
-    function renderDetail(i, animate) {
-      const p = projects[i];
-      detailPath.textContent = `luka@portfolio — ~/projets/${slugify(p.title)}`;
-      detailMedia.innerHTML = '';
-      if (p.media) {
-        const m = p.media.cloneNode(true);
-        if (m.tagName === 'VIDEO') { m.muted = true; m.autoplay = true; m.loop = true; m.playsInline = true; m.play?.(); }
-        detailMedia.appendChild(m);
-      } else {
-        const g = document.createElement('div');
-        g.className = 'rotary-media-grad';
-        if (p.grad) g.style.background = p.grad;
-        g.textContent = p.glyph;
-        detailMedia.appendChild(g);
-      }
-      detailBody.innerHTML = '';
-      if (p.badge) detailBody.appendChild(p.badge.cloneNode(true));
-      const h = document.createElement('h3');
-      h.className = 'rotary-detail-title'; h.textContent = p.title;
-      detailBody.appendChild(h);
-      const d = document.createElement('p');
-      d.className = 'rotary-detail-desc'; d.textContent = p.desc;
-      detailBody.appendChild(d);
-      if (p.chips.length) {
-        const cw = document.createElement('div');
-        cw.className = 'rotary-detail-chips';
-        p.chips.forEach(c => {
-          const s = document.createElement('span');
-          s.className = 'rotary-chip'; s.textContent = c;
-          cw.appendChild(s);
-        });
-        detailBody.appendChild(cw);
-      }
-      if (p.links.length) {
-        const lw = document.createElement('div');
-        lw.className = 'rotary-detail-links';
-        p.links.forEach(a => {
-          const c = a.cloneNode(true);
-          c.className = 'rotary-link';
-          lw.appendChild(c);
-        });
-        detailBody.appendChild(lw);
-      }
-      if (animate) {
-        gsap.fromTo([detailMedia, detailBody],
-          { opacity: 0, y: 12 },
-          { opacity: 1, y: 0, duration: 0.35, ease: 'power2.out', stagger: 0.06 });
-      }
-    }
-
-    let active = -1;
-    function setActive(i, animate = true) {
-      const changed = i !== active;
-      active = i;
-      holes.forEach((h, j) => h.classList.toggle('active', j === i));
-      /* cible équivalente la plus proche pour tourner par le chemin court */
-      let target = -i * STEP;
-      target += Math.round((state.v - target) / 360) * 360;
-      gsap.killTweensOf(state);
-      if (animate) {
-        gsap.to(state, {
-          v: target, duration: changed ? 0.7 : 0.45, ease: 'back.out(1.4)',
-          onUpdate: () => applyRotation(state.v)
-        });
-      } else {
-        applyRotation(target);
-      }
-      if (changed) {
-        renderDetail(i, animate);
-        centerGlyph.textContent = projects[i].glyph || String(i + 1).padStart(2, '0');
-        centerIndex.textContent = `${String(i + 1).padStart(2, '0')} / ${String(N).padStart(2, '0')}`;
-      }
-    }
-
-    /* — Interactions — */
-    let dragging = false, dragMoved = 0, lastA = 0;
-    function pointerAngle(e) {
-      const r = stage.getBoundingClientRect();
-      return Math.atan2(e.clientY - (r.top + r.height / 2), e.clientX - (r.left + r.width / 2)) * 180 / Math.PI;
-    }
-    stage.addEventListener('pointerdown', e => {
-      dragging = true; dragMoved = 0; lastA = pointerAngle(e);
-      gsap.killTweensOf(state);
-      stage.classList.add('dragging');
-    });
-    window.addEventListener('pointermove', e => {
-      if (!dragging) return;
-      const a = pointerAngle(e);
-      let d = a - lastA;
-      if (d > 180) d -= 360; else if (d < -180) d += 360;
-      lastA = a;
-      dragMoved += Math.abs(d);
-      applyRotation(state.v + d);
-    });
-    function endDrag() {
-      if (!dragging) return;
-      dragging = false;
-      stage.classList.remove('dragging');
-      const snapped = Math.round(state.v / STEP) * STEP;
-      setActive(((-Math.round(snapped / STEP)) % N + N) % N);
-    }
-    window.addEventListener('pointerup', endDrag);
-    window.addEventListener('pointercancel', endDrag);
-
-    holes.forEach((h, i) => h.addEventListener('click', () => { if (dragMoved < 6) setActive(i); }));
-
-    let wheelLock = 0;
-    stage.addEventListener('wheel', e => {
-      e.preventDefault();
-      const now = Date.now();
-      if (now - wheelLock < 180) return;
-      wheelLock = now;
-      setActive((active + (e.deltaY > 0 ? 1 : -1) + N) % N);
-    }, { passive: false });
-
-    stage.addEventListener('keydown', e => {
-      if (['ArrowRight', 'ArrowDown'].includes(e.key)) { e.preventDefault(); setActive((active + 1) % N); }
-      else if (['ArrowLeft', 'ArrowUp'].includes(e.key)) { e.preventDefault(); setActive((active - 1 + N) % N); }
-    });
-
-    let rT;
-    window.addEventListener('resize', () => { clearTimeout(rT); rT = setTimeout(layout, 150); });
-
-    /* Tour d'élan à l'arrivée dans la section */
-    ScrollTrigger.create({
-      trigger: stage, start: 'top 80%', once: true,
-      onEnter: () => {
-        if (dragging) return;
-        gsap.fromTo(state, { v: state.v - 150 },
-          { v: -active * STEP, duration: 1.4, ease: 'power4.out', onUpdate: () => applyRotation(state.v) });
-      }
-    });
-
-    /* — Init (mesure avant que setView ne puisse masquer le cadran) — */
-    layout();
-    setActive(0, false);
-
-    /* — Toggle Cadran / Grille — */
-    const toggle = document.createElement('div');
-    toggle.className = 'work-view-toggle';
-    toggle.innerHTML = `
-      <button type="button" data-view="rotary"><i class="fas fa-circle-notch"></i> Cadran</button>
-      <button type="button" data-view="grid"><i class="fas fa-table-cells-large"></i> Grille</button>`;
-    wrap.parentNode.insertBefore(toggle, wrap);
-    function setView(v) {
-      work.classList.toggle('view-rotary', v === 'rotary');
-      work.classList.toggle('view-grid', v === 'grid');
-      toggle.querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset.view === v));
-      localStorage.setItem('workView', v);
-      if (v === 'rotary') layout();
-      ScrollTrigger.refresh();
-    }
-    toggle.querySelectorAll('button').forEach(b => b.addEventListener('click', () => setView(b.dataset.view)));
-    const startView = localStorage.getItem('workView') === 'grid' ? 'grid' : 'rotary';
-    setView(startView);
-    rotaryIsDefault = startView === 'rotary';
-  })();
-
-  /* ----------------------------------------------------------
-     BENTO GRID — slide from bottom + rebond par carte
-     ---------------------------------------------------------- */
-  (function initBento() {
-    const cards = document.querySelectorAll('.bento-card');
-    if (!cards.length) return;
-    /* Si le cadran est la vue par défaut, la grille est masquée :
-       pas d'animation d'entrée (les cartes restent visibles au toggle) */
-    if (reduced || rotaryIsDefault) return;
-    cards.forEach((card, i) => {
-      card.style.willChange = 'transform, opacity';
-      gsap.set(card, { opacity: 0, y: 60, scale: 0.96 });
-      ScrollTrigger.create({
-        trigger: card,
-        start: 'top 88%',
-        once: true,
-        onEnter: () => {
-          gsap.to(card, {
-            opacity: 1,
-            y: 0,
-            scale: 1,
-            duration: dur(0.7),
-            ease: 'back.out(1.4)',
-            delay: del((i % 4) * 0.10),
-            onComplete: () => { card.style.willChange = 'auto'; }
-          });
-        }
-      });
-    });
-  })();
-
-  /* ----------------------------------------------------------
-     TIMELINE — draw de la ligne verticale + entrées
-     ---------------------------------------------------------- */
-  document.querySelectorAll('.timeline').forEach(timeline => {
-    /* Ligne animée */
-    if (!reduced) {
-      const line = document.createElement('div');
-      line.className = 'timeline-progress-line';
-      timeline.style.position = 'relative';
-      timeline.insertBefore(line, timeline.firstChild);
-      line.style.willChange = 'height';
-      ScrollTrigger.create({
-        trigger: timeline,
-        start: 'top 80%',
-        end: 'bottom 60%',
-        scrub: 1.4,
-        onUpdate: (self) => {
-          line.style.height = (self.progress * 100) + '%';
-        },
-        onLeave: () => { line.style.willChange = 'auto'; }
-      });
-    }
-    /* Entrées des items — révélation liée au scroll (scrub réversible) */
-    timeline.querySelectorAll('.timeline-item').forEach(el => {
-      if (!reduced) {
-        el.style.transition = 'none'; /* la transition CSS de .reveal fausserait le scrub */
-        gsap.fromTo(el, { opacity: 0.12, x: -26 }, {
-          opacity: 1, x: 0, ease: 'none',
-          scrollTrigger: { trigger: el, start: 'top 94%', end: 'top 62%', scrub: 0.5 }
-        });
-        /* Bourgeon — le point éclot quand la tige l'atteint */
-        const dot = el.querySelector('.timeline-dot');
-        if (dot) {
-          gsap.set(dot, { scale: 0 });
-          ScrollTrigger.create({
-            trigger: el, start: 'top 82%', once: true,
-            onEnter: () => gsap.to(dot, {
-              scale: 1, duration: dur(0.55), ease: 'back.out(3.5)',
-              delay: del(0.12)
-            })
-          });
-        }
-      }
-    });
-  });
-
-  /* ----------------------------------------------------------
-     GENERIC REVEAL
-     ---------------------------------------------------------- */
-  document.querySelectorAll('.reveal').forEach(el => {
-    if (el.classList.contains('timeline-item')) return;
-    /* Elements in #skills — always visible, no animation */
-    if (el.closest('#skills')) {
-      el.style.transition = 'none';
-      el.style.opacity = '1';
-      el.style.transform = 'none';
-      return;
-    }
-    gsap.set(el, { opacity: 0, y: 22 });
-    const baseDelay = el.classList.contains('reveal-d1') ? 0.05
-                    : el.classList.contains('reveal-d2') ? 0.10
-                    : el.classList.contains('reveal-d3') ? 0.15
-                    : el.classList.contains('reveal-d4') ? 0.20 : 0;
-    ScrollTrigger.create({
-      trigger: el, start: 'top 90%', once: true,
-      onEnter: () => gsap.to(el, {
-        opacity: 1, y: 0,
-        duration: dur(0.42), ease: 'power3.out',
-        delay: del(baseDelay)
-      })
-    });
-  });
-
-  /* ----------------------------------------------------------
-     STAT COUNTERS — count-up depuis 0
-     ---------------------------------------------------------- */
-  document.querySelectorAll('.stat-number[data-target]').forEach(el => {
-    ScrollTrigger.create({
-      trigger: el, start: 'top 90%', once: true,
-      onEnter: () => {
-        const target = parseInt(el.getAttribute('data-target'), 10);
-        const obj = { val: 0 };
-        gsap.to(obj, {
-          val: target, duration: dur(1.2), ease: 'power2.out',
-          onUpdate: () => { el.textContent = Math.round(obj.val); }
-        });
-      }
-    });
-  });
-
-  /* ----------------------------------------------------------
-     SECTION BACKGROUND NUMBERS
-     ---------------------------------------------------------- */
-  const sectionMeta = [
-    { id: 'about',       num: '01' },
-    { id: 'skills',      num: '02' },
-    { id: 'journey',     num: '03' },
-    { id: 'experiences', num: '04' },
-    { id: 'work',        num: '05' },
-    { id: 'contact',     num: '06' },
-  ];
-  sectionMeta.forEach(({ id, num }) => {
-    const section = document.getElementById(id);
-    if (!section) return;
-    const div = document.createElement('div');
-    div.className = 'section-bg-num';
-    div.textContent = num;
-    section.insertBefore(div, section.firstChild);
-    if (id === 'skills') return; // Pas de numéro animé dans skills
-    gsap.set(div, { opacity: 0, x: 28 });
-    ScrollTrigger.create({
-      trigger: section, start: 'top 85%', once: true,
-      onEnter: () => gsap.to(div, { opacity: 1, x: 0, duration: dur(0.9), ease: 'power3.out' })
-    });
-    /* Dérive parallaxe — le numéro flotte plus lentement que la page */
-    if (!reduced) {
-      gsap.fromTo(div, { y: -40 }, {
-        y: 70, ease: 'none',
-        scrollTrigger: { trigger: section, start: 'top bottom', end: 'bottom top', scrub: 1.2 }
-      });
-    }
-  });
-
-  /* ----------------------------------------------------------
-     SCROLL SPY + NAV INDICATOR
-     ---------------------------------------------------------- */
-  const navAnchorEls = document.querySelectorAll('.nav-links a[href^="#"]');
-  const spySections  = [...navAnchorEls]
-    .map(a => document.querySelector(a.getAttribute('href')))
-    .filter(Boolean);
-  const navLinksEl = document.getElementById('nav-links');
-  let navIndicator = null;
-
-  if (navLinksEl && window.innerWidth > 768) {
-    navIndicator = document.createElement('span');
-    navIndicator.className = 'nav-indicator';
-    navLinksEl.appendChild(navIndicator);
-    function moveIndicatorTo(linkEl) {
-      if (!linkEl || !navIndicator) return;
-      const lr = linkEl.getBoundingClientRect();
-      const nr = navLinksEl.getBoundingClientRect();
-      navIndicator.style.left    = (lr.left - nr.left) + 'px';
-      navIndicator.style.width   = lr.width + 'px';
-      navIndicator.style.opacity = '1';
-    }
-    navAnchorEls.forEach(a => a.addEventListener('mouseenter', () => moveIndicatorTo(a)));
-    navLinksEl.addEventListener('mouseleave', () => {
-      const active = navLinksEl.querySelector('.nav-active');
-      active ? moveIndicatorTo(active) : (navIndicator.style.opacity = '0');
-    });
-  }
-
-  function activateNavLink(id) {
-    navAnchorEls.forEach(a => a.classList.remove('nav-active'));
-    const link = document.querySelector(`.nav-links a[href="#${id}"]`);
-    if (link) {
-      link.classList.add('nav-active');
-      if (navIndicator && navLinksEl) {
-        const lr = link.getBoundingClientRect();
-        const nr = navLinksEl.getBoundingClientRect();
-        navIndicator.style.left    = (lr.left - nr.left) + 'px';
-        navIndicator.style.width   = lr.width + 'px';
-        navIndicator.style.opacity = '1';
-      }
-    }
-  }
-
-  spySections.forEach(section => {
-    ScrollTrigger.create({
-      trigger: section, start: 'top 40%', end: 'bottom 40%',
-      onEnter:     () => activateNavLink(section.id),
-      onEnterBack: () => activateNavLink(section.id)
-    });
-  });
-
-  /* ----------------------------------------------------------
-     SVG CIRCUIT DIVIDERS (palette verte)
-     ---------------------------------------------------------- */
-  function initCircuitDividers() {
-    if (reduced || window.innerWidth < 768) return;
-    const pairs = [
-      ['hero','about'], ['about','skills'], ['skills','journey'],
-      ['journey','experiences'], ['experiences','work'],
-    ];
-    const pathDefs = [
-      'M 0,40 L 120,40 L 120,12 L 360,12 L 360,40 L 480,40',
-      'M 0,12 L 160,12 L 320,50 L 480,50',
-      'M 0,50 L 80,50 L 80,18 L 200,18 L 200,50 L 340,50 L 340,18 L 480,18',
-      'M 0,50 Q 240,8 480,50',
-      'M 0,48 C 100,8 380,60 480,16',
-    ];
-    pairs.forEach(([aId, bId], index) => {
-      const sectionA = aId === 'hero' ? document.querySelector('.hero') : document.getElementById(aId);
-      const sectionB = document.getElementById(bId);
-      if (!sectionA || !sectionB) return;
-      const wrapper = document.createElement('div');
-      wrapper.className = 'circuit-divider';
-      const d = pathDefs[index];
-      const uid = `cd-${index}`;
-      wrapper.innerHTML = `
-        <svg class="circuit-svg" viewBox="0 0 480 60" preserveAspectRatio="none" aria-hidden="true">
-          <defs>
-            <filter id="gp-${uid}" x="-10%" y="-150%" width="120%" height="400%">
-              <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="b"/>
-              <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-            </filter>
-            <filter id="go-${uid}" x="-200%" y="-200%" width="500%" height="500%">
-              <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="b"/>
-              <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-            </filter>
-          </defs>
-          <path class="circuit-base" d="${d}" fill="none"/>
-          <path class="circuit-draw" d="${d}" fill="none" filter="url(#gp-${uid})"/>
-          <circle class="circuit-orb" r="4" cx="-20" cy="-20" filter="url(#go-${uid})"/>
-        </svg>`;
-      sectionA.parentNode.insertBefore(wrapper, sectionB);
-      const drawPath = wrapper.querySelector('.circuit-draw');
-      const orbEl    = wrapper.querySelector('.circuit-orb');
+if (!prefersReducedMotion && showreel) {
+  let ticking = false;
+  window.addEventListener("scroll", () => {
+    if (!ticking) {
       requestAnimationFrame(() => {
-        const len = drawPath.getTotalLength();
-        gsap.set(drawPath, { strokeDasharray: len, strokeDashoffset: len });
-        gsap.set(orbEl, { opacity: 0 });
-        ScrollTrigger.create({
-          trigger: wrapper, start: 'top 90%', end: 'top 10%', scrub: 1.5,
-          onUpdate: (self) => {
-            const p = self.progress;
-            drawPath.style.strokeDashoffset = len * (1 - p);
-            if (p > 0.04) {
-              const pt = drawPath.getPointAtLength(p * len);
-              orbEl.setAttribute('cx', pt.x);
-              orbEl.setAttribute('cy', pt.y);
-              orbEl.style.opacity = Math.min(p * 10, 1);
-            } else {
-              orbEl.style.opacity = 0;
-            }
-          }
-        });
-      });
-    });
-  }
-  initCircuitDividers();
-
-  if (!document.querySelector('style[data-circuit]')) {
-    const s = document.createElement('style');
-    s.dataset.circuit = '1';
-    s.textContent = `
-      .circuit-divider{position:relative;width:100%;height:60px;overflow:visible;pointer-events:none;display:none;}
-      @media(min-width:768px){.circuit-divider{display:block;}}
-      .circuit-svg{width:100%;height:100%;overflow:visible;}
-      .circuit-base{stroke:rgba(130,130,130,0.07);stroke-width:1.5;stroke-dasharray:6 12;}
-      html.dark .circuit-base{stroke:rgba(82,183,136,0.08);}
-      .circuit-draw{stroke:rgba(45,106,79,0.35);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;}
-      html.dark .circuit-draw{stroke:rgba(82,183,136,0.55);}
-      .circuit-orb{fill:#2D6A4F;}
-      html.dark .circuit-orb{fill:#52B788;}
-    `;
-    document.head.appendChild(s);
-  }
-
-  /* ----------------------------------------------------------
-     HERO PARALLAX
-     ---------------------------------------------------------- */
-  (function initHeroParallax() {
-    if (reduced) return;
-    const hero = document.querySelector('.hero');
-    const heroContent = document.querySelector('.hero-content');
-    if (!hero || !heroContent) return;
-    let tx = 0, ty = 0, cx = 0, cy = 0, raf = null;
-    function lerp(a, b, t) { return a + (b - a) * t; }
-    function update() {
-      cx = lerp(cx, tx, 0.07); cy = lerp(cy, ty, 0.07);
-      heroContent.style.transform = `translate(${cx * -14}px, ${cy * -9}px)`;
-      raf = (Math.abs(cx - tx) > 0.01 || Math.abs(cy - ty) > 0.01)
-        ? requestAnimationFrame(update) : null;
-    }
-    hero.addEventListener('mousemove', e => {
-      const r = hero.getBoundingClientRect();
-      tx = (e.clientX - r.left) / r.width  - 0.5;
-      ty = (e.clientY - r.top)  / r.height - 0.5;
-      if (!raf) raf = requestAnimationFrame(update);
-    }, { passive: true });
-    hero.addEventListener('mouseleave', () => { tx = 0; ty = 0; });
-  })();
-
-  /* ----------------------------------------------------------
-     MONITEUR HTOP — jauges qui fluctuent (section À propos)
-     ---------------------------------------------------------- */
-  (function initHtop() {
-    const body = document.getElementById('htop-body');
-    if (!body) return;
-    const CORES = [
-      ['Motivation', 97],
-      ['Curiosité',  93],
-      ['Rigueur',    88],
-      ['Sport',      86],
-    ];
-    const WIDTH = 24;
-    const rows = CORES.map(([label, base]) => {
-      const row = document.createElement('div');
-      row.className = 'htop-row';
-      row.innerHTML = `<span class="htop-label">${label}</span><span class="htop-bar"></span>`;
-      body.appendChild(row);
-      return { bar: row.querySelector('.htop-bar'), base, val: base };
-    });
-    const foot = document.createElement('div');
-    foot.className = 'htop-foot';
-    foot.innerHTML =
-      'Tasks: <b>3 running</b> — alternance.search · ctf.tryhackme · veille.techno<br>' +
-      'Load: alternance 2026 · 0 kernel panic · swap: 0B used';
-    body.appendChild(foot);
-    function render() {
-      rows.forEach(r => {
-        const n = Math.round(r.val / 100 * WIDTH);
-        r.bar.innerHTML =
-          '[<span class="htop-pipes">' + '|'.repeat(n) + '</span>' +
-          ' '.repeat(WIDTH - n) +
-          '<span class="htop-pct">' + String(Math.round(r.val)).padStart(3, ' ') + '%</span>]';
-      });
-    }
-    render();
-    if (reduced) return;
-    setInterval(() => {
-      rows.forEach(r => {
-        r.val = Math.max(55, Math.min(100, r.base + (Math.random() * 8 - 4)));
-      });
-      render();
-    }, 1700);
-  })();
-
-  /* ----------------------------------------------------------
-     ABOUT TERMINAL — typing animation
-     ---------------------------------------------------------- */
-  const terminalAbout = document.getElementById('terminal-output');
-  const commandSets = [
-    [
-      { cmd: 'cd Documents/Alternance', out: '' },
-      { cmd: 'cat recherche.txt', out: 'Étudiant en BUT Informatique (DACS),\nAdmis IMT Nord Europe — recherche alternance 2026-2029\nSpécialité : Admin Système · Cybersécurité · DevOps' }
-    ],
-    [
-      { cmd: 'cd Mes_Passions', out: '' },
-      { cmd: 'cat passions.txt', out: 'Cybersécurité, CTF TryHackMe, Linux,\nSports de combat, Course à pied,\nNouveaux outils et veille technologique' }
-    ],
-    [
-      { cmd: 'cd EasterEgg', out: '' },
-      { cmd: 'cat indice.txt', out: '> Tape cette commande dans le terminal interactif :\n  sudo apt install easteregg' }
-    ]
-  ];
-  let cmds = [], cmdIdx = 0, charIdx = 0, typing = true;
-  function pickSet() { return Math.random() < 0.15 ? commandSets[2] : commandSets[Math.floor(Math.random() * 2)]; }
-  function addLine(text) {
-    if (!terminalAbout) return;
-    const d = document.createElement('div'); d.textContent = text;
-    terminalAbout.appendChild(d); terminalAbout.scrollTop = terminalAbout.scrollHeight;
-  }
-  function typeNext() {
-    if (!terminalAbout) return;
-    if (cmdIdx >= cmds.length) { setTimeout(restart, 4500); return; }
-    const cur = cmds[cmdIdx];
-    if (typing) {
-      if (charIdx === 0) addLine('$ ' + cur.cmd);
-      const last = terminalAbout.lastChild;
-      if (charIdx < cur.cmd.length) {
-        last.textContent = '$ ' + cur.cmd.slice(0, charIdx + 1);
-        charIdx++;
-        setTimeout(typeNext, 70 + Math.random() * 50);
-      } else {
-        if (cur.out) addLine(cur.out);
-        addLine('');
-        typing = false; charIdx = 0;
-        setTimeout(typeNext, 400);
-      }
-    } else { typing = true; cmdIdx++; setTimeout(typeNext, 400); }
-  }
-  function restart() {
-    if (!terminalAbout) return;
-    terminalAbout.innerHTML = '';
-    cmdIdx = 0; charIdx = 0; typing = true;
-    cmds = [...pickSet()];
-    setTimeout(typeNext, 800);
-  }
-  if (terminalAbout) { cmds = [...pickSet()]; setTimeout(typeNext, 1200); }
-
-  /* ----------------------------------------------------------
-     INTERACTIVE TERMINAL (easter egg préservé)
-     ---------------------------------------------------------- */
-  const termInput  = document.getElementById('terminal-input');
-  const termOutput = document.getElementById('terminal-interactive-output');
-  const sections = [
-    { name: 'A propos',    id: 'about'       },
-    { name: 'Competences', id: 'skills'      },
-    { name: 'Parcours',    id: 'journey'     },
-    { name: 'Experiences', id: 'experiences' },
-    { name: 'Projets',     id: 'work'        },
-    { name: 'Contact',     id: 'contact'     },
-    { name: 'Terminal',    id: 'terminal'    }
-  ];
-
-  function writeLine(text) {
-    if (!termOutput) return;
-    const d = document.createElement('div'); d.textContent = text;
-    termOutput.appendChild(d); termOutput.scrollTop = termOutput.scrollHeight;
-  }
-  function writeEl(el) {
-    if (!termOutput) return;
-    termOutput.appendChild(el); termOutput.scrollTop = termOutput.scrollHeight;
-  }
-  function runProgressBar(cb) {
-    let pct = 0; writeLine('');
-    const div = document.createElement('div'); termOutput.appendChild(div);
-    const iv = setInterval(() => {
-      pct += 10;
-      const f = Math.floor(pct / 10);
-      div.textContent = `Téléchargement... [${'█'.repeat(f)}${'░'.repeat(10 - f)}] ${pct}%`;
-      termOutput.scrollTop = termOutput.scrollHeight;
-      if (pct >= 100) { clearInterval(iv); setTimeout(cb, 300); }
-    }, 180);
-  }
-  const eggFrames = [
-`   ___\n  /   \\\n /     \\\n(_______)\n  [Egg]`,
-`   ___\n  /* *\\\n /* * *\\\n(______*)\n[Hatching]`,
-`  *****\n *     *\n* ( ^v^)*\n *     *\n  *****\n[Cracked!]`
-  ];
-  function runHatchAnimation() {
-    let fi = 0;
-    const div = document.createElement('div');
-    div.style.cssText = 'font-family:monospace;white-space:pre';
-    termOutput.appendChild(div);
-    const iv = setInterval(() => {
-      div.textContent = eggFrames[fi]; termOutput.scrollTop = termOutput.scrollHeight; fi++;
-      if (fi >= eggFrames.length) {
-        clearInterval(iv); writeLine(''); writeLine('🎉 Félicitations ! Tu as trouvé l\'easter egg secret !');
-        const btn = document.createElement('button');
-        btn.textContent = '↺ Rejouer l\'animation';
-        btn.style.cssText = 'margin-top:10px;padding:6px 14px;background:var(--accent);color:var(--accent-fg);border:none;border-radius:2px;cursor:pointer;font-size:0.75rem;font-weight:700;font-family:var(--mono);letter-spacing:0.06em;text-transform:uppercase;';
-        btn.addEventListener('click', () => { writeLine(''); writeLine('$ sudo apt install easteregg'); runProgressBar(runHatchAnimation); });
-        writeEl(btn);
-      }
-    }, 900);
-  }
-  const NEOFETCH = [
-    '        .--.       luka@portfolio',
-    '       |o_o |      ───────────────',
-    '       |:_/ |      OS       Portfolio Linux x86_64',
-    '      //   \\ \\     Cursus   BUT Info DACS → IMT Nord Europe',
-    '     (|     | )    Shell    mbash (fait maison, en C)',
-    '    /\'\\_   _/`\\    Stack    Linux · Docker · GCP · Cyber',
-    '    \\___)=(___/    Statut   Dispo alternance · sept. 2026',
-    '                   Contact  luka.salvo23@gmail.com',
-  ];
-  function handleCommand(raw) {
-    const cmd = raw.trim().toLowerCase();
-    writeLine('$ ' + raw.trim());
-    if (cmd === 'ls') {
-      writeLine(sections.map(s => s.name).join('   '));
-    } else if (cmd === 'clear') {
-      termOutput.innerHTML = '';
-    } else if (cmd === 'whoami')  { writeLine('luka.salvo');
-    } else if (cmd === 'pwd')     { writeLine('/home/luka/portfolio');
-    } else if (cmd === 'date')    { writeLine(new Date().toLocaleString('fr-FR'));
-    } else if (cmd === 'neofetch') {
-      const pre = document.createElement('div');
-      pre.style.cssText = 'font-family:var(--mono);white-space:pre;color:#7ee787;';
-      pre.textContent = NEOFETCH.join('\n');
-      writeEl(pre);
-    } else if (cmd.startsWith('echo ')) { writeLine(raw.trim().slice(5));
-    } else if (cmd === 'history') {
-      termHistory.slice().reverse().forEach((h, i) => writeLine(`  ${i + 1}  ${h}`));
-    } else if (cmd === 'help')    { writeLine('Commandes : ls · cd <section> · whoami · pwd · neofetch · date · echo · history · uptime · fortune · cowsay · theme · clear · help · sudo apt install easteregg  (Tab = autocomplétion)');
-    } else if (cmd === 'uptime')  { writeLine('up since mars 2026 · load average: 0.42, 0.38, 0.51 · disponibilité: 99.9%');
-    } else if (cmd === 'fortune') {
-      const quotes = [
-        'Il n\'existe pas de patch pour la curiosité humaine.',
-        '99 little bugs in the code, 99 little bugs... take one down, patch it around, 127 little bugs in the code.',
-        'Un bon admin sys a toujours un plan B. Et un plan de rollback pour le plan B.',
-        'La sécurité, c\'est un chemin, pas une destination.',
-        'chmod 777 : le pire conseil StackOverflow jamais donné.',
-        'Ça marche sur ma machine. ¯\\_(ツ)_/¯'
-      ];
-      writeLine(quotes[Math.floor(Math.random() * quotes.length)]);
-    } else if (cmd === 'sl') {
-      const pre = document.createElement('div');
-      pre.style.cssText = 'font-family:var(--mono);white-space:pre;color:var(--accent);font-size:0.7rem;line-height:1.2;';
-      pre.textContent = [
-        '      ====        ________                ___________ ',
-        '  _D _|  |_______/        \\__I_I_____===__|_________| ',
-        '   |(_)---  |   H\\________/ |   |        =|___ ___|   ',
-        '   /     |  |   H  |  |     |   |         ||_| |_||   ',
-        '  |      |  |   H  |__--------------------| [___] |   ',
-        '  | ________|___H__/__|_____/[][]~\\_______|       |   ',
-        '  |/ |   |-----------I_____I [][] []  D   |=======|__ '
-      ].join('\n');
-      writeEl(pre);
-      writeLine('Erreur : commande "sl" introuvable. Vouliez-vous dire "ls" ?');
-    } else if (cmd === 'vi' || cmd === 'vim') {
-      writeLine('Vous voilà dans vim. Pour quitter : tapez :wq — ou fermez simplement l\'onglet, promis on ne juge pas.');
-    } else if (cmd === 'rm -rf /' || cmd === 'rm -rf /*' || cmd === 'rm -rf *' || cmd === 'rm -rf ~') {
-      writeLine('Permission refusée : ce portfolio tient à sa survie. Belle tentative, cela dit.');
-    } else if (cmd.startsWith('hack')) {
-      writeLine('Accès refusé — je fais du CTF légal uniquement (TryHackMe). Gentil essai 🕵️');
-    } else if (cmd.startsWith('cowsay')) {
-      const msg = raw.trim().slice(6).trim() || 'Moo';
-      const top = ' ' + '_'.repeat(msg.length + 2);
-      const bottom = ' ' + '-'.repeat(msg.length + 2);
-      const pre = document.createElement('div');
-      pre.style.cssText = 'font-family:var(--mono);white-space:pre;color:var(--accent);font-size:0.75rem;line-height:1.3;';
-      pre.textContent = `${top}\n< ${msg} >\n${bottom}\n        \\   ^__^\n         \\  (oo)\\_______\n            (__)\\       )\\/\\\n                ||----w |\n                ||     ||`;
-      writeEl(pre);
-    } else if (cmd === 'theme' || cmd.startsWith('theme ')) {
-      // La bascule passe par le vrai bouton (animation "View Transition" incluse), dont
-      // le callback s'exécute de façon asynchrone : on calcule l'état final à l'avance
-      // plutôt que de relire le DOM juste après .click(), pour éviter une valeur périmée.
-      const arg = cmd.slice(5).trim();
-      const isDark = document.documentElement.classList.contains('dark');
-      let shouldToggle = false;
-      let resultDark = isDark;
-      if (arg === 'dark' && !isDark)      { shouldToggle = true; resultDark = true; }
-      else if (arg === 'light' && isDark) { shouldToggle = true; resultDark = false; }
-      else if (arg === '')                { shouldToggle = true; resultDark = !isDark; }
-      if (shouldToggle) document.getElementById('theme-toggle')?.click();
-      writeLine(`Thème : ${resultDark ? 'sombre' : 'clair'}`);
-    } else if (cmd === 'sudo' || cmd === 'sudo ') { writeLine('Pas de droits suffisants — contactez-moi pour en obtenir.');
-    } else if (cmd === 'sudo apt install easteregg') { runProgressBar(runHatchAnimation);
-    } else if (cmd.startsWith('sudo apt install')) { writeLine('Erreur : paquet introuvable.');
-    } else if (cmd.startsWith('cd ')) {
-      const name = cmd.slice(3).trim();
-      const found = sections.find(s => s.name.toLowerCase() === name.toLowerCase());
-      if (found) {
-        const target = document.getElementById(found.id);
-        if (target) target.scrollIntoView({ behavior: 'smooth' });
-        writeLine(`→ Navigation vers "${found.name}"`);
-      } else writeLine(`Erreur : section "${name}" non trouvée. Tapez ls pour voir les sections.`);
-    } else if (cmd !== '') {
-      writeLine(`Commande non reconnue : "${raw.trim()}". Tapez help pour l'aide.`);
-    }
-    writeLine('');
-  }
-
-  const termHistory = [];
-  if (termInput && termOutput) {
-    writeLine('Bienvenue dans le terminal interactif !');
-    writeLine('Commandes : ls · cd <section> · neofetch · whoami · pwd · theme · clear · help');
-    writeLine('');
-    let histIdx = -1;
-    const COMPLETIONS = ['ls', 'cd ', 'clear', 'whoami', 'pwd', 'neofetch', 'date', 'echo ', 'history', 'uptime', 'fortune', 'cowsay ', 'theme ', 'help', 'sudo apt install easteregg'];
-    termInput.addEventListener('keydown', e => {
-      if (e.key === 'Enter') {
-        const val = termInput.value;
-        if (val.trim()) termHistory.unshift(val);
-        histIdx = -1; handleCommand(val); termInput.value = '';
-      } else if (e.key === 'Tab') {
-        e.preventDefault();
-        const val = termInput.value;
-        if (!val) return;
-        /* Complète d'abord les noms de section après "cd ", sinon les commandes */
-        if (val.toLowerCase().startsWith('cd ')) {
-          const part = val.slice(3).toLowerCase();
-          const match = sections.find(s => s.name.toLowerCase().startsWith(part));
-          if (match) termInput.value = 'cd ' + match.name;
-        } else {
-          const match = COMPLETIONS.find(c => c.startsWith(val.toLowerCase()) && c !== val.toLowerCase());
-          if (match) termInput.value = match;
-        }
-      } else if (e.key === 'ArrowUp') {
-        e.preventDefault();
-        if (histIdx < termHistory.length - 1) { histIdx++; termInput.value = termHistory[histIdx]; }
-      } else if (e.key === 'ArrowDown') {
-        e.preventDefault();
-        histIdx > 0 ? (histIdx--, termInput.value = termHistory[histIdx]) : (histIdx = -1, termInput.value = '');
-      }
-    });
-  }
-
-  /* ----------------------------------------------------------
-     CUSTOM CURSOR
-     ---------------------------------------------------------- */
-  (function initCursor() {
-    if (!window.matchMedia('(pointer: fine)').matches || reduced) return;
-    const dot  = document.getElementById('cursor-dot');
-    const ring = document.getElementById('cursor-ring');
-    if (!dot || !ring) return;
-    let mx = -200, my = -200, rx = -200, ry = -200;
-    let velX = 0, velY = 0, prevMx = -200, prevMy = -200;
-    document.addEventListener('mousemove', e => {
-      velX = e.clientX - prevMx; velY = e.clientY - prevMy;
-      prevMx = mx; prevMy = my;
-      mx = e.clientX; my = e.clientY;
-      dot.style.left = mx + 'px'; dot.style.top = my + 'px';
-    }, { passive: true });
-    (function animateRing() {
-      rx += (mx - rx) * 0.11;
-      ry += (my - ry) * 0.11;
-      ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
-      if (!ring.classList.contains('is-hovering') && !ring.classList.contains('is-clicking')) {
-        const speed  = Math.hypot(velX, velY);
-        const angle  = Math.atan2(velY, velX) * 180 / Math.PI;
-        const stretch = Math.min(speed * 0.09, 0.45);
-        ring.style.transform = `translate(-50%,-50%) rotate(${angle}deg) scaleX(${1 + stretch}) scaleY(${1 - stretch * 0.4})`;
-      }
-      velX *= 0.82; velY *= 0.82;
-      requestAnimationFrame(animateRing);
-    })();
-    const hoverEls = document.querySelectorAll('a,button,.info-card,.tag,.skill-card,.contact-link,.bento-card,.cert-card,.comp-row');
-    hoverEls.forEach(el => {
-      el.addEventListener('mouseenter', () => ring.classList.add('is-hovering'));
-      el.addEventListener('mouseleave', () => ring.classList.remove('is-hovering'));
-    });
-    document.addEventListener('mousedown', () => ring.classList.add('is-clicking'));
-    document.addEventListener('mouseup',   () => ring.classList.remove('is-clicking'));
-  })();
-
-  /* ----------------------------------------------------------
-     PAGE SPOTLIGHT
-     ---------------------------------------------------------- */
-  (function initSpotlight() {
-    if (reduced) return;
-    const el = document.createElement('div');
-    el.className = 'page-spotlight';
-    document.body.appendChild(el);
-    document.addEventListener('mousemove', e => {
-      el.style.setProperty('--sx', e.clientX + 'px');
-      el.style.setProperty('--sy', e.clientY + 'px');
-    }, { passive: true });
-  })();
-
-  /* ----------------------------------------------------------
-     BIG HERO MARQUEE
-     ---------------------------------------------------------- */
-  (function initBigMarquee() {
-    const about = document.getElementById('about');
-    if (!about) return;
-    const row1 = ['ADMIN SYS', '·', 'CYBERSÉCURITÉ', '·', 'DEVOPS', '·', 'CLOUD', '·', 'RÉSEAUX', '·', 'OSINT', '·', 'CTF', '·'];
-    const row2 = ['IMT NORD EUROPE', '·', 'ALTERNANCE 2026', '·', 'LINUX', '·', 'DOCKER', '·', 'GCP', '·', 'TRYHACKME', '·'];
-    const marquee = document.createElement('div');
-    marquee.className = 'hero-marquee';
-    marquee.setAttribute('aria-hidden', 'true');
-    [row1, row2].forEach((words, ri) => {
-      const track = document.createElement('div');
-      track.className = `hero-marquee-track row-${ri + 1}`;
-      [...words, ...words].forEach(w => {
-        const el = document.createElement('span');
-        el.className = w === '·' ? 'marq-sep' : 'marq-word';
-        el.textContent = w;
-        track.appendChild(el);
-      });
-      marquee.appendChild(track);
-    });
-    about.parentNode.insertBefore(marquee, about);
-  })();
-
-  /* ----------------------------------------------------------
-     SKILLS TICKER (sans emojis)
-     ---------------------------------------------------------- */
-  (function initSkillsTicker() {
-    const skillsSection = document.getElementById('skills');
-    if (!skillsSection) return;
-    const allSkills = [
-      'Linux', 'Docker', 'GCP', 'Cybersécurité', 'Grafana', 'Prometheus',
-      'DevOps', 'Vagrant', 'Kubernetes', 'Réseaux', 'Java', 'PHP',
-      'Python', 'Ruby', 'Bash', 'LaTeX', 'HTML / CSS', 'VirtualBox',
-      'OSINT', 'TryHackMe', 'Claude AI', 'Git',
-    ];
-    const container = document.createElement('div');
-    container.className = 'skills-ticker-container';
-    const track = document.createElement('div');
-    track.className = 'skills-ticker-track';
-    [...allSkills, ...allSkills].forEach(n => {
-      const item = document.createElement('div');
-      item.className = 'ticker-item';
-      item.innerHTML = `<span class="ticker-dot"></span>${n}`;
-      track.appendChild(item);
-    });
-    container.appendChild(track);
-    const firstGroup = skillsSection.querySelector('.skills-group');
-    if (firstGroup) firstGroup.parentNode.insertBefore(container, firstGroup);
-  })();
-
-  /* ----------------------------------------------------------
-     JAUGES TERMINAL — auto-évaluation BUT DACS
-     Niveau lu sur data-level (0-100), rendu en [████░░] animé
-     ---------------------------------------------------------- */
-  (function initCompGauges() {
-    const SEG = 12;
-    document.querySelectorAll('.comp-row[data-level]').forEach(row => {
-      const level = Math.max(0, Math.min(100, parseInt(row.dataset.level, 10) || 0));
-      const name = row.querySelector('.comp-row-name');
-      if (!name) return;
-      const g = document.createElement('div');
-      g.className = 'comp-gauge';
-      g.setAttribute('role', 'img');
-      g.setAttribute('aria-label', `Niveau auto-évalué : ${level} %`);
-      const bar = document.createElement('span'); bar.className = 'comp-gauge-bar';
-      const pct = document.createElement('span'); pct.className = 'comp-gauge-pct';
-      g.append(bar, pct);
-      name.appendChild(g);
-      function render(v) {
-        const f = Math.round(v / 100 * SEG);
-        bar.textContent = '[' + '█'.repeat(f) + '░'.repeat(SEG - f) + ']';
-        pct.textContent = Math.round(v) + '%';
-      }
-      if (reduced) { render(level); return; }
-      render(0);
-      ScrollTrigger.create({
-        trigger: row, start: 'top 88%', once: true,
-        onEnter: () => {
-          const obj = { v: 0 };
-          gsap.to(obj, { v: level, duration: 0.9, ease: 'power2.out', onUpdate: () => render(obj.v) });
-        }
-      });
-    });
-  })();
-
-  /* ----------------------------------------------------------
-     STATUSLINE TMUX — barre fixe en bas (desktop)
-     Session · section courante · dispo · horloge live
-     ---------------------------------------------------------- */
-  (function initTmuxBar() {
-    if (window.innerWidth < 768) return;
-    const bar = document.createElement('div');
-    bar.className = 'tmux-bar';
-    bar.setAttribute('aria-hidden', 'true');
-    bar.innerHTML = `
-      <div class="tmux-left">
-        <span class="tmux-session">0:portfolio</span>
-        <span class="tmux-seg">~ luka@portfolio</span>
-      </div>
-      <div class="tmux-right">
-        <span class="tmux-seg tmux-avail"><span class="tmux-dot"></span>dispo · sept. 2026</span>
-        <span class="tmux-seg" id="tmux-section">§ hero</span>
-        <span class="tmux-seg tmux-clock" id="tmux-clock"></span>
-      </div>`;
-    document.body.appendChild(bar);
-    document.body.classList.add('has-tmux');
-
-    const clock = bar.querySelector('#tmux-clock');
-    function tick() {
-      const now = new Date();
-      clock.textContent =
-        now.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' }) +
-        ' ' + now.toLocaleTimeString('fr-FR');
-    }
-    tick();
-    setInterval(tick, 1000);
-
-    const secEl = bar.querySelector('#tmux-section');
-    const tmuxSections = [
-      ['about', 'à-propos'], ['skills', 'compétences'], ['journey', 'parcours'],
-      ['experiences', 'expériences'], ['work', 'projets'], ['contact', 'contact'],
-      ['terminal', 'terminal'],
-    ];
-    function setSection(label) { secEl.textContent = '§ ' + label; }
-    tmuxSections.forEach(([id, label]) => {
-      const s = document.getElementById(id);
-      if (!s) return;
-      ScrollTrigger.create({
-        trigger: s, start: 'top 50%', end: 'bottom 50%',
-        onEnter: () => setSection(label),
-        onEnterBack: () => setSection(label),
-      });
-    });
-    ScrollTrigger.create({
-      trigger: '.hero', start: 'top top', end: 'bottom 50%',
-      onEnter: () => setSection('hero'),
-      onEnterBack: () => setSection('hero'),
-    });
-  })();
-
-  /* ----------------------------------------------------------
-     COMPTEUR DE CERTIFICATIONS — calculé depuis le DOM
-     ---------------------------------------------------------- */
-  (function initCertCount() {
-    const el = document.querySelector('.cert-count');
-    const n = document.querySelectorAll('.cert-details-grid .cert-card').length;
-    if (el && n) el.textContent = `(${n} autres)`;
-  })();
-
-  /* ----------------------------------------------------------
-     SIDE NAV DOTS
-     ---------------------------------------------------------- */
-  (function initSideNav() {
-    const sects = [
-      { id: 'about',       label: 'À propos'    },
-      { id: 'skills',      label: 'Compétences' },
-      { id: 'journey',     label: 'Parcours'    },
-      { id: 'experiences', label: 'Expériences' },
-      { id: 'work',        label: 'Projets'     },
-      { id: 'contact',     label: 'Contact'     },
-    ];
-    const nav = document.createElement('nav');
-    nav.className = 'sidenav-dots';
-    nav.setAttribute('aria-label', 'Navigation rapide par section');
-    sects.forEach(({ id, label }, i) => {
-      const btn = document.createElement('button');
-      btn.className = 'sidenav-dot';
-      btn.dataset.label = label;
-      btn.setAttribute('aria-label', `Aller à : ${label}`);
-      btn.addEventListener('click', () => {
-        const t = document.getElementById(id);
-        if (t) t.scrollIntoView({ behavior: 'smooth' });
-      });
-      nav.appendChild(btn);
-      const section = document.getElementById(id);
-      if (!section) return;
-      ScrollTrigger.create({
-        trigger: section, start: 'top 50%', end: 'bottom 50%',
-        onEnter:     () => nav.querySelectorAll('.sidenav-dot').forEach((d, j) => d.classList.toggle('active', j === i)),
-        onEnterBack: () => nav.querySelectorAll('.sidenav-dot').forEach((d, j) => d.classList.toggle('active', j === i)),
-      });
-    });
-    document.body.appendChild(nav);
-  })();
-
-  /* ----------------------------------------------------------
-     KINETIC PARALLAX — section-desc
-     ---------------------------------------------------------- */
-  (function initKineticParallax() {
-    if (reduced) return;
-    gsap.utils.toArray('.section-desc').forEach(el => {
-      if (el.closest('#skills')) return; // Pas de parallax dans skills
-      gsap.fromTo(el, { y: 10 }, {
-        y: -10, scrollTrigger: { trigger: el, scrub: 2, start: 'top bottom', end: 'bottom top' }
-      });
-    });
-  })();
-
-  /* ----------------------------------------------------------
-     MAGNETIC BUTTONS
-     ---------------------------------------------------------- */
-  (function initMagnet() {
-    if (reduced || !window.matchMedia('(pointer: fine)').matches) return;
-    document.querySelectorAll('.btn-primary,.btn-secondary,.contact-link').forEach(btn => {
-      btn.addEventListener('mousemove', e => {
-        const r = btn.getBoundingClientRect();
-        const x = (e.clientX - r.left - r.width  / 2) * 0.25;
-        const y = (e.clientY - r.top  - r.height / 2) * 0.25;
-        btn.style.transform  = `translate(${x}px, ${y}px) translateY(-1px)`;
-        btn.style.transition = 'box-shadow 0.2s';
-      });
-      btn.addEventListener('mouseleave', () => {
-        btn.style.transform  = '';
-        btn.style.transition = 'all var(--t)';
-      });
-    });
-  })();
-
-  /* ----------------------------------------------------------
-     MAGNETIC TIMELINE DOTS
-     ---------------------------------------------------------- */
-  (function initTimelineMagnets() {
-    if (reduced || !window.matchMedia('(pointer: fine)').matches) return;
-    document.querySelectorAll('.timeline-item').forEach(item => {
-      const dot = item.querySelector('.timeline-dot');
-      if (!dot) return;
-      item.addEventListener('mousemove', e => {
-        const r = dot.getBoundingClientRect();
-        const cx = r.left + r.width / 2;
-        const cy = r.top  + r.height / 2;
-        const dx = e.clientX - cx;
-        const dy = e.clientY - cy;
-        const dist = Math.hypot(dx, dy);
-        if (dist < 90) {
-          const f = (1 - dist / 90) * 7;
-          dot.style.transform = `translate(${(dx / dist) * f}px, ${(dy / dist) * f}px)`;
-        } else {
-          dot.style.transform = '';
-        }
-      });
-      item.addEventListener('mouseleave', () => { dot.style.transform = ''; });
-    });
-  })();
-
-  /* ----------------------------------------------------------
-     BACK TO TOP BUTTON
-     ---------------------------------------------------------- */
-  (function initBackToTop() {
-    const btn = document.getElementById('back-to-top');
-    if (!btn) return;
-    window.addEventListener('scroll', () => {
-      btn.classList.toggle('visible', window.scrollY > 600);
-    }, { passive: true });
-    btn.addEventListener('click', () => {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-  })();
-
-  /* ----------------------------------------------------------
-     MOBILE BENTO TOUCH EXPAND
-     ---------------------------------------------------------- */
-  (function initMobileBentoTouch() {
-    if (window.matchMedia('(hover: hover)').matches) return;
-    document.querySelectorAll('.bento-card').forEach(card => {
-      card.addEventListener('click', e => {
-        if (e.target.closest('a')) return;
-        const isActive = card.classList.contains('touch-active');
-        document.querySelectorAll('.bento-card').forEach(c => c.classList.remove('touch-active'));
-        if (!isActive) card.classList.add('touch-active');
-      });
-    });
-    document.addEventListener('click', e => {
-      if (!e.target.closest('.bento-card')) {
-        document.querySelectorAll('.bento-card').forEach(c => c.classList.remove('touch-active'));
-      }
-    });
-  })();
-
-  /* ----------------------------------------------------------
-     BENTO SPOTLIGHT — halo suivant la souris sur les cartes
-     ---------------------------------------------------------- */
-  (function initBentoSpotlight() {
-    if (reduced || !window.matchMedia('(pointer: fine)').matches) return;
-    document.querySelectorAll('.bento-card, .skill-card, .cert-card').forEach(card => {
-      card.addEventListener('mousemove', e => {
-        const r = card.getBoundingClientRect();
-        card.style.setProperty('--mx', (e.clientX - r.left) + 'px');
-        card.style.setProperty('--my', (e.clientY - r.top) + 'px');
-      }, { passive: true });
-    });
-  })();
-
-  /* ----------------------------------------------------------
-     PARALLAXE DES PLANCHES — les images des projets glissent
-     doucement pendant le scroll, comme des figures de revue
-     ---------------------------------------------------------- */
-  (function initBentoParallax() {
-    if (reduced) return;
-    document.querySelectorAll('.bento-grid .bento-bg img, .bento-grid .bento-bg video').forEach(media => {
-      const card = media.closest('.bento-card');
-      if (!card) return;
-      /* scale 1.14 pour que la translation ne découvre jamais les bords */
-      gsap.fromTo(media,
-        { yPercent: -5, scale: 1.14 },
-        {
-          yPercent: 5, scale: 1.14, ease: 'none',
-          scrollTrigger: { trigger: card, start: 'top bottom', end: 'bottom top', scrub: 0.8 }
-        });
-    });
-  })();
-
-  /* ----------------------------------------------------------
-     FILETS D'ENCRE — les séparateurs des cartes "À propos"
-     se tracent à l'arrivée dans le viewport
-     ---------------------------------------------------------- */
-  (function initInkRules() {
-    document.querySelectorAll('.info-card').forEach(card => {
-      if (reduced) { card.classList.add('line-drawn'); return; }
-      ScrollTrigger.create({
-        trigger: card, start: 'top 86%', once: true,
-        onEnter: () => card.classList.add('line-drawn')
-      });
-    });
-  })();
-
-  /* ----------------------------------------------------------
-     SCROLL VELOCITY — cursor ring
-     ---------------------------------------------------------- */
-  (function initScrollVelocity() {
-    if (reduced) return;
-    const ring = document.getElementById('cursor-ring');
-    if (!ring) return;
-    let lastY = 0, ticking = false;
-    window.addEventListener('scroll', () => {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(() => {
-        const v = Math.abs(window.scrollY - lastY);
-        lastY = window.scrollY;
-        if (v > 18 && !ring.classList.contains('is-hovering')) {
-          const s = Math.min(1 + v * 0.01, 1.5);
-          ring.style.transform = `translate(-50%,-50%) scale(${s})`;
-          setTimeout(() => { ring.style.transform = ''; }, 200);
-        }
+        updateShowreel();
         ticking = false;
       });
-    }, { passive: true });
-  })();
+      ticking = true;
+    }
+  }, { passive: true });
+  updateShowreel();
+}
 
-  /* ==========================================================
-     v4.1 — ANIMATIONS DE SCROLL SUPPLÉMENTAIRES
-     ========================================================== */
+/* ---------- 4. Projets : ExpandOnHover vertical ----------
+   Le panneau survolé/focus/cliqué reçoit .is-open ; les autres
+   se compriment (piloté par flex en CSS).                    */
+const panels = document.querySelectorAll(".panel");
 
-  /* ----------------------------------------------------------
-     NAV — ombre une fois la page entamée
-     ---------------------------------------------------------- */
-  (function initNavShadow() {
-    const nav = document.querySelector('.nav');
-    if (!nav) return;
-    window.addEventListener('scroll', () => {
-      nav.classList.toggle('nav-scrolled', window.scrollY > 20);
-    }, { passive: true });
-  })();
+function openPanel(panel) {
+  panels.forEach((p) => p.classList.toggle("is-open", p === panel));
+}
 
-  /* ----------------------------------------------------------
-     SECTION LABELS — le filet s'étire à l'arrivée
-     ---------------------------------------------------------- */
-  document.querySelectorAll('.section-label').forEach(el => {
-    if (el.closest('#skills')) return;
-    if (reduced) { el.classList.add('line-in'); return; }
-    ScrollTrigger.create({
-      trigger: el, start: 'top 92%', once: true,
-      onEnter: () => el.classList.add('line-in')
-    });
+panels.forEach((panel) => {
+  if (finePointer) {
+    panel.addEventListener("mouseenter", () => openPanel(panel));
+  }
+  // Clic / tap (mobile) et clavier
+  panel.addEventListener("click", (e) => {
+    if (e.target.closest("a")) return; // laisser les liens fonctionner
+    openPanel(panel);
   });
-
-  /* ----------------------------------------------------------
-     HERO — sortie en fondu + le titre remonte (scrub)
-     ---------------------------------------------------------- */
-  (function initHeroExit() {
-    if (reduced) return;
-    const hero = document.querySelector('.hero');
-    if (!hero) return;
-    gsap.to('.hero-content', {
-      opacity: 0.1, ease: 'none',
-      scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom 35%', scrub: true }
-    });
-    gsap.to('.hero-title', {
-      y: -34, ease: 'none',
-      scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom 35%', scrub: true }
-    });
-  })();
-
-  /* ----------------------------------------------------------
-     SKEW DE VITESSE — la page "penche" comme de l'encre
-     entraînée par la plume quand on scrolle vite
-     ---------------------------------------------------------- */
-  (function initVelocitySkew() {
-    if (reduced) return;
-    const targets = gsap.utils.toArray('section:not(#skills) .section-inner');
-    if (!targets.length) return;
-    gsap.set(targets, { transformOrigin: '50% 50%', force3D: true });
-    const setter = gsap.quickSetter(targets, 'skewY', 'deg');
-    const clampSkew = gsap.utils.clamp(-1.1, 1.1);
-    const proxy = { skew: 0 };
-    ScrollTrigger.create({
-      onUpdate(self) {
-        const skew = clampSkew(self.getVelocity() / -500);
-        if (Math.abs(skew) > Math.abs(proxy.skew)) {
-          proxy.skew = skew;
-          gsap.to(proxy, {
-            skew: 0, duration: 0.7, ease: 'power3.out',
-            overwrite: true, onUpdate: () => setter(proxy.skew)
-          });
-        }
-      }
-    });
-  })();
-
-  /* ----------------------------------------------------------
-     MARQUEE RÉACTIF — accélère avec la vitesse de scroll
-     ---------------------------------------------------------- */
-  (function initMarqueeVelocity() {
-    if (reduced) return;
-    const defs = [
-      { el: document.querySelector('.hero-marquee-track.row-1'), from: 0,   to: -50, d: 28 },
-      { el: document.querySelector('.hero-marquee-track.row-2'), from: -50, to: 0,   d: 32 },
-    ];
-    const tweens = [];
-    defs.forEach(({ el, from, to, d }) => {
-      if (!el) return;
-      el.style.animation = 'none';
-      tweens.push(gsap.fromTo(el, { xPercent: from },
-        { xPercent: to, ease: 'none', duration: d, repeat: -1 }));
-    });
-    if (!tweens.length) return;
-    let decay = null;
-    ScrollTrigger.create({
-      onUpdate(self) {
-        const boost = 1 + Math.min(Math.abs(self.getVelocity()) / 800, 3);
-        tweens.forEach(tw => tw.timeScale(boost));
-        if (decay) decay.kill();
-        const obj = { v: boost };
-        decay = gsap.to(obj, {
-          v: 1, duration: 1.2, ease: 'power2.out',
-          onUpdate: () => tweens.forEach(tw => tw.timeScale(obj.v))
-        });
-      }
-    });
-  })();
-
-  /* ----------------------------------------------------------
-     CARTE PROFIL — photo collée dans le carnet (rotation)
-     ---------------------------------------------------------- */
-  (function initProfileCard() {
-    if (reduced) return;
-    const card = document.querySelector('.about-profile');
-    if (!card) return;
-    gsap.set(card, { opacity: 0, y: 34, rotate: -1.6, transformOrigin: '50% 0%' });
-    ScrollTrigger.create({
-      trigger: card, start: 'top 88%', once: true,
-      onEnter: () => gsap.to(card, {
-        opacity: 1, y: 0, rotate: 0,
-        duration: dur(0.9), ease: 'power3.out'
-      })
-    });
-  })();
-
-  /* ----------------------------------------------------------
-     CONTACT — l'encre se dépose caractère par caractère,
-     pilotée par le scroll (scrub)
-     ---------------------------------------------------------- */
-  (function initContactInk() {
-    const el = document.querySelector('.contact-big');
-    if (!el || reduced) return;
-    const text = el.textContent;
-    el.setAttribute('aria-label', text);
-    el.innerHTML = '';
-    text.split('').forEach(ch => {
-      if (ch === ' ') { el.appendChild(document.createTextNode(' ')); return; }
-      const s = document.createElement('span');
-      s.className = 'char';
-      s.textContent = ch;
-      s.setAttribute('aria-hidden', 'true');
-      el.appendChild(s);
-    });
-    gsap.fromTo(el.querySelectorAll('.char'),
-      { opacity: 0.08, y: 8 },
-      {
-        opacity: 1, y: 0, stagger: 0.035, ease: 'none',
-        scrollTrigger: { trigger: el, start: 'top 88%', end: 'top 45%', scrub: 0.6 }
-      });
-  })();
-
-  /* ==========================================================
-     v4.2 — PARCOURS & COMPÉTENCES : animations de scroll modernes
-     ========================================================== */
-
-  /* ----------------------------------------------------------
-     SKILL CARDS — révélation "mise au point" (blur + profondeur)
-     ---------------------------------------------------------- */
-  (function initSkillCardsReveal() {
-    if (reduced) return;
-    const cards = gsap.utils.toArray('.skills-cards-grid .skill-card');
-    if (!cards.length) return;
-    gsap.set(cards, { opacity: 0, y: 46, scale: 0.94, filter: 'blur(8px)' });
-    /* La transition CSS sur transform lisserait l'entrée GSAP — coupée
-       pendant l'animation, restaurée ensuite pour le hover */
-    cards.forEach(c => { c.style.transition = 'none'; });
-    ScrollTrigger.batch(cards, {
-      start: 'top 88%', once: true,
-      onEnter: batch => gsap.to(batch, {
-        opacity: 1, y: 0, scale: 1, filter: 'blur(0px)',
-        duration: dur(0.8), ease: 'power3.out', stagger: stag(0.09),
-        clearProps: 'transform,filter',
-        onComplete: () => batch.forEach(c => { c.style.transition = ''; })
-      })
-    });
-  })();
-
-  /* ----------------------------------------------------------
-     CERT CARDS — bascule 3D à l'entrée
-     ---------------------------------------------------------- */
-  (function initCertCardsReveal() {
-    if (reduced) return;
-    const certs = gsap.utils.toArray('.cert-grid:not(.cert-details-grid) .cert-card');
-    if (!certs.length) return;
-    gsap.set(certs, {
-      opacity: 0, y: 30, rotateX: -12,
-      transformPerspective: 700, transformOrigin: '50% 0%'
-    });
-    ScrollTrigger.batch(certs, {
-      start: 'top 90%', once: true,
-      onEnter: batch => gsap.to(batch, {
-        opacity: 1, y: 0, rotateX: 0,
-        duration: dur(0.7), ease: 'power3.out', stagger: stag(0.07),
-        clearProps: 'transform'
-      })
-    });
-  })();
-
-  /* ----------------------------------------------------------
-     BADGE TRYHACKME — tamponné comme au hero
-     ---------------------------------------------------------- */
-  (function initThmStamp() {
-    if (reduced) return;
-    const badge = document.querySelector('.thm-badge');
-    if (!badge) return;
-    gsap.set(badge, { opacity: 0, scale: 1.5, rotate: 3 });
-    ScrollTrigger.create({
-      trigger: badge, start: 'top 88%', once: true,
-      onEnter: () => gsap.to(badge, {
-        opacity: 1, scale: 1, rotate: -1,
-        duration: 0.5, ease: 'back.out(2.2)'
-      })
-    });
-  })();
-
-  /* ----------------------------------------------------------
-     AUTO-ÉVALUATION — focus de lecture lié au scroll (scrub)
-     ---------------------------------------------------------- */
-  (function initCompRowsScrub() {
-    if (reduced) return;
-    gsap.utils.toArray('.comp-list .comp-row').forEach(row => {
-      gsap.fromTo(row, { opacity: 0.18, x: -22 }, {
-        opacity: 1, x: 0, ease: 'none',
-        scrollTrigger: { trigger: row, start: 'top 94%', end: 'top 62%', scrub: 0.5 }
-      });
-    });
-  })();
-
-  /* ----------------------------------------------------------
-     TICKER COMPÉTENCES — vitesse liée au scroll (pause au survol)
-     ---------------------------------------------------------- */
-  (function initTickerVelocity() {
-    if (reduced) return;
-    const track = document.querySelector('.skills-ticker-track');
-    if (!track) return;
-    track.style.animation = 'none';
-    const tw = gsap.fromTo(track, { xPercent: 0 },
-      { xPercent: -50, ease: 'none', duration: 36, repeat: -1 });
-    let hovered = false, decay = null;
-    const cont = track.parentElement;
-    cont.addEventListener('mouseenter', () => {
-      hovered = true;
-      gsap.to(tw, { timeScale: 0, duration: 0.35, overwrite: true });
-    });
-    cont.addEventListener('mouseleave', () => {
-      hovered = false;
-      gsap.to(tw, { timeScale: 1, duration: 0.35, overwrite: true });
-    });
-    ScrollTrigger.create({
-      onUpdate(self) {
-        if (hovered) return;
-        const boost = 1 + Math.min(Math.abs(self.getVelocity()) / 900, 3);
-        tw.timeScale(boost);
-        if (decay) decay.kill();
-        const obj = { v: boost };
-        decay = gsap.to(obj, {
-          v: 1, duration: 1, ease: 'power2.out',
-          onUpdate: () => { if (!hovered) tw.timeScale(obj.v); }
-        });
-      }
-    });
-  })();
-
-  /* ----------------------------------------------------------
-     ANNÉE GÉANTE STICKY — Parcours & Expériences : l'année en
-     contour d'encre suit le scroll et change à chaque étape
-     ---------------------------------------------------------- */
-  (function initTimelineYears() {
-    if (reduced || window.innerWidth < 1100) return;
-    ['journey', 'experiences'].forEach(id => {
-      const section = document.getElementById(id);
-      const inner = section?.querySelector('.section-inner');
-      const items = section?.querySelectorAll('.timeline-item');
-      if (!inner || !items || !items.length) return;
-      section.classList.add('has-year-rail');
-      const rail = document.createElement('div');
-      rail.className = 'year-rail';
-      rail.setAttribute('aria-hidden', 'true');
-      rail.innerHTML = '<div class="year-rail-num"></div>';
-      inner.insertBefore(rail, inner.firstChild);
-      const num = rail.querySelector('.year-rail-num');
-      let current = '';
-      function setYear(y) {
-        if (!y || y === current) return;
-        current = y;
-        num.textContent = y;
-        gsap.fromTo(num, { opacity: 0, y: 34 },
-          { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out', overwrite: true });
-      }
-      items.forEach(item => {
-        const y = (item.querySelector('.timeline-date')?.textContent.match(/\d{4}/) || [''])[0];
-        if (!y) return;
-        ScrollTrigger.create({
-          trigger: item, start: 'top 60%', end: 'bottom 60%',
-          onEnter: () => setYear(y),
-          onEnterBack: () => setYear(y)
-        });
-      });
-    });
-  })();
-
-  /* ----------------------------------------------------------
-     FOOTER — entrée en fondu
-     ---------------------------------------------------------- */
-  (function initFooterReveal() {
-    if (reduced) return;
-    ['.footer-top', '.footer-bottom'].forEach((sel, i) => {
-      const el = document.querySelector(sel);
-      if (!el) return;
-      gsap.set(el, { opacity: 0, y: 24 });
-      ScrollTrigger.create({
-        trigger: 'footer', start: 'top 94%', once: true,
-        onEnter: () => gsap.to(el, {
-          opacity: 1, y: 0, duration: 0.7,
-          delay: i * 0.12, ease: 'power3.out'
-        })
-      });
-    });
-  })();
-
+  panel.addEventListener("focus", () => openPanel(panel));
+  panel.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      openPanel(panel);
+    }
+  });
 });
+
+/* ---------- 5. Compétences : blocs extensibles ----------
+   Clic sur une carte : elle s'ouvre (accordéon fluide), une seule
+   carte ouverte à la fois.                                       */
+const features = document.querySelectorAll(".feature");
+
+features.forEach((feature) => {
+  const toggle = () => {
+    const isOpen = feature.classList.contains("is-open");
+    features.forEach((f) => f.classList.remove("is-open"));
+    if (!isOpen) feature.classList.add("is-open");
+  };
+  feature.addEventListener("click", toggle);
+  feature.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      toggle();
+    }
+  });
+});
+
+/* ---------- 6. Apparition au scroll ---------- */
+const observer = new IntersectionObserver(
+  (entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("is-visible");
+        observer.unobserve(entry.target);
+      }
+    });
+  },
+  { threshold: 0.15 }
+);
+document.querySelectorAll(".reveal").forEach((el) => observer.observe(el));
