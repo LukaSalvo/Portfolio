@@ -3,20 +3,21 @@
 [![CI](https://github.com/LukaSalvo/Portfolio/actions/workflows/ci.yml/badge.svg)](https://github.com/LukaSalvo/Portfolio/actions/workflows/ci.yml)
 
 Site vitrine personnel présentant mon parcours, mes compétences et mes projets.
-Futur apprenti ingénieur à l'**IMT Nord Europe** (2026-2029), spécialisé en
+Apprenti ingénieur à l'**IMT Nord Europe** (2026-2029), spécialisé en
 administration système, cybersécurité et DevOps.
 
 🔗 **Démo en ligne : [lukasalvo.netlify.app](https://lukasalvo.netlify.app/)**
 
 ## ✨ Fonctionnalités
 
-- 🎨 Design moderne avec grille *bento* pour les projets
-- 🌗 Thème sombre / clair
-- 🎬 Animations au scroll avec **GSAP** (ScrollTrigger)
-- 💻 Terminal interactif intégré
-- 🥚 Easter egg caché (saurez-vous le trouver ?)
+- 🖤 Design éditorial sombre — typographie **Anton** / **Space Grotesk**
+- 🎯 Hero interactif : les projets survolés réécrivent le titre lettre à lettre
+- 🎬 Section *focus* en parallax cinématique au scroll (clip-path animé)
+- 🗂️ Projets en panneaux verticaux extensibles au survol
+- 🪗 Compétences en cartes accordéon
+- 🖱️ Curseur personnalisé avec labels contextuels
 - 📱 Entièrement responsive
-- ♿ Attributs ARIA et HTML sémantique
+- ♿ HTML sémantique, ARIA, support `prefers-reduced-motion`
 
 ## 🛠️ Stack technique
 
@@ -25,8 +26,6 @@ administration système, cybersécurité et DevOps.
 | Structure   | HTML5 sémantique             |
 | Style       | CSS3 (variables, grid, flex) |
 | Interactions| JavaScript vanilla           |
-| Animations  | GSAP + ScrollTrigger (CDN)   |
-| Icônes      | Font Awesome                 |
 | Hébergement | Netlify                      |
 
 Aucun framework, aucun build : le site est 100 % statique.
@@ -50,7 +49,7 @@ push et pull request sur `main` :
 - **Lint HTML** — HTMLHint
 - **Lint CSS** — Stylelint (règles cosmétiques désactivées, seuls les vrais
   problèmes font échouer le build)
-- **Lint JS** — ESLint (config navigateur, globales GSAP déclarées)
+- **Lint JS** — ESLint (config navigateur)
 - **Liens cassés** — lychee scanne tous les liens du site (les repos privés
   et les codes anti-bot type LinkedIn sont exclus)
 
@@ -59,10 +58,10 @@ push et pull request sur `main` :
 ```
 Portfolio/
 ├── index.html          # Page unique du site
-├── style.css           # Styles (thèmes, animations, responsive)
-├── script.js           # Interactions, terminal, easter egg
+├── style.css           # Styles (animations, responsive)
+├── script.js           # Interactions (hero, parallax, panneaux, curseur)
 ├── img/                # Captures des projets, avatar, OG image
-├── pdf/                # Rapports de stage
+├── pdf/                # CV, rapports de stage, certificats
 └── .github/
     └── workflows/
         └── ci.yml      # Pipeline de vérification
@@ -72,6 +71,3 @@ Portfolio/
 
 - 💼 [LinkedIn](https://www.linkedin.com/in/luka-salvo-289b10291/)
 - 🐙 [GitHub](https://github.com/LukaSalvo)
-
-> 🎯 En recherche d'une **alternance de 3 ans à partir de septembre 2026**
-> (rythme 2 semaines école / 5 semaines entreprise).
