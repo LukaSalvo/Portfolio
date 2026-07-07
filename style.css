@@ -114,17 +114,30 @@ body {
   left: 50%;
   transform: translateX(-50%);
   z-index: 200;
-  max-width: min(94vw, 720px);
+  /* max-content : sans lui, le shrink-to-fit d'un élément fixé à
+     left:50% se limite à la moitié du viewport et coupe les liens */
+  width: max-content;
+  max-width: min(94vw, 780px);
+  transition: transform .5s cubic-bezier(.22, 1, .36, 1), opacity .35s ease;
+}
+/* L'île s'éclipse quand on descend, réapparaît dès qu'on remonte */
+.island.is-hidden {
+  transform: translateX(-50%) translateY(calc(-100% - 20px));
+  opacity: 0;
+  pointer-events: none;
 }
 .island__pill {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 12px;
-  background: #0a0a0a;
+  background: rgba(10, 10, 10, .82);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
   color: #ece7de;
   border: 1px solid rgba(236, 231, 222, .14);
   border-radius: 999px;
-  padding: 10px 20px;
+  padding: 10px 20px 12px;
   box-shadow: 0 10px 34px rgba(0, 0, 0, .35);
   transition: padding .55s cubic-bezier(.34, 1.35, .64, 1);
 }
@@ -165,6 +178,34 @@ body {
   transition: max-width .5s cubic-bezier(.34, 1.35, .64, 1), opacity .3s ease;
 }
 .island.is-open .island__status { max-width: 0; opacity: 0; }
+/* Roulement vertical du libellé quand la section change */
+.island__status.is-swapping { animation: statusSwap .5s cubic-bezier(.22, 1, .36, 1); }
+@keyframes statusSwap {
+  0%   { transform: translateY(0);     opacity: 1; }
+  40%  { transform: translateY(-10px); opacity: 0; }
+  55%  { transform: translateY(10px);  opacity: 0; }
+  100% { transform: translateY(0);     opacity: 1; }
+}
+/* Progression de lecture — fine ligne accent au bas de la pastille */
+.island__progress {
+  position: absolute;
+  left: 22px;
+  right: 22px;
+  bottom: 4px;
+  height: 2px;
+  border-radius: 2px;
+  background: rgba(236, 231, 222, .1);
+  overflow: hidden;
+  pointer-events: none;
+}
+.island__progress span {
+  display: block;
+  height: 100%;
+  border-radius: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+}
 /* Liens — repliés en largeur 0, déployés via grid 0fr -> 1fr */
 .island__links {
   display: grid;
@@ -190,7 +231,20 @@ body {
   position: relative;
   transition: color .25s ease;
 }
+.island__row a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -4px;
+  height: 1.5px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .3s cubic-bezier(.22, 1, .36, 1);
+}
 .island__row a:hover, .island__row a.is-active { color: var(--accent); }
+.island__row a:hover::after, .island__row a.is-active::after { transform: scaleX(1); }
 .island__theme {
   width: 28px; height: 28px;
   border-radius: 50%;
@@ -1124,10 +1178,24 @@ section, footer { padding: clamp(80px, 12vw, 160px) clamp(20px, 6vw, 96px); }
   .showreel { height: 220vh; }
   .certline { flex-wrap: wrap; row-gap: 8px; }
   .island { top: 10px; }
-  .island__pill { padding: 9px 16px; gap: 10px; }
+  .island__pill { padding: 9px 16px 11px; gap: 10px; }
+  .island__progress { left: 16px; right: 16px; bottom: 3px; }
   .island__row { gap: 10px; }
   .island__row a { font-size: 10px; letter-spacing: .06em; }
   .island.is-open .island__logo { display: none; }
+  /* Ouverte : pastille élargie, les liens se répartissent sur deux rangées */
+  .island.is-open .island__pill {
+    border-radius: 22px;
+    width: min(94vw, 400px);
+    justify-content: center;
+  }
+  .island.is-open .island__row {
+    flex-wrap: wrap;
+    justify-content: center;
+    row-gap: 10px;
+    column-gap: 14px;
+    padding: 4px 0;
+  }
 }
 
 /* ============ Accessibilité : mouvement réduit ============ */
@@ -1163,11 +1231,103 @@ section, footer { padding: clamp(80px, 12vw, 160px) clamp(20px, 6vw, 96px); }
   /* Certifications : pas de roulement des lettres */
   .certline__text .trchar span { transition: none; }
   .certline:hover .trchar span { transform: none; }
-  .island__pill, .island__links, .island__status, .island__sep { transition: none; }
+  .island, .island__pill, .island__links, .island__status, .island__sep { transition: none; }
   .island.bounce .island__pill { animation: none; }
+  .island__status.is-swapping { animation: none; }
+  .egg__terminal { animation: none; }
+  .egg__caret { animation: none; }
+  .egg__rain { display: none; }
 }
 
 a:focus-visible, button:focus-visible, .panel:focus-visible, summary:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
 }
+
+/* ============ Easter egg — terminal secret ============
+   Toujours sombre, quel que soit le thème : c'est un terminal. */
+.egg {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  background: rgba(5, 5, 5, .88);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.egg[hidden] { display: none; }
+.egg__rain {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: .3;
+}
+.egg__terminal {
+  position: relative;
+  width: min(92vw, 640px);
+  background: #0c0c0c;
+  border: 1px solid rgba(236, 231, 222, .18);
+  border-radius: 14px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, .6);
+  overflow: hidden;
+  animation: eggIn .5s cubic-bezier(.22, 1, .36, 1) both;
+}
+@keyframes eggIn {
+  from { transform: translateY(26px) scale(.96); opacity: 0; }
+}
+.egg__bar {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(236, 231, 222, .1);
+}
+.egg__bar i {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: rgba(236, 231, 222, .16);
+}
+.egg__bar i:first-child { background: #ff4d2e; }
+.egg__bar p {
+  flex: 1;
+  text-align: center;
+  font-size: 11px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: rgba(236, 231, 222, .45);
+}
+.egg__close {
+  background: none;
+  border: none;
+  color: rgba(236, 231, 222, .6);
+  font-size: 14px;
+  padding: 2px 6px;
+  transition: color .25s ease;
+}
+.egg__close:hover { color: #ece7de; }
+.egg__body {
+  padding: 18px 20px 24px;
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 13px;
+  line-height: 1.8;
+  color: #ece7de;
+  min-height: 280px;
+}
+.egg__line { white-space: pre-wrap; word-break: break-word; }
+.egg__line--prompt::before { content: "➜ ~ "; color: #ff4d2e; font-weight: 700; }
+.egg__line--ok { color: #45d06c; font-weight: 700; letter-spacing: .06em; }
+.egg__body a { color: #ff4d2e; }
+.egg__caret {
+  display: inline-block;
+  width: 8px;
+  height: 14px;
+  background: #ff4d2e;
+  vertical-align: -2px;
+  animation: caretBlink 1s steps(2) infinite;
+}
+@keyframes caretBlink { 50% { opacity: 0; } }
