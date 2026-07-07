@@ -389,8 +389,13 @@ const exp = document.getElementById("exp");
 if (exp && !prefersReducedMotion) {
   const expItems = [...exp.querySelectorAll(".exp__item")];
   const expIndex = document.getElementById("expIndex");
+  const expTotal = document.getElementById("expTotal");
   const expBar = document.getElementById("expBar");
-  let expCurrent = 0;
+  // Total calculé depuis le HTML — impossible de le désynchroniser
+  if (expTotal) expTotal.textContent = String(expItems.length).padStart(2, "0");
+  // -1 force la première passe à poser les classes is-active / is-past,
+  // même si le HTML en contient de trop (une seule carte visible à la fois)
+  let expCurrent = -1;
 
   function updateExp() {
     const rect = exp.getBoundingClientRect();
