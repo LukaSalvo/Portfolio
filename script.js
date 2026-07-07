@@ -6,10 +6,12 @@
    4. Projets ExpandOnHover vertical
    5. Compétences extensibles (accordéon)
    6. Apparition des sections au scroll
-   7. Dynamic Island : navigation + section courante
+   7. Dynamic Island : navigation, section courante, progression
+      de lecture, repli au scroll descendant
    8. Parcours : pile de cartes au scroll (card stack)
    9. Expériences : words preloader piloté au scroll
    10. Certifications : text roll au survol
+   11. Easter egg : terminal secret (code Konami / 5 clics logo)
    ============================================================ */
 
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -237,9 +239,12 @@ feats.forEach((feat) => {
 /* ---------- 7. Dynamic Island ----------
    La pastille affiche la section courante ; au survol (desktop) ou
    au tap (mobile) elle se déploie et révèle les liens. Un rebond
-   accompagne chaque changement de section. */
+   accompagne chaque changement de section, le libellé roule
+   verticalement, une fine ligne trace la progression de lecture et
+   l'île s'éclipse quand on descend (elle revient dès qu'on remonte). */
 const island = document.getElementById("island");
 const islandStatus = document.getElementById("islandStatus");
+const islandProgress = document.getElementById("islandProgress");
 
 if (island) {
   if (finePointer) {
@@ -256,11 +261,34 @@ if (island) {
   island.addEventListener("focusout", (e) => {
     if (!island.contains(e.relatedTarget)) island.classList.remove("is-open");
   });
+  // Clic hors de l'île ou touche Échap : on referme (surtout mobile)
+  document.addEventListener("click", (e) => {
+    if (island.classList.contains("is-open") && !island.contains(e.target)) {
+      island.classList.remove("is-open");
+    }
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") island.classList.remove("is-open");
+  });
   // Clic sur un lien : on referme
   const islandLinks = island.querySelectorAll(".island__row a");
   islandLinks.forEach((a) =>
     a.addEventListener("click", () => island.classList.remove("is-open"))
   );
+
+  // Libellé de section : roulement vertical (le texte change à mi-course)
+  let statusTimer = null;
+  function setIslandStatus(label) {
+    if (prefersReducedMotion) {
+      islandStatus.textContent = label;
+      return;
+    }
+    islandStatus.classList.remove("is-swapping");
+    void islandStatus.offsetWidth; // relance l'animation
+    islandStatus.classList.add("is-swapping");
+    clearTimeout(statusTimer);
+    statusTimer = setTimeout(() => (islandStatus.textContent = label), 230);
+  }
 
   // Scrollspy : la section qui traverse le centre de l'écran
   const spy = new IntersectionObserver(
@@ -269,21 +297,54 @@ if (island) {
         if (!entry.isIntersecting) return;
         const label = entry.target.dataset.islandLabel;
         if (islandStatus.textContent !== label) {
-          islandStatus.textContent = label;
+          setIslandStatus(label);
           if (!prefersReducedMotion) {
             island.classList.remove("bounce");
             void island.offsetWidth; // relance l'animation
             island.classList.add("bounce");
           }
         }
-        islandLinks.forEach((a) =>
-          a.classList.toggle("is-active", a.getAttribute("href") === "#" + entry.target.id)
-        );
+        islandLinks.forEach((a) => {
+          const active = a.getAttribute("href") === "#" + entry.target.id;
+          a.classList.toggle("is-active", active);
+          if (active) a.setAttribute("aria-current", "true");
+          else a.removeAttribute("aria-current");
+        });
       });
     },
     { rootMargin: "-45% 0px -45% 0px", threshold: 0 }
   );
   document.querySelectorAll("[data-island-label]").forEach((s) => spy.observe(s));
+
+  // Progression de lecture + repli au scroll descendant
+  let lastScrollY = window.scrollY;
+  let islandTicking = false;
+
+  function updateIsland() {
+    const y = window.scrollY;
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    islandProgress.style.transform = `scaleX(${max > 0 ? clamp01(y / max) : 0})`;
+
+    if (island.classList.contains("is-open") || y < 120) {
+      island.classList.remove("is-hidden");
+    } else if (y > lastScrollY + 6 && y > 320) {
+      island.classList.add("is-hidden");
+    } else if (y < lastScrollY - 6) {
+      island.classList.remove("is-hidden");
+    }
+    lastScrollY = y;
+  }
+
+  window.addEventListener("scroll", () => {
+    if (!islandTicking) {
+      requestAnimationFrame(() => {
+        updateIsland();
+        islandTicking = false;
+      });
+      islandTicking = true;
+    }
+  }, { passive: true });
+  updateIsland();
 }
 
 /* ---------- 8. Parcours : pile de cartes au scroll ----------
@@ -407,3 +468,179 @@ const observer = new IntersectionObserver(
   { threshold: 0.15 }
 );
 document.querySelectorAll(".reveal").forEach((el) => observer.observe(el));
+
+/* ---------- 11. Easter egg : terminal secret ----------
+   Déclencheurs : code Konami (↑ ↑ ↓ ↓ ← → ← → B A) au clavier,
+   ou 5 clics rapides sur le logo de l'île (mobile). Un faux
+   terminal s'ouvre sur une pluie de caractères façon Matrix et
+   tape ses lignes une à une. Échap, ✕ ou clic à côté pour fermer. */
+const egg = document.getElementById("egg");
+const eggBody = document.getElementById("eggBody");
+const eggClose = document.getElementById("eggClose");
+const eggRain = document.getElementById("eggRain");
+
+if (egg) {
+  const EGG_LINES = [
+    { prompt: true, text: "whoami" },
+    { text: "luka — apprenti ingénieur · admin sys · cybersécurité" },
+    { prompt: true, text: "sudo unlock ./easter-egg" },
+    { text: "[sudo] mot de passe : ••••••••" },
+    { text: "ACCESS GRANTED ✔", ok: true },
+    { text: "" },
+    { text: "Bien joué — tu as trouvé le terminal caché." },
+    { text: "« La curiosité est la première compétence d'un pentester. »" },
+    { text: "" },
+    { prompt: true, text: "./recruter_luka.sh --now" },
+    { text: "→ luka.salvo23@gmail.com", link: "mailto:luka.salvo23@gmail.com" },
+  ];
+
+  let eggOpenFlag = false;
+  let rainRAF = null;
+  let typeTimer = null;
+  let lastFocus = null;
+
+  function startRain() {
+    if (prefersReducedMotion) return;
+    const ctx = eggRain.getContext("2d");
+    eggRain.width = window.innerWidth;
+    eggRain.height = window.innerHeight;
+    const glyphs = "01アイウエオカキクケコサシスセソ<>/{}$#";
+    const size = 16;
+    const cols = Math.ceil(eggRain.width / size);
+    const drops = Array.from({ length: cols }, () => Math.random() * -40);
+    let last = 0;
+
+    function draw(now) {
+      rainRAF = requestAnimationFrame(draw);
+      if (now - last < 50) return; // ~20 fps suffisent
+      last = now;
+      ctx.fillStyle = "rgba(5, 5, 5, 0.12)";
+      ctx.fillRect(0, 0, eggRain.width, eggRain.height);
+      ctx.fillStyle = "#ff4d2e";
+      ctx.font = size + "px monospace";
+      drops.forEach((y, i) => {
+        ctx.fillText(glyphs[(Math.random() * glyphs.length) | 0], i * size, y * size);
+        drops[i] = y * size > eggRain.height && Math.random() > 0.975 ? 0 : y + 1;
+      });
+    }
+    rainRAF = requestAnimationFrame(draw);
+  }
+
+  function typeLines() {
+    eggBody.innerHTML = "";
+    let li = 0;
+
+    function nextLine() {
+      if (li >= EGG_LINES.length) return;
+      const spec = EGG_LINES[li++];
+      const line = document.createElement("p");
+      line.className = "egg__line" +
+        (spec.prompt ? " egg__line--prompt" : "") +
+        (spec.ok ? " egg__line--ok" : "");
+      eggBody.appendChild(line);
+
+      const commit = () => {
+        if (spec.link) {
+          line.textContent = "";
+          const a = document.createElement("a");
+          a.href = spec.link;
+          a.textContent = spec.text;
+          line.appendChild(a);
+        } else {
+          line.textContent = spec.text || " ";
+        }
+      };
+
+      if (prefersReducedMotion) {
+        commit();
+        nextLine();
+        return;
+      }
+
+      const caret = document.createElement("span");
+      caret.className = "egg__caret";
+      let ci = 0;
+      (function typeChar() {
+        line.textContent = spec.text.slice(0, ci);
+        line.appendChild(caret);
+        if (ci++ < spec.text.length) {
+          typeTimer = setTimeout(typeChar, spec.prompt ? 45 : 14);
+        } else {
+          caret.remove();
+          commit();
+          typeTimer = setTimeout(nextLine, spec.text ? 260 : 90);
+        }
+      })();
+    }
+    nextLine();
+  }
+
+  function openEgg() {
+    if (eggOpenFlag) return;
+    eggOpenFlag = true;
+    lastFocus = document.activeElement;
+    egg.hidden = false;
+    document.body.style.overflow = "hidden";
+    startRain();
+    typeLines();
+    eggClose.focus();
+  }
+
+  function closeEgg() {
+    if (!eggOpenFlag) return;
+    eggOpenFlag = false;
+    egg.hidden = true;
+    document.body.style.overflow = "";
+    cancelAnimationFrame(rainRAF);
+    clearTimeout(typeTimer);
+    if (lastFocus) lastFocus.focus();
+  }
+
+  eggClose.addEventListener("click", closeEgg);
+  egg.addEventListener("click", (e) => {
+    if (!e.target.closest(".egg__terminal")) closeEgg();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeEgg();
+  });
+
+  // Déclencheur 1 : code Konami
+  const KONAMI = ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown",
+                  "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight", "b", "a"];
+  let konamiPos = 0;
+  document.addEventListener("keydown", (e) => {
+    const key = e.key.length === 1 ? e.key.toLowerCase() : e.key;
+    if (key === KONAMI[konamiPos]) konamiPos++;
+    else konamiPos = key === KONAMI[0] ? 1 : 0;
+    if (konamiPos === KONAMI.length) {
+      konamiPos = 0;
+      openEgg();
+    }
+  });
+
+  // Déclencheur 2 : 5 clics rapides sur le logo (accessible au tactile)
+  const islandLogo = document.getElementById("islandLogo");
+  if (islandLogo) {
+    let taps = 0;
+    let tapTimer = null;
+    islandLogo.addEventListener("click", () => {
+      taps++;
+      clearTimeout(tapTimer);
+      tapTimer = setTimeout(() => (taps = 0), 1600);
+      if (taps >= 5) {
+        taps = 0;
+        openEgg();
+      }
+    });
+  }
+
+  // Indice pour les curieux qui ouvrent la console — bon réflexe.
+  console.log(
+    "%cLS.",
+    "font: 800 44px 'Bricolage Grotesque', sans-serif; color: #ff4d2e;"
+  );
+  console.log(
+    "%cCurieux ? J'aime ça. Essaie le code Konami sur la page : ↑ ↑ ↓ ↓ ← → ← → B A",
+    "font-size: 12px; color: #8d887f;"
+  );
+}
