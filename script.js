@@ -11,7 +11,7 @@
    8. Parcours : pile de cartes au scroll (card stack)
    9. Expériences : words preloader piloté au scroll
    10. Certifications : text roll au survol
-   11. Easter egg : terminal secret (code Konami / 5 clics logo)
+   11. Easter egg : terminal secret (taper « root » sur la page)
    ============================================================ */
 
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -470,8 +470,7 @@ const observer = new IntersectionObserver(
 document.querySelectorAll(".reveal").forEach((el) => observer.observe(el));
 
 /* ---------- 11. Easter egg : terminal secret ----------
-   Déclencheurs : code Konami (↑ ↑ ↓ ↓ ← → ← → B A) au clavier,
-   ou 5 clics rapides sur le logo de l'île (mobile). Un faux
+   Déclencheur : taper « root » n'importe où sur la page. Un faux
    terminal s'ouvre sur une pluie de caractères façon Matrix et
    tape ses lignes une à une. Échap, ✕ ou clic à côté pour fermer. */
 const egg = document.getElementById("egg");
@@ -481,14 +480,15 @@ const eggRain = document.getElementById("eggRain");
 
 if (egg) {
   const EGG_LINES = [
-    { prompt: true, text: "whoami" },
-    { text: "luka — apprenti ingénieur · admin sys · cybersécurité" },
-    { prompt: true, text: "sudo unlock ./easter-egg" },
-    { text: "[sudo] mot de passe : ••••••••" },
-    { text: "ACCESS GRANTED ✔", ok: true },
+    { prompt: true, text: "su root" },
+    { text: "Mot de passe : ••••••••" },
+    { text: "ROOT ACCESS GRANTED ✔", ok: true },
     { text: "" },
-    { text: "Bien joué — tu as trouvé le terminal caché." },
-    { text: "« La curiosité est la première compétence d'un pentester. »" },
+    { prompt: true, text: "whoami" },
+    { text: "root — mais le vrai maître des lieux, c'est Luka." },
+    { text: "" },
+    { text: "Bien joué, tu as trouvé le passage secret." },
+    { text: "« Qui cherche root trouve. »" },
     { text: "" },
     { prompt: true, text: "./recruter_luka.sh --now" },
     { text: "→ luka.salvo23@gmail.com", link: "mailto:luka.salvo23@gmail.com" },
@@ -604,35 +604,19 @@ if (egg) {
     if (e.key === "Escape") closeEgg();
   });
 
-  // Déclencheur 1 : code Konami
-  const KONAMI = ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown",
-                  "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight", "b", "a"];
-  let konamiPos = 0;
+  // Déclencheur : taper « root » n'importe où sur la page
+  const SECRET = "root";
+  let typedBuffer = "";
   document.addEventListener("keydown", (e) => {
-    const key = e.key.length === 1 ? e.key.toLowerCase() : e.key;
-    if (key === KONAMI[konamiPos]) konamiPos++;
-    else konamiPos = key === KONAMI[0] ? 1 : 0;
-    if (konamiPos === KONAMI.length) {
-      konamiPos = 0;
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    if (e.key.length !== 1) return;
+    if (e.target.closest("input, textarea, select, [contenteditable]")) return;
+    typedBuffer = (typedBuffer + e.key.toLowerCase()).slice(-SECRET.length);
+    if (typedBuffer === SECRET) {
+      typedBuffer = "";
       openEgg();
     }
   });
-
-  // Déclencheur 2 : 5 clics rapides sur le logo (accessible au tactile)
-  const islandLogo = document.getElementById("islandLogo");
-  if (islandLogo) {
-    let taps = 0;
-    let tapTimer = null;
-    islandLogo.addEventListener("click", () => {
-      taps++;
-      clearTimeout(tapTimer);
-      tapTimer = setTimeout(() => (taps = 0), 1600);
-      if (taps >= 5) {
-        taps = 0;
-        openEgg();
-      }
-    });
-  }
 
   // Indice pour les curieux qui ouvrent la console — bon réflexe.
   console.log(
@@ -640,7 +624,9 @@ if (egg) {
     "font: 800 44px 'Bricolage Grotesque', sans-serif; color: #ff4d2e;"
   );
   console.log(
-    "%cCurieux ? J'aime ça. Essaie le code Konami sur la page : ↑ ↑ ↓ ↓ ← → ← → B A",
+    "%cCurieux ? J'aime ça. Sur ce site, l'accès %croot%c n'est pas si protégé… tape-le quelque part.",
+    "font-size: 12px; color: #8d887f;",
+    "font-size: 12px; color: #ff4d2e; font-weight: 700;",
     "font-size: 12px; color: #8d887f;"
   );
 }
