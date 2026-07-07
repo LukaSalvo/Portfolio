@@ -29,7 +29,7 @@
   <script>
     (function () {
       var t = localStorage.getItem("theme");
-      if (!t) t = window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+      if (t !== "light" && t !== "dark") t = window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
       document.documentElement.dataset.theme = t;
     })();
   </script>
@@ -74,6 +74,7 @@
           <a href="#certifications" data-hover>Certifs</a>
           <a href="#contact" data-hover>Contact</a>
           <button class="island__theme" id="themeToggle" data-hover aria-label="Basculer entre mode jour et mode nuit"></button>
+          <button class="island__lang" id="langToggle" data-hover aria-label="Switch to English">EN</button>
         </div>
       </div>
       <span class="island__progress" aria-hidden="true"><span id="islandProgress"></span></span>

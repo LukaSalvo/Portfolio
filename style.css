@@ -262,6 +262,26 @@ body {
 .island__theme:hover { transform: rotate(40deg) scale(1.1); }
 .island__theme::after { content: "☀"; }
 :root[data-theme="light"] .island__theme::after { content: "☾"; }
+/* Bouton de langue FR / EN — même famille que le bouton de thème */
+.island__lang {
+  height: 28px;
+  min-width: 36px;
+  padding: 0 9px;
+  border-radius: 999px;
+  border: 1px solid rgba(236, 231, 222, .4);
+  background: transparent;
+  color: #ece7de;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform .35s cubic-bezier(.22,1,.36,1), color .25s ease, border-color .25s ease;
+}
+.island__lang:hover { transform: scale(1.1); color: var(--accent); border-color: var(--accent); }
 
 /* ============ HERO ============ */
 .hero {
@@ -1196,6 +1216,7 @@ section, footer { padding: clamp(80px, 12vw, 160px) clamp(20px, 6vw, 96px); }
     column-gap: 14px;
     padding: 4px 0;
   }
+  .island__lang { height: 24px; min-width: 30px; padding: 0 7px; font-size: 9px; }
 }
 
 /* ============ Accessibilité : mouvement réduit ============ */

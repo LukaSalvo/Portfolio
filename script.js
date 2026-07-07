@@ -98,8 +98,8 @@ const cursorLabel = document.getElementById("cursorLabel");
 
 function bindCursorTargets() {
   document.querySelectorAll("[data-cursor]").forEach((el) => {
-    if (el.dataset.cursorBound) return;
-    el.dataset.cursorBound = "1";
+    if (el._cursorBound) return;
+    el._cursorBound = true;
     el.addEventListener("mouseenter", () => {
       cursorLabel.textContent = el.dataset.cursor;
       cursor.classList.add("is-active");
@@ -107,8 +107,8 @@ function bindCursorTargets() {
     el.addEventListener("mouseleave", () => cursor.classList.remove("is-active"));
   });
   document.querySelectorAll("[data-hover]").forEach((el) => {
-    if (el.dataset.cursorBound) return;
-    el.dataset.cursorBound = "1";
+    if (el._cursorBound) return;
+    el._cursorBound = true;
     el.addEventListener("mouseenter", () => {
       cursorLabel.textContent = "";
       cursor.classList.add("is-active");
@@ -499,6 +499,22 @@ if (egg) {
     { text: "→ luka.salvo23@gmail.com", link: "mailto:luka.salvo23@gmail.com" },
   ];
 
+  // Version anglaise du terminal — choisie à l'ouverture selon <html lang>
+  const EGG_LINES_EN = [
+    { prompt: true, text: "su root" },
+    { text: "Password: ••••••••" },
+    { text: "ROOT ACCESS GRANTED ✔", ok: true },
+    { text: "" },
+    { prompt: true, text: "whoami" },
+    { text: "root — but the real owner here is Luka." },
+    { text: "" },
+    { text: "Well played, you found the secret passage." },
+    { text: "« Seek root and you shall find. »" },
+    { text: "" },
+    { prompt: true, text: "./hire_luka.sh --now" },
+    { text: "→ luka.salvo23@gmail.com", link: "mailto:luka.salvo23@gmail.com" },
+  ];
+
   let eggOpenFlag = false;
   let rainRAF = null;
   let typeTimer = null;
@@ -532,12 +548,13 @@ if (egg) {
   }
 
   function typeLines() {
+    const lines = document.documentElement.lang === "en" ? EGG_LINES_EN : EGG_LINES;
     eggBody.innerHTML = "";
     let li = 0;
 
     function nextLine() {
-      if (li >= EGG_LINES.length) return;
-      const spec = EGG_LINES[li++];
+      if (li >= lines.length) return;
+      const spec = lines[li++];
       const line = document.createElement("p");
       line.className = "egg__line" +
         (spec.prompt ? " egg__line--prompt" : "") +
@@ -634,4 +651,203 @@ if (egg) {
     "font-size: 12px; color: #ff4d2e; font-weight: 700;",
     "font-size: 12px; color: #8d887f;"
   );
+}
+
+/* ---------- 12. Langue FR / EN ----------
+   Le français du HTML est la langue source : au premier passage en
+   anglais, chaque texte / attribut d'origine est mémorisé (Map par
+   élément), puis le dictionnaire EN prend le relais. Le retour au
+   français restaure l'original — aucune duplication de page. */
+const langToggle = document.getElementById("langToggle");
+
+const EN_TEXT = [
+  [".skip-link", "Skip to content"],
+  ["#cursorLabel", "View"],
+  ['.island__row a[href="#projets"]', "Projects"],
+  ['.island__row a[href="#competences"]', "Skills"],
+  ['.island__row a[href="#parcours"]', "Background"],
+  ['.island__row a[href="#experiences"]', "Experience"],
+  [".hero__eyebrow", "Portfolio — Sysadmin · Cybersecurity · DevOps"],
+  [".hero__hint", "( hover the images — then scroll )"],
+  [".showreel__caption", "Flagship project — MAC Monitor"],
+  [".about__text",
+    "I administer <em>Unix systems</em>, secure infrastructures and automate everything that can be automated. Currently finishing a BUT in Computer Science (DACS track) before an engineering apprenticeship at IMT Nord Europe, I practice cybersecurity daily — CTF, TryHackMe, OSINT."],
+  [".about__meta div:nth-child(1)", '<span class="meta__label">Role</span>Sysadmin · Cybersecurity · DevOps'],
+  [".about__meta div:nth-child(2)", '<span class="meta__label">Stack</span>Linux · Docker · Bash · Networks · GCP'],
+  [".about__meta div:nth-child(3)", '<span class="meta__label">Location</span>Lille · Nancy · Sarreguemines'],
+  [".about__meta div:nth-child(4)", '<span class="meta__label">Languages</span>French · German (B2) · English (B1)'],
+  [".about__meta div:nth-child(5)", '<span class="meta__label">Mobility</span>Driving licence'],
+  [".projects .section__title", 'Selected<span class="accent"> projects</span>'],
+  [".features .section__title", 'What I<span class="accent"> practice</span>'],
+  [".journey .section__title", 'Background<span class="accent"> &amp; education</span>'],
+  [".experiences .section__title", 'Work<span class="accent"> experience</span>'],
+  [".certs .section__title", 'Certifications<span class="accent"> &amp; badges</span>'],
+  [".panel:nth-child(1) .panel__details p",
+    "Web app centralizing dozens of OSINT tools — IP, WHOIS, social networks, geolocation · Ruby · HTML/CSS"],
+  [".panel:nth-child(2) .panel__details p",
+    "System monitoring for macOS &amp; Linux — CPU, RAM, disk, network · Ruby · GitHub Actions CI/CD"],
+  [".panel:nth-child(3) .panel__label span", "GLPI Dashboard"],
+  [".panel:nth-child(3) h3", "GLPI Dashboard"],
+  [".panel:nth-child(3) .panel__details p",
+    "Automated IT ticket reporting — CASC internship, Sarreguemines · SQL · Access"],
+  [".panel:nth-child(3) .panel__links a", "Internship report ↗"],
+  [".panel:nth-child(4) .panel__details p",
+    "Unix shell written in C — core commands, SAE project · C · Systems"],
+  [".panel:nth-child(4) .panel__links a:nth-child(2)", "Report ↗"],
+  [".panel:nth-child(5) .panel__label span", "Secure Website"],
+  [".panel:nth-child(5) h3", "Secure Website"],
+  [".panel:nth-child(5) .panel__details p",
+    "Encryption, input validation, XSS / SQLi protection · PHP · HTML/CSS"],
+  [".panel:nth-child(6) .panel__label span", "UML Generator"],
+  [".panel:nth-child(6) h3", "UML Generator"],
+  [".panel:nth-child(6) .panel__details p",
+    "Class diagrams generated from .class files · Java · JavaFX"],
+  [".projects__more-label", "Also"],
+  [".projects__more a:nth-of-type(1)", "BUDGETTE — budget management, Python / JS ↗"],
+  [".projects__more a:nth-of-type(2)", "Maze Game — Java / JavaFX ↗"],
+  [".projects__more a:nth-of-type(3)", "This portfolio — HTML / CSS / JS ↗"],
+  ['.feat[data-idx="0"] .feat__title', "System administration"],
+  ['.feat[data-idx="0"] .inner',
+    "<p>Installing, configuring and maintaining Linux servers — from the command line to production.</p><ul><li>Linux · Debian · Ubuntu · macOS</li><li>Bash · SSH · Nginx · Apache</li><li>Automated backups</li></ul>"],
+  ['.feat[data-idx="1"] .feat__title', "Networking"],
+  ['.feat[data-idx="1"] .inner',
+    "<p>Designing and securing networks: segmentation, routing and firewalls on Cisco and virtualized environments.</p><ul><li>Cisco · VLANs · Routing</li><li>Firewall &amp; hardening</li><li>Marionnet — virtual networks</li></ul>"],
+  ['.feat[data-idx="2"] .feat__title', "Virtualization &amp; Cloud"],
+  ['.feat[data-idx="2"] .inner',
+    "<p>Isolated, reproducible environments — from containers to the public cloud, with observability.</p><ul><li>Docker · Compose · Kubernetes</li><li>Vagrant · VirtualBox</li><li>GCP · Grafana · Prometheus</li></ul>"],
+  ['.feat[data-idx="3"] .feat__title', "Cybersecurity"],
+  ['.feat[data-idx="3"] .inner',
+    "<p>Regular offensive and defensive practice: CTF, reconnaissance, exploitation, forensics and OSINT.</p><ul><li>TryHackMe — active CTF practice</li><li>OSINT · reconnaissance</li><li>Hardening &amp; OWASP best practices</li></ul>"],
+  ['.feat[data-idx="4"] .feat__title', "Development"],
+  ['.feat[data-idx="4"] .inner',
+    "<p>From automation scripts to full applications, with version control and continuous integration.</p><ul><li>Python · Java · PHP · Ruby · C</li><li>HTML / CSS / JS · LaTeX · VBA</li><li>Git · GitHub Actions</li></ul>"],
+  ['.feat[data-idx="5"] .feat__title', "AI &amp; LLM"],
+  ['.feat[data-idx="5"] .inner',
+    "<p>Continuous self-training on Anthropic, Google and Cisco tools — from using agents to the API.</p><ul><li>Claude Code · MCP · Subagents</li><li>Anthropic &amp; Google AI certifications</li><li>Dedicated AI Linux server (ATE internship)</li></ul>"],
+  [".stack__item:nth-child(1) .stack__title", "Brevet — Highest Honours"],
+  [".stack__item:nth-child(1) .stack__desc", "Collège Himmelsberg, Sarreguemines."],
+  [".stack__item:nth-child(2) .stack__title", "Baccalauréat — With Honours"],
+  [".stack__item:nth-child(2) .stack__desc",
+    "Computer Science (NSI) &amp; Mathematics tracks, European German section. Lycée Jean de Pange, Sarreguemines."],
+  [".stack__item:nth-child(3) .stack__title", "BUT in Computer Science — DACS track"],
+  [".stack__item:nth-child(3) .stack__desc",
+    "IUT Nancy-Charlemagne. Deployment and administration of communicating systems and networks."],
+  [".stack__item:nth-child(4) .stack__title", "Computer Science &amp; Telecommunications Engineering"],
+  [".stack__item:nth-child(4) .stack__desc",
+    "IMT Nord Europe — work-study programme, 2 weeks school / 5 weeks company."],
+  [".exp__item:nth-child(1) .exp__meta",
+    '<span class="exp__tag">Seasonal</span><span class="exp__date">Jul – Aug 2026</span>'],
+  [".exp__item:nth-child(1) .exp__desc",
+    "Automated Windows 11 workstation deployment and production rollout of a Linux server dedicated to Artificial Intelligence. IT maintenance."],
+  [".exp__item:nth-child(2) .exp__meta",
+    '<span class="exp__tag">Internship</span><span class="exp__date">Apr – Jul 2026</span>'],
+  [".exp__item:nth-child(2) .exp__desc",
+    "Automated Windows 11 workstation deployment and production rollout of a Linux server dedicated to Artificial Intelligence."],
+  [".exp__item:nth-child(3) .exp__meta",
+    '<span class="exp__tag">Seasonal</span><span class="exp__date">Summer 2025</span>'],
+  [".exp__item:nth-child(3) .exp__desc",
+    "Mission within the IT department of the agglomeration community."],
+  [".exp__item:nth-child(4) .exp__meta",
+    '<span class="exp__tag">Internship</span><span class="exp__date">Feb – Apr 2025</span>'],
+  [".exp__item:nth-child(4) .exp__desc",
+    'GLPI dashboard with Microsoft Access and SQL — automated IT ticket reporting. <a href="pdf/main.pdf" target="_blank" rel="noopener" data-hover>Report ↗</a>'],
+  [".exp__item:nth-child(5) .exp__meta",
+    '<span class="exp__tag">Temp work</span><span class="exp__date">Summer 2024</span>'],
+  [".exp__item:nth-child(5) .exp__desc",
+    "Industrial assignments — rigour, discipline and stress management."],
+  [".exp__item:nth-child(6) .exp__meta",
+    '<span class="exp__tag">Seasonal</span><span class="exp__date">Summers 2022 &amp; 2023</span>'],
+  [".exp__item:nth-child(6) .exp__desc",
+    "Road repair — teamwork and intercultural communication in German."],
+  [".exp__hint", "( scroll )"],
+  [".certline__status:not(.certline__status--wip)", "Earned"],
+  [".certline__status--wip", "In progress"],
+  [".certs__more summary", 'All certifications <span class="accent">(15 more)</span>'],
+  [".certs__list li:nth-child(5)", "Introduction to Claude Cowork — Anthropic"],
+  [".certs__list li:nth-child(6)", "Introduction to Cybersecurity — Cisco Networking Academy"],
+  [".certs__list li:nth-child(12)", 'Linux Unhatched — Cisco <span class="certs__wip">in progress</span>'],
+  [".certs__list li:nth-child(13)", 'Network Defense — Cisco <span class="certs__wip">in progress</span>'],
+  [".certs__list li:nth-child(14)", 'Introduction to Modern AI — Cisco <span class="certs__wip">in progress</span>'],
+  [".certs__list li:nth-child(15)", 'Applying AI: Analyzing Customer Reviews — Cisco <span class="certs__wip">in progress</span>'],
+  [".certs__credly", "See my badges on Credly ↗"],
+  [".contact__eyebrow", "A project, a question?"],
+  [".contact__cv", "Download my CV ↓"],
+];
+
+// Attributs (curseur, pastille, aria, alt) : FR -> EN
+const EN_ATTR = {
+  "Voir": "View",
+  "Voir le projet": "View project",
+  "Ouvrir": "Open",
+  "Détails": "Details",
+  "Certificat": "Certificate",
+  "Déplier": "Expand",
+  "Écrire": "Write",
+  "Accueil": "Home",
+  "Projet phare": "Flagship project",
+  "À propos": "About",
+  "Projets": "Projects",
+  "Compétences": "Skills",
+  "Parcours": "Background",
+  "Expériences": "Experience",
+  "Sécurité": "Security",
+  "Navigation principale": "Main navigation",
+  "Basculer entre mode jour et mode nuit": "Toggle light / dark mode",
+  "Projet OSINT MAX": "OSINT MAX project",
+  "Projet MAC Monitor": "MAC Monitor project",
+  "Projet Shell mbash": "mbash shell project",
+  "Projet Site Web Sécurisé": "Secure Website project",
+  "Projet Générateur UML": "UML Generator project",
+  "Voir MAC Monitor sur GitHub": "View MAC Monitor on GitHub",
+  "MAC Monitor — projet phare": "MAC Monitor — flagship project",
+  "Portrait de Luka Salvo": "Portrait of Luka Salvo",
+  "Terminal secret": "Secret terminal",
+  "Fermer le terminal": "Close the terminal",
+};
+const FR_ATTR = Object.fromEntries(Object.entries(EN_ATTR).map(([fr, en]) => [en, fr]));
+const I18N_ATTRS = ["data-cursor", "data-island-label", "data-name", "aria-label", "alt"];
+
+const frTextMap = new Map();  // élément -> innerHTML français d'origine
+const frAttrMap = new Map();  // élément -> { attribut: valeur française }
+
+function applyLang(lang) {
+  document.documentElement.lang = lang;
+  localStorage.setItem("lang", lang);
+
+  EN_TEXT.forEach(([selector, en]) => {
+    document.querySelectorAll(selector).forEach((el) => {
+      if (!frTextMap.has(el)) frTextMap.set(el, el.innerHTML);
+      el.innerHTML = lang === "en" ? en : frTextMap.get(el);
+    });
+  });
+
+  document.querySelectorAll(I18N_ATTRS.map((a) => `[${a}]`).join(",")).forEach((el) => {
+    if (!frAttrMap.has(el)) {
+      const saved = {};
+      I18N_ATTRS.forEach((a) => {
+        if (el.hasAttribute(a)) saved[a] = el.getAttribute(a);
+      });
+      frAttrMap.set(el, saved);
+    }
+    Object.entries(frAttrMap.get(el)).forEach(([attr, fr]) => {
+      el.setAttribute(attr, lang === "en" ? (EN_ATTR[fr] || fr) : fr);
+    });
+  });
+
+  // La pastille affiche la section courante : on la traduit aussi
+  const current = islandStatus.textContent;
+  islandStatus.textContent = lang === "en" ? (EN_ATTR[current] || current) : (FR_ATTR[current] || current);
+
+  // Les liens recréés via innerHTML doivent récupérer le curseur custom
+  if (finePointer) bindCursorTargets();
+
+  langToggle.textContent = lang === "en" ? "FR" : "EN";
+  langToggle.setAttribute("aria-label", lang === "en" ? "Passer en français" : "Switch to English");
+}
+
+if (langToggle) {
+  langToggle.addEventListener("click", () =>
+    applyLang(document.documentElement.lang === "en" ? "fr" : "en")
+  );
+  if (localStorage.getItem("lang") === "en") applyLang("en");
 }
