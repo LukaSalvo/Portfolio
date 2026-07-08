@@ -128,25 +128,88 @@
     </div>
   </section>
 
-  <!-- ============ À PROPOS ============ -->
+  <!-- ============ À PROPOS — pipeline CI rejouable ============
+       Le texte d'intro se révèle mot à mot, puis les infos clés se
+       déroulent comme les étapes d'une pipeline CI : la ligne se
+       trace, chaque nœud « passe » (coche accent), sa carte apparaît,
+       et une ligne de statut façon terminal conclut le run. Tout est
+       remis à zéro dès que la section sort de l'écran : l'animation
+       est complète à chaque passage (compteur de run). -->
   <section class="about" id="apropos" data-island-label="À propos">
-    <div class="about__intro reveal">
+    <div class="about__intro">
       <div class="about__photo">
         <img src="img/PP_Luka.jpg" alt="Portrait de Luka Salvo" loading="lazy" decoding="async" />
       </div>
-      <p class="about__text">
+      <p class="about__text" id="aboutText">
         J'administre des <em>systèmes Unix</em>, je sécurise des infrastructures
         et j'automatise tout ce qui peut l'être. Étudiant en BUT Informatique
         (parcours DACS), bientôt apprenti ingénieur à l'IMT Nord Europe, je pratique
         la cybersécurité au quotidien — CTF, TryHackMe, OSINT.
       </p>
     </div>
-    <div class="about__meta reveal">
-      <div><span class="meta__label">Rôle</span>Admin Système · Cybersécurité · DevOps</div>
-      <div><span class="meta__label">Stack</span>Linux · Docker · Bash · Réseaux · GCP</div>
-      <div><span class="meta__label">Localisation</span>Lille · Nancy · Sarreguemines</div>
-      <div><span class="meta__label">Langues</span>Français · Allemand (B2) · Anglais (B1)</div>
-      <div><span class="meta__label">Mobilité</span>Permis B</div>
+
+    <div class="pipeline" id="pipeline" aria-label="Informations clés">
+      <div class="pipeline__rail">
+        <div class="pipeline__line" aria-hidden="true"><span></span></div>
+        <ul class="pipeline__stages">
+          <li class="pipeline__stage" style="--n:0">
+            <span class="pipeline__node" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path class="pipeline__check" d="M6 12.4l4.2 4.2L18 8"/></svg>
+            </span>
+            <div class="pipeline__card">
+              <span class="pipeline__idx" aria-hidden="true">01</span>
+              <span class="pipeline__label">Rôle</span>
+              <p class="pipeline__value">Admin Système · Cybersécurité · DevOps</p>
+            </div>
+          </li>
+          <li class="pipeline__stage" style="--n:1">
+            <span class="pipeline__node" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path class="pipeline__check" d="M6 12.4l4.2 4.2L18 8"/></svg>
+            </span>
+            <div class="pipeline__card">
+              <span class="pipeline__idx" aria-hidden="true">02</span>
+              <span class="pipeline__label">Stack</span>
+              <p class="pipeline__value">Linux · Docker · Bash · Réseaux · GCP</p>
+            </div>
+          </li>
+          <li class="pipeline__stage" style="--n:2">
+            <span class="pipeline__node" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path class="pipeline__check" d="M6 12.4l4.2 4.2L18 8"/></svg>
+            </span>
+            <div class="pipeline__card">
+              <span class="pipeline__idx" aria-hidden="true">03</span>
+              <span class="pipeline__label">Localisation</span>
+              <p class="pipeline__value">Lille · Nancy · Sarreguemines</p>
+            </div>
+          </li>
+          <li class="pipeline__stage" style="--n:3">
+            <span class="pipeline__node" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path class="pipeline__check" d="M6 12.4l4.2 4.2L18 8"/></svg>
+            </span>
+            <div class="pipeline__card">
+              <span class="pipeline__idx" aria-hidden="true">04</span>
+              <span class="pipeline__label">Langues</span>
+              <p class="pipeline__value">Français · Allemand (B2) · Anglais (B1)</p>
+            </div>
+          </li>
+          <li class="pipeline__stage" style="--n:4">
+            <span class="pipeline__node" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path class="pipeline__check" d="M6 12.4l4.2 4.2L18 8"/></svg>
+            </span>
+            <div class="pipeline__card">
+              <span class="pipeline__idx" aria-hidden="true">05</span>
+              <span class="pipeline__label">Mobilité</span>
+              <p class="pipeline__value">Permis B</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <p class="pipeline__status" aria-hidden="true">
+        <span class="pipeline__tick">✔</span>
+        <span class="pipeline__status-text">pipeline réussie</span>
+        <span class="pipeline__runcount">— run&nbsp;<b id="pipelineRun">#01</b></span>
+        <span class="pipeline__caret"></span>
+      </p>
     </div>
   </section>
 
