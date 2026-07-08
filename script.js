@@ -6,7 +6,8 @@
    4. Projets ExpandOnHover vertical
    5. Compétences extensibles (accordéon)
    6. Apparition des sections au scroll
-      6 bis. À propos : texte mot à mot + pipeline CI rejouable
+      6 bis. À propos : texte mot à mot + pipeline CI rejouable,
+      ligne svg dessinée au scroll, traînée d'images au curseur
    7. Dynamic Island : navigation, section courante, progression
       de lecture, repli au scroll descendant
    8. Parcours : pile de cartes au scroll (card stack)
@@ -512,6 +513,80 @@ if (about && !prefersReducedMotion) {
   );
   const intro = about.querySelector(".about__intro");
   if (intro) aboutSpy.observe(intro);
+}
+
+/* Ligne sinueuse « svg follow scroll » : le tracé se dessine avec la
+   progression du scroll dans la section (stroke-dashoffset), dans les
+   deux sens — il se retrace donc à chaque passage. */
+const aboutPath = document.getElementById("aboutPath");
+
+if (about && aboutPath && !prefersReducedMotion) {
+  const pathLength = aboutPath.getTotalLength();
+  aboutPath.style.strokeDasharray = pathLength;
+  aboutPath.style.strokeDashoffset = pathLength;
+
+  function updateAboutPath() {
+    const rect = about.getBoundingClientRect();
+    // 0 quand la section entre par le bas, 1 quand la pipeline est au
+    // centre de l'écran — la ligne finit de se tracer sur son 1er nœud
+    const p = clamp01((window.innerHeight * 0.85 - rect.top) / (rect.height * 0.95));
+    aboutPath.style.strokeDashoffset = String(pathLength * (1 - p));
+  }
+
+  let pathTicking = false;
+  window.addEventListener("scroll", () => {
+    if (!pathTicking) {
+      requestAnimationFrame(() => {
+        updateAboutPath();
+        pathTicking = false;
+      });
+      pathTicking = true;
+    }
+  }, { passive: true });
+  updateAboutPath();
+}
+
+/* Traînée d'images au curseur (image cursor trail) : en survolant
+   l'intro, des vignettes de projets naissent sous le pointeur tous
+   les ~80 px parcourus, puis s'estompent et sont retirées du DOM. */
+const aboutTrail = document.getElementById("aboutTrail");
+
+if (about && aboutTrail && finePointer && !prefersReducedMotion) {
+  const TRAIL_IMAGES = [
+    "img/OSINT_MAX.png",
+    "img/mac-Monitor.png",
+    "img/mbash.png",
+    "img/NRVProject.png",
+    "img/DiagrammeClasse.png",
+    "img/tableaudeBord1.png",
+  ];
+  const TRAIL_STEP = 80;   // distance min entre deux vignettes
+  const TRAIL_MAX = 9;     // vignettes simultanées au plus
+  let trailIdx = 0;
+  let lastX = null;
+  let lastY = null;
+
+  const intro = about.querySelector(".about__intro");
+  intro.addEventListener("mouseleave", () => { lastX = lastY = null; });
+  intro.addEventListener("mousemove", (e) => {
+    if (lastX === null) { lastX = e.clientX; lastY = e.clientY; return; }
+    const dx = e.clientX - lastX;
+    const dy = e.clientY - lastY;
+    if (dx * dx + dy * dy < TRAIL_STEP * TRAIL_STEP) return;
+    lastX = e.clientX;
+    lastY = e.clientY;
+
+    const rect = aboutTrail.getBoundingClientRect();
+    const img = document.createElement("img");
+    img.src = TRAIL_IMAGES[trailIdx++ % TRAIL_IMAGES.length];
+    img.alt = "";
+    img.style.left = e.clientX - rect.left + "px";
+    img.style.top = e.clientY - rect.top + "px";
+    img.style.setProperty("--tr", (Math.random() * 16 - 8).toFixed(1) + "deg");
+    img.addEventListener("animationend", () => img.remove());
+    aboutTrail.appendChild(img);
+    while (aboutTrail.children.length > TRAIL_MAX) aboutTrail.firstChild.remove();
+  });
 }
 
 if (pipeline && !prefersReducedMotion) {

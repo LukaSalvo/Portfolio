@@ -136,6 +136,17 @@
        remis à zéro dès que la section sort de l'écran : l'animation
        est complète à chaque passage (compteur de run). -->
   <section class="about" id="apropos" data-island-label="À propos">
+    <!-- Ligne sinueuse dessinée au fil du scroll (svg follow scroll) :
+         elle serpente derrière l'intro puis vient alimenter le premier
+         nœud de la pipeline. Pilotée en JS via stroke-dashoffset,
+         réversible — elle se retrace à chaque passage. -->
+    <svg class="about__path" viewBox="0 0 1000 900" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+      <path id="aboutPath" d="M 870 50 C 990 170, 930 320, 740 370 C 560 415, 480 330, 500 240 C 520 155, 380 120, 260 180 C 130 245, 130 400, 300 470 C 470 540, 780 500, 860 580 C 910 598, 700 576, 480 572 C 285 569, 172 576, 143 620"
+        fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+    </svg>
+    <!-- Traînée d'images au curseur (image cursor trail) : remplie en JS -->
+    <div class="about__trail" id="aboutTrail" aria-hidden="true"></div>
+
     <div class="about__intro">
       <div class="about__photo">
         <img src="img/PP_Luka.jpg" alt="Portrait de Luka Salvo" loading="lazy" decoding="async" />
