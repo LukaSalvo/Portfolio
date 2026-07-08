@@ -6,6 +6,7 @@
    4. Projets ExpandOnHover vertical
    5. Compétences extensibles (accordéon)
    6. Apparition des sections au scroll
+      6 bis. À propos : texte mot à mot + pipeline CI rejouable
    7. Dynamic Island : navigation, section courante, progression
       de lecture, repli au scroll descendant
    8. Parcours : pile de cartes au scroll (card stack)
@@ -460,6 +461,81 @@ document.querySelectorAll("[data-textroll]").forEach((el) => {
   });
 });
 
+/* ---------- 6 bis. À propos : mots en cascade + pipeline CI ----------
+   Le texte d'intro est découpé en mots (chacun glisse depuis le bas
+   de sa fenêtre) et les infos clés se déroulent comme une pipeline
+   CI. Contrairement aux .reveal (une seule fois), l'état est remis à
+   zéro dès que la section sort de l'écran : la séquence complète se
+   rejoue à chaque passage — le compteur de run en témoigne. */
+const about = document.getElementById("apropos");
+const pipeline = document.getElementById("pipeline");
+const aboutText = document.getElementById("aboutText");
+
+function splitAboutWords() {
+  // Déjà découpé (le retour au FR restaure le HTML découpé) : on sort
+  if (!aboutText || aboutText.querySelector(".w")) return;
+  let w = 0;
+  (function wrap(root) {
+    [...root.childNodes].forEach((node) => {
+      if (node.nodeType === Node.ELEMENT_NODE) {
+        wrap(node); // descend dans <em> pour garder sa couleur accent
+        return;
+      }
+      if (node.nodeType !== Node.TEXT_NODE) return;
+      const frag = document.createDocumentFragment();
+      node.textContent.split(/\s+/).forEach((word, i) => {
+        if (i > 0) frag.appendChild(document.createTextNode(" "));
+        if (!word) return;
+        const outer = document.createElement("span");
+        outer.className = "w";
+        const inner = document.createElement("span");
+        inner.className = "w__in";
+        inner.style.setProperty("--w", w++);
+        inner.textContent = word;
+        outer.appendChild(inner);
+        frag.appendChild(outer);
+      });
+      root.replaceChild(frag, node);
+    });
+  })(aboutText);
+}
+
+if (about && !prefersReducedMotion) {
+  splitAboutWords();
+  const aboutSpy = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) =>
+        about.classList.toggle("is-inview", entry.isIntersecting)
+      );
+    },
+    { threshold: 0.25 }
+  );
+  const intro = about.querySelector(".about__intro");
+  if (intro) aboutSpy.observe(intro);
+}
+
+if (pipeline && !prefersReducedMotion) {
+  const pipelineRun = document.getElementById("pipelineRun");
+  let runCount = 0;
+
+  const pipeSpy = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          if (pipeline.classList.contains("is-run")) return;
+          runCount++;
+          if (pipelineRun) pipelineRun.textContent = "#" + String(runCount).padStart(2, "0");
+          pipeline.classList.add("is-run");
+        } else {
+          pipeline.classList.remove("is-run"); // reset : prêt à rejouer
+        }
+      });
+    },
+    { threshold: 0.3 }
+  );
+  pipeSpy.observe(pipeline);
+}
+
 /* ---------- 6. Apparition au scroll ---------- */
 const observer = new IntersectionObserver(
   (entries) => {
@@ -672,11 +748,15 @@ const EN_TEXT = [
   [".showreel__caption", "Flagship project — MAC Monitor"],
   [".about__text",
     "I administer <em>Unix systems</em>, secure infrastructures and automate everything that can be automated. Currently finishing a BUT in Computer Science (DACS track) before an engineering apprenticeship at IMT Nord Europe, I practice cybersecurity daily — CTF, TryHackMe, OSINT."],
-  [".about__meta div:nth-child(1)", '<span class="meta__label">Role</span>Sysadmin · Cybersecurity · DevOps'],
-  [".about__meta div:nth-child(2)", '<span class="meta__label">Stack</span>Linux · Docker · Bash · Networks · GCP'],
-  [".about__meta div:nth-child(3)", '<span class="meta__label">Location</span>Lille · Nancy · Sarreguemines'],
-  [".about__meta div:nth-child(4)", '<span class="meta__label">Languages</span>French · German (B2) · English (B1)'],
-  [".about__meta div:nth-child(5)", '<span class="meta__label">Mobility</span>Driving licence'],
+  [".pipeline__stage:nth-child(1) .pipeline__label", "Role"],
+  [".pipeline__stage:nth-child(1) .pipeline__value", "Sysadmin · Cybersecurity · DevOps"],
+  [".pipeline__stage:nth-child(2) .pipeline__value", "Linux · Docker · Bash · Networks · GCP"],
+  [".pipeline__stage:nth-child(3) .pipeline__label", "Location"],
+  [".pipeline__stage:nth-child(4) .pipeline__label", "Languages"],
+  [".pipeline__stage:nth-child(4) .pipeline__value", "French · German (B2) · English (B1)"],
+  [".pipeline__stage:nth-child(5) .pipeline__label", "Mobility"],
+  [".pipeline__stage:nth-child(5) .pipeline__value", "Driving licence"],
+  [".pipeline__status-text", "pipeline passed"],
   [".projects .section__title", 'Selected<span class="accent"> projects</span>'],
   [".features .section__title", 'What I<span class="accent"> practice</span>'],
   [".journey .section__title", 'Background<span class="accent"> &amp; education</span>'],
@@ -803,6 +883,7 @@ const EN_ATTR = {
   "Portrait de Luka Salvo": "Portrait of Luka Salvo",
   "Terminal secret": "Secret terminal",
   "Fermer le terminal": "Close the terminal",
+  "Informations clés": "Key facts",
 };
 const FR_ATTR = Object.fromEntries(Object.entries(EN_ATTR).map(([fr, en]) => [en, fr]));
 const I18N_ATTRS = ["data-cursor", "data-island-label", "data-name", "aria-label", "alt"];
@@ -833,6 +914,9 @@ function applyLang(lang) {
       el.setAttribute(attr, lang === "en" ? (EN_ATTR[fr] || fr) : fr);
     });
   });
+
+  // Le texte À propos vient d'être remplacé : on le redécoupe en mots
+  if (!prefersReducedMotion) splitAboutWords();
 
   // La pastille affiche la section courante : on la traduit aussi
   const current = islandStatus.textContent;
