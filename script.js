@@ -6,7 +6,7 @@
    4. Projets ExpandOnHover vertical
    5. Compétences extensibles (accordéon)
    6. Apparition des sections au scroll
-      6 bis. À propos : texte mot à mot + pipeline CI rejouable,
+      6 bis. À propos : texte mot à mot + index éditorial rejouable,
       ligne svg dessinée au scroll, traînée d'images au curseur
    7. Dynamic Island : navigation, section courante, progression
       de lecture, repli au scroll descendant
@@ -462,12 +462,13 @@ document.querySelectorAll("[data-textroll]").forEach((el) => {
   });
 });
 
-/* ---------- 6 bis. À propos : mots en cascade + pipeline CI ----------
+/* ---------- 6 bis. À propos : mots en cascade + index éditorial ----------
    Le texte d'intro est découpé en mots (chacun glisse depuis le bas
-   de sa fenêtre) et les infos clés se déroulent comme une pipeline
-   CI. Contrairement aux .reveal (une seule fois), l'état est remis à
-   zéro dès que la section sort de l'écran : la séquence complète se
-   rejoue à chaque passage — le compteur de run en témoigne. */
+   de sa fenêtre) et les infos clés se déroulent en rangées numérotées
+   (masques + filets, façon Skiper UI). Contrairement aux .reveal (une
+   seule fois), l'état est remis à zéro dès que la section sort de
+   l'écran : la séquence complète se rejoue à chaque passage — le
+   compteur de run en témoigne. */
 const about = document.getElementById("apropos");
 const pipeline = document.getElementById("pipeline");
 const aboutText = document.getElementById("aboutText");

@@ -128,18 +128,21 @@
     </div>
   </section>
 
-  <!-- ============ À PROPOS — pipeline CI rejouable ============
-       Le texte d'intro se révèle mot à mot, puis les infos clés se
-       déroulent comme les étapes d'une pipeline CI : la ligne se
-       trace, chaque nœud « passe » (coche accent), sa carte apparaît,
-       et une ligne de statut façon terminal conclut le run. Tout est
-       remis à zéro dès que la section sort de l'écran : l'animation
-       est complète à chaque passage (compteur de run). -->
+  <!-- ============ À PROPOS — index éditorial rejouable ============
+       Le texte d'intro se révèle mot à mot, puis les infos clés
+       s'affichent en index éditorial (inspiré de Skiper UI) : chaque
+       rangée numérotée sort de son masque en cascade pendant que son
+       filet se trace ; au survol un panneau accent inonde la rangée
+       par le bas (et ressort par le haut) avec flèche et texte
+       inversé. Une ligne de statut façon terminal conclut le run.
+       Tout est remis à zéro dès que la section sort de l'écran :
+       l'animation est complète à chaque passage (compteur de run). -->
   <section class="about" id="apropos" data-island-label="À propos">
     <!-- Ligne sinueuse dessinée au fil du scroll (svg follow scroll) :
-         elle serpente derrière l'intro puis vient alimenter le premier
-         nœud de la pipeline. Pilotée en JS via stroke-dashoffset,
-         réversible — elle se retrace à chaque passage. -->
+         elle serpente derrière l'intro puis vient mourir sur la
+         première rangée de l'index. Pilotée en JS via
+         stroke-dashoffset, réversible — elle se retrace à chaque
+         passage. -->
     <svg class="about__path" viewBox="0 0 1000 900" preserveAspectRatio="none" aria-hidden="true" focusable="false">
       <path id="aboutPath" d="M 870 50 C 990 170, 930 320, 740 370 C 560 415, 480 330, 500 240 C 520 155, 380 120, 260 180 C 130 245, 130 400, 300 470 C 470 540, 780 500, 860 580 C 910 598, 700 576, 480 572 C 285 569, 172 576, 143 620"
         fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
@@ -160,61 +163,58 @@
     </div>
 
     <div class="pipeline" id="pipeline" aria-label="Informations clés">
-      <div class="pipeline__rail">
-        <div class="pipeline__line" aria-hidden="true"><span></span></div>
-        <ul class="pipeline__stages">
-          <li class="pipeline__stage" style="--n:0">
-            <span class="pipeline__node" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path class="pipeline__check" d="M6 12.4l4.2 4.2L18 8"/></svg>
+      <ul class="pipeline__stages">
+        <li class="pipeline__stage" style="--n:0">
+          <div class="pipeline__row">
+            <span class="pipeline__idx" aria-hidden="true">01</span>
+            <span class="pipeline__label">Rôle</span>
+            <p class="pipeline__value">Admin Système · Cybersécurité · DevOps</p>
+            <span class="pipeline__arrow" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
             </span>
-            <div class="pipeline__card">
-              <span class="pipeline__idx" aria-hidden="true">01</span>
-              <span class="pipeline__label">Rôle</span>
-              <p class="pipeline__value">Admin Système · Cybersécurité · DevOps</p>
-            </div>
-          </li>
-          <li class="pipeline__stage" style="--n:1">
-            <span class="pipeline__node" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path class="pipeline__check" d="M6 12.4l4.2 4.2L18 8"/></svg>
+          </div>
+        </li>
+        <li class="pipeline__stage" style="--n:1">
+          <div class="pipeline__row">
+            <span class="pipeline__idx" aria-hidden="true">02</span>
+            <span class="pipeline__label">Stack</span>
+            <p class="pipeline__value">Linux · Docker · Bash · Réseaux · GCP</p>
+            <span class="pipeline__arrow" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
             </span>
-            <div class="pipeline__card">
-              <span class="pipeline__idx" aria-hidden="true">02</span>
-              <span class="pipeline__label">Stack</span>
-              <p class="pipeline__value">Linux · Docker · Bash · Réseaux · GCP</p>
-            </div>
-          </li>
-          <li class="pipeline__stage" style="--n:2">
-            <span class="pipeline__node" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path class="pipeline__check" d="M6 12.4l4.2 4.2L18 8"/></svg>
+          </div>
+        </li>
+        <li class="pipeline__stage" style="--n:2">
+          <div class="pipeline__row">
+            <span class="pipeline__idx" aria-hidden="true">03</span>
+            <span class="pipeline__label">Localisation</span>
+            <p class="pipeline__value">Lille · Nancy · Sarreguemines</p>
+            <span class="pipeline__arrow" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
             </span>
-            <div class="pipeline__card">
-              <span class="pipeline__idx" aria-hidden="true">03</span>
-              <span class="pipeline__label">Localisation</span>
-              <p class="pipeline__value">Lille · Nancy · Sarreguemines</p>
-            </div>
-          </li>
-          <li class="pipeline__stage" style="--n:3">
-            <span class="pipeline__node" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path class="pipeline__check" d="M6 12.4l4.2 4.2L18 8"/></svg>
+          </div>
+        </li>
+        <li class="pipeline__stage" style="--n:3">
+          <div class="pipeline__row">
+            <span class="pipeline__idx" aria-hidden="true">04</span>
+            <span class="pipeline__label">Langues</span>
+            <p class="pipeline__value">Français · Allemand (B2) · Anglais (B1)</p>
+            <span class="pipeline__arrow" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
             </span>
-            <div class="pipeline__card">
-              <span class="pipeline__idx" aria-hidden="true">04</span>
-              <span class="pipeline__label">Langues</span>
-              <p class="pipeline__value">Français · Allemand (B2) · Anglais (B1)</p>
-            </div>
-          </li>
-          <li class="pipeline__stage" style="--n:4">
-            <span class="pipeline__node" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path class="pipeline__check" d="M6 12.4l4.2 4.2L18 8"/></svg>
+          </div>
+        </li>
+        <li class="pipeline__stage" style="--n:4">
+          <div class="pipeline__row">
+            <span class="pipeline__idx" aria-hidden="true">05</span>
+            <span class="pipeline__label">Mobilité</span>
+            <p class="pipeline__value">Permis B</p>
+            <span class="pipeline__arrow" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
             </span>
-            <div class="pipeline__card">
-              <span class="pipeline__idx" aria-hidden="true">05</span>
-              <span class="pipeline__label">Mobilité</span>
-              <p class="pipeline__value">Permis B</p>
-            </div>
-          </li>
-        </ul>
-      </div>
+          </div>
+        </li>
+      </ul>
       <p class="pipeline__status" aria-hidden="true">
         <span class="pipeline__tick">✔</span>
         <span class="pipeline__status-text">pipeline réussie</span>
