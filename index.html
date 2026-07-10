@@ -139,13 +139,15 @@
        l'animation est complète à chaque passage (compteur de run). -->
   <section class="about" id="apropos" data-island-label="À propos">
     <!-- Ligne sinueuse dessinée au fil du scroll (svg follow scroll) :
-         elle serpente derrière l'intro puis vient mourir sur la
-         première rangée de l'index. Pilotée en JS via
+         elle descend la marge droite (zone vide à côté de l'intro),
+         fait une boucle, puis traverse le respiro entre l'intro et
+         l'index pour venir mourir devant la première rangée — sans
+         jamais passer sur le texte. Pilotée en JS via
          stroke-dashoffset, réversible — elle se retrace à chaque
          passage. -->
     <svg class="about__path" viewBox="0 0 1000 900" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-      <path id="aboutPath" d="M 870 50 C 990 170, 930 320, 740 370 C 560 415, 480 330, 500 240 C 520 155, 380 120, 260 180 C 130 245, 130 400, 300 470 C 470 540, 780 500, 860 580 C 910 598, 700 576, 480 572 C 285 569, 172 576, 143 620"
-        fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+      <path id="aboutPath" d="M 930 35 C 990 130, 950 260, 855 315 C 802 340, 798 280, 840 243 C 878 208, 940 225, 950 285 C 958 350, 870 405, 740 428 C 540 452, 260 434, 85 440"
+        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
     </svg>
     <!-- Traînée d'images au curseur (image cursor trail) : remplie en JS -->
     <div class="about__trail" id="aboutTrail" aria-hidden="true"></div>

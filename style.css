@@ -499,7 +499,7 @@ section, footer { padding: clamp(80px, 12vw, 160px) clamp(20px, 6vw, 96px); }
   width: 100%;
   height: 100%;
   color: var(--accent);
-  opacity: .8;
+  opacity: .55;
   pointer-events: none;
   z-index: 0;
 }
