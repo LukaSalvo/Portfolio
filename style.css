@@ -1566,3 +1566,75 @@ a:focus-visible, button:focus-visible, .panel:focus-visible, summary:focus-visib
   animation: caretBlink 1s steps(2) infinite;
 }
 @keyframes caretBlink { 50% { opacity: 0; } }
+
+/* ============ Scroll stories (GSAP + canvas) ============
+   Styles support des animations de scroll.js : champ de particules
+   du hero, bandes défilantes réactives à la vélocité, masques de
+   lettres des titres de section. */
+
+/* Champ de particules du hero — derrière tout le contenu de la
+   section (z-index négatif : peint sous le contenu, au-dessus du
+   fond de page), jamais interactif */
+.hero__field {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Bande défilante : piste en double copie (boucle -50 % en JS).
+   Texte au trait (stroke) pour rester léger visuellement, points
+   séparateurs pleins en accent. Sans JS, elle reste statique. */
+.marquee {
+  overflow: hidden;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: clamp(18px, 3vw, 34px) 0;
+}
+.marquee__track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+}
+.marquee__part {
+  font-family: var(--font-display);
+  font-weight: var(--display-weight);
+  font-size: clamp(38px, 6.5vw, 104px);
+  line-height: 1.05;
+  text-transform: uppercase;
+  white-space: nowrap;
+  letter-spacing: -.01em;
+  color: var(--ink-dim);
+}
+@supports (-webkit-text-stroke: 1px #000) {
+  .marquee__part {
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--ink-dim);
+  }
+}
+.marquee__part i {
+  font-style: normal;
+  color: var(--accent);
+  -webkit-text-stroke: 0;
+}
+
+/* Titres de section : découpage JS mot (masque) / lettre — les
+   lettres montent hors du masque au fil du scroll. Les marges
+   négatives compensent le padding qui évite de rogner les
+   accents (É) avec line-height 1. */
+.section__title .st-w {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  padding: .14em .02em .06em;
+  margin: -.14em -.02em -.06em;
+}
+.section__title .st-c {
+  display: inline-block;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__field { display: none; }
+  .marquee__track { transform: none; }
+}
