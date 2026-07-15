@@ -83,6 +83,9 @@
 
   <!-- ============ HERO : effet "Hover members" ============ -->
   <section class="hero" id="top" data-island-label="Accueil">
+    <!-- Champ de particules génératif (inspiré experiments.p5aholic.me) :
+         points ondulants, excités par la vélocité du scroll — dessiné en JS -->
+    <canvas class="hero__field" id="heroField" aria-hidden="true"></canvas>
     <p class="hero__eyebrow">Portfolio — Admin Sys · Cybersécurité · DevOps</p>
 
     <div class="hero__stage">
@@ -127,6 +130,15 @@
       <h2 class="showreel__title" id="showreelTitle">MAC<br/>MONITOR</h2>
     </div>
   </section>
+
+  <!-- Bande défilante — direction et vitesse suivent la vélocité du scroll
+       (façon vitrine ScrollTrigger). Décorative, termes techniques neutres. -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee__track">
+      <span class="marquee__part">Linux <i>·</i> Docker <i>·</i> Kubernetes <i>·</i> Bash <i>·</i> OSINT <i>·</i> CTF <i>·</i> DevOps <i>·</i> GCP <i>·</i>&nbsp;</span>
+      <span class="marquee__part">Linux <i>·</i> Docker <i>·</i> Kubernetes <i>·</i> Bash <i>·</i> OSINT <i>·</i> CTF <i>·</i> DevOps <i>·</i> GCP <i>·</i>&nbsp;</span>
+    </div>
+  </div>
 
   <!-- ============ À PROPOS — index éditorial rejouable ============
        Le texte d'intro se révèle mot à mot, puis les infos clés
@@ -667,6 +679,14 @@
     </a>
   </section>
 
+  <!-- Seconde bande défilante avant le contact -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee__track">
+      <span class="marquee__part">TryHackMe <i>·</i> Nginx <i>·</i> Grafana <i>·</i> Prometheus <i>·</i> Git <i>·</i> SSH <i>·</i> VLAN <i>·</i> Python <i>·</i>&nbsp;</span>
+      <span class="marquee__part">TryHackMe <i>·</i> Nginx <i>·</i> Grafana <i>·</i> Prometheus <i>·</i> Git <i>·</i> SSH <i>·</i> VLAN <i>·</i> Python <i>·</i>&nbsp;</span>
+    </div>
+  </div>
+
   <!-- ============ CONTACT ============ -->
   <footer class="contact" id="contact" data-island-label="Contact">
     <p class="contact__eyebrow reveal">Un projet, une question ?</p>
@@ -699,5 +719,11 @@
   </div>
 
   <script src="script.js"></script>
+  <!-- Animations de scroll : GSAP + ScrollTrigger (vendorés en local,
+       v3.13.0) puis scroll.js. Si GSAP manque, scroll.js s'efface et
+       les reveals IntersectionObserver de script.js reprennent la main. -->
+  <script src="js/vendor/gsap.min.js"></script>
+  <script src="js/vendor/ScrollTrigger.min.js"></script>
+  <script src="scroll.js"></script>
 </body>
 </html>
