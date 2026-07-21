@@ -90,8 +90,49 @@ function applyTheme(theme) {
 }
 
 applyTheme(document.documentElement.dataset.theme || "dark");
+
+/* Révélation circulaire floutée (View Transitions API), inspirée du
+   toggle Skiper UI (skiper26) : le nouveau thème inonde la page dans
+   un cercle à bord flouté qui grandit depuis le bouton. Les keyframes
+   sont injectées au clic (le centre et le rayon dépendent du bouton).
+   Sans API ou en mouvement réduit : bascule instantanée. */
 themeToggle.addEventListener("click", () => {
-  applyTheme(document.documentElement.dataset.theme === "light" ? "dark" : "light");
+  const next = document.documentElement.dataset.theme === "light" ? "dark" : "light";
+  if (!document.startViewTransition || prefersReducedMotion) {
+    applyTheme(next);
+    return;
+  }
+
+  const rect = themeToggle.getBoundingClientRect();
+  const cx = rect.left + rect.width / 2;
+  const cy = rect.top + rect.height / 2;
+  const endRadius = Math.hypot(
+    Math.max(cx, window.innerWidth - cx),
+    Math.max(cy, window.innerHeight - cy)
+  );
+  const feather = Math.max(90, endRadius * 0.18); // épaisseur du bord flouté
+
+  const style = document.createElement("style");
+  style.textContent = `
+    ::view-transition-new(root) {
+      z-index: 2;
+      animation: theme-reveal .85s cubic-bezier(.22, 1, .36, 1) both;
+      mask-image: radial-gradient(circle at ${cx}px ${cy}px,
+        #000 calc(var(--theme-reveal) - ${Math.round(feather)}px),
+        transparent var(--theme-reveal));
+      -webkit-mask-image: radial-gradient(circle at ${cx}px ${cy}px,
+        #000 calc(var(--theme-reveal) - ${Math.round(feather)}px),
+        transparent var(--theme-reveal));
+    }
+    @keyframes theme-reveal {
+      from { --theme-reveal: 0px; }
+      to   { --theme-reveal: ${Math.ceil(endRadius + feather)}px; }
+    }
+  `;
+  document.head.appendChild(style);
+
+  const transition = document.startViewTransition(() => applyTheme(next));
+  transition.finished.finally(() => style.remove());
 });
 
 /* ---------- 2. Curseur personnalisé ---------- */

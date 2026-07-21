@@ -260,8 +260,38 @@ body {
   transition: transform .35s cubic-bezier(.22,1,.36,1);
 }
 .island__theme:hover { transform: rotate(40deg) scale(1.1); }
-.island__theme::after { content: "☀"; }
-:root[data-theme="light"] .island__theme::after { content: "☾"; }
+.island__theme:active { transform: scale(.9); }
+/* Icône soleil / lune morphée (façon Skiper UI) : en mode nuit le
+   soleil complet invite au jour ; en mode jour les rayons se replient
+   en tournant pendant que le disque de masque glisse sur le cœur
+   pour le croquer en croissant de lune. */
+.theme-icon { width: 17px; height: 17px; display: block; overflow: visible; }
+.theme-icon__core {
+  fill: currentColor;
+  transform-origin: center;
+  transition: transform .6s cubic-bezier(.34, 1.4, .64, 1);
+}
+.theme-icon__rays {
+  stroke: currentColor;
+  stroke-width: 1.7;
+  transform-origin: center;
+  transition: transform .6s cubic-bezier(.34, 1.4, .64, 1), opacity .3s ease .05s;
+}
+.theme-icon__mask-dot { transition: transform .6s cubic-bezier(.34, 1.4, .64, 1); }
+:root[data-theme="light"] .theme-icon__core { transform: scale(1.4); }
+:root[data-theme="light"] .theme-icon__rays { transform: rotate(90deg) scale(.3); opacity: 0; transition-delay: 0s; }
+:root[data-theme="light"] .theme-icon__mask-dot { transform: translate(-12.5px, 12.5px); }
+
+/* Révélation circulaire du thème (View Transitions API, skiper26) :
+   propriété enregistrée pour pouvoir animer le rayon du masque, et
+   l'ancienne vue reste figée sous la nouvelle qui l'inonde en cercle
+   flouté depuis le bouton — keyframes injectées au clic (script.js). */
+@property --theme-reveal {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+::view-transition-old(root) { animation: none; z-index: 1; }
 /* Bouton de langue FR / EN — même famille que le bouton de thème */
 .island__lang {
   height: 28px;

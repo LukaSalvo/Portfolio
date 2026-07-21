@@ -73,7 +73,28 @@
           <a href="#experiences" data-hover>Expériences</a>
           <a href="#certifications" data-hover>Certifs</a>
           <a href="#contact" data-hover>Contact</a>
-          <button class="island__theme" id="themeToggle" data-hover aria-label="Basculer entre mode jour et mode nuit"></button>
+          <button class="island__theme" id="themeToggle" data-hover aria-label="Basculer entre mode jour et mode nuit">
+            <!-- Icône soleil / lune morphée : les rayons se rétractent
+                 pendant qu'un disque de masque vient croquer le cœur
+                 en croissant (inspiré du toggle Skiper UI — skiper26) -->
+            <svg class="theme-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <mask id="themeIconMask">
+                <rect width="24" height="24" fill="#fff"/>
+                <circle class="theme-icon__mask-dot" cx="28" cy="-4" r="6.5" fill="#000"/>
+              </mask>
+              <circle class="theme-icon__core" cx="12" cy="12" r="4.6" mask="url(#themeIconMask)"/>
+              <g class="theme-icon__rays" stroke-linecap="round" fill="none">
+                <line x1="12" y1="4.8" x2="12" y2="2.4"/>
+                <line x1="12" y1="19.2" x2="12" y2="21.6"/>
+                <line x1="4.8" y1="12" x2="2.4" y2="12"/>
+                <line x1="19.2" y1="12" x2="21.6" y2="12"/>
+                <line x1="6.91" y1="6.91" x2="5.21" y2="5.21"/>
+                <line x1="17.09" y1="6.91" x2="18.79" y2="5.21"/>
+                <line x1="17.09" y1="17.09" x2="18.79" y2="18.79"/>
+                <line x1="6.91" y1="17.09" x2="5.21" y2="18.79"/>
+              </g>
+            </svg>
+          </button>
           <button class="island__lang" id="langToggle" data-hover aria-label="Switch to English">EN</button>
         </div>
       </div>
