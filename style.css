@@ -1080,7 +1080,7 @@ section, footer { padding: clamp(80px, 12vw, 160px) clamp(20px, 6vw, 96px); }
    (point accent + grand titre centré) ; le scroll fait glisser le
    suivant depuis le bas, l'ancien sort par le haut — réversible. */
 .experiences { padding-bottom: 0; }
-.exp { height: 440vh; position: relative; }
+.exp { height: 500vh; position: relative; }
 .exp__sticky {
   position: sticky;
   top: 0;
